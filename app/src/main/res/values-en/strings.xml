@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ykt</string>
+    <string name="search" >r</string>
+    <string name="prompt_email" >f</string>
+    <string name="prompt_password" >f</string>
+    <string name="json" >f</string>
+    <string name="action_sign_in" >f</string>
+</resources>

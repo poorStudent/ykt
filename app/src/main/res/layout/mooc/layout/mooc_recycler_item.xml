@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="98dp"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/zjy_view"
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
+        android:background="@color/design_default_color_secondary" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/line1"
+            android:layout_width="121dp"
+            android:layout_height="93dp">
+
+            <ImageView
+                android:id="@+id/mooc_kctp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@mipmap/ic_launcher_round"
+                android:scaleType="fitXY" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mooc_kcmc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_toRightOf="@+id/line1"
+                android:maxLines="1"
+                android:text="2222222222222222"
+                android:textColor="@color/material_on_surface_emphasis_high_type"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/mooc_xxrs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/zjy_kcmc"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_toRightOf="@+id/line1"
+                android:maxLines="1"
+                android:text="学习人数: 222222222"
+                android:textColor="@color/material_on_surface_emphasis_medium"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/mooc_xxm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mooc_xxrs"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_toRightOf="@+id/line1"
+                android:maxLines="1"
+                android:text="学校名：444444444"
+                android:textColor="@color/material_on_surface_emphasis_medium"
+                android:textSize="13sp" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+
+                <ProgressBar
+                    android:id="@+id/mooc_kcjd"
+                    style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="4"
+                    android:max="100"
+                    android:progress="0" />
+
+                <TextView
+                    android:id="@+id/mooc_jd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="进度: "
+                    android:textColor="@color/material_on_surface_emphasis_medium"
+                    android:textSize="13sp" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/zjy_view2"
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
+        android:layout_below="@+id/line1"
+        android:layout_marginTop="0.1dp"
+        android:background="@color/design_default_color_secondary" />
+
+</LinearLayout>

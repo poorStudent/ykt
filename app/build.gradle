@@ -1,0 +1,161 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+//apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+def buildTimes() {
+    return new Date().format("yyyyMMdd")
+}
+
+android {
+
+    signingConfigs {
+
+        debug {
+            storeFile file('E:\\appprojicet\\vms.jks')
+            storePassword '2579988653'
+            keyAlias 'vms'
+            keyPassword '2579988653'
+        }
+        release {
+            //注意：该签名文件的路径是以你的moudle文件夹为根路径的，而不是project，不能写错了
+            storeFile file("E:\\appprojicet\\vms.jks")
+            storePassword "2579988653"
+            keyAlias 'vms'
+            keyPassword "2579988653"
+
+        }
+    }
+
+
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.vms.zjy"
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 12
+        versionName "1.2"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        dataBinding {
+            enabled true
+        }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ''
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    'src/main/res/layout/zjy',
+                    'src/main/res/layout/mooc',
+                    'src/main/res/layout/icve',
+                    'src/main/res/layout/cqooc',
+                    'src/main/res/layout/',
+                    'src/main/res'
+            ]
+        }
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            debuggable true
+            //release时使用release签名
+            // signingConfig signingConfigs.release
+            //代码混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //Zip代码压缩优化
+            zipAlignEnabled true
+            renderscriptDebuggable false
+            //移除无用资源
+            // shrinkResources true
+        }
+        debug {
+            //debug时使用release签名
+            signingConfig signingConfigs.release
+            //Zip代码压缩优化
+            zipAlignEnabled true
+            jniDebuggable true
+            //移除无用资源
+            //shrinkResources true
+
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.10.2'
+        }
+    }
+
+    ndkVersion '24.0.8215888'
+
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            //如果，输出file是空，或者不是apk文件，就不处理
+            if (output.outputFile == null && !output.outputFile.name.endsWith('.apk')) {
+                contiue
+            }
+
+            def info = ""
+
+            //维度，如果不存在，这里的info是空的，如果有维度比如多渠道baidu，360等等
+            variant.productFlavors.each {
+                info = info + it.name + "_"
+            }
+
+            println("TAG:${variant.name}/${info}")
+            //如果是release类型，就修改apk文件名。其他条件可以自己处理。
+            //如果把if判断去掉，就是全部构建类型都会修改名字
+            if (variant.buildType == null && !variant.buildType.name == " ") {
+                //contiue
+            }
+
+            //由于法语原因，这里的代码要一行写，换行写发还没找到。
+            outputFileName = info + variant.buildType.name + '_v_' + variant.versionName + '_' + variant.versionCode + '_' + buildTimes() + '.apk'
+
+        }
+    }
+}
+
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'com.alibaba:fastjson:1.2.80'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.6'
+    implementation 'com.squareup.okio:okio:3.0.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    implementation 'com.github.JessYanCoding:AndroidAutoSize:v1.2.1'
+    implementation files('libs\\rhino-1.7.13.jar')
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+
+}

@@ -1,0 +1,8 @@
+<resources>
+    <string name="search">emmmmm</string>
+    <string name="prompt_email">账号</string>
+    <string name="prompt_password">密码</string>
+    <string name="json">info</string>
+    <string name="action_sign_in">登录</string>
+    <string name="app_name">Ykt</string>
+</resources>
