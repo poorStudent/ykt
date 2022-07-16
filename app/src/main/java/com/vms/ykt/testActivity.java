@@ -162,6 +162,9 @@ public class testActivity extends AppCompatActivity {
                 }
             }
         }
+        for (Method vMethod1 : vClass.getDeclaredMethods()){
+            vMethod1.setAccessible(true);
+        }
         for (Field v : vClass.getDeclaredFields()) {
             v.setAccessible(true);
             for (Annotation vAnnotation : v.getDeclaredAnnotations()) {
