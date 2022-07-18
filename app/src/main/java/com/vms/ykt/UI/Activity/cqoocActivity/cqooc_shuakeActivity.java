@@ -120,6 +120,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
                 isShuke_zt = false;
                 pageCt = 0;
                 curCt = 0;
+                if(stringBuffer==null)stringBuffer = new StringBuilder();
                 stringBuffer.delete(0,stringBuffer.length());
                 cqooc_shuke_rz.setText("获取中请等待......");
                 Tool.toast(cqooc_shuakeActivity.this, "开始获取");
