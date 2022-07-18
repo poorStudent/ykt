@@ -159,8 +159,9 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
                     break;
             }
             ((ViewHolder2) holder).mTextView1.setText(tag);
-
+            return;
         }
+
 
 
       final ViewHolder1 vHolder1 = (cqoocRecyclerAdapter.ViewHolder1) holder;
