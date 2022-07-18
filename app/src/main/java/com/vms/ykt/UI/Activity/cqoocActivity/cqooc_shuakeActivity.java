@@ -164,6 +164,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
                 return;
             }
 
+            if (mThread.isInterrupted())return;
             curCt++;
             cqooc_shuke_jd.post(() -> {
                 cqooc_shuke_jd.setText(curCt + "/" + pageCt);
@@ -393,6 +394,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: ");
+        mHandler.sendEmptyMessage(1);
         super.onDestroy();
     }
 
@@ -404,6 +406,9 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
                 Tool.tvShowBottom(cqooc_shuke_rz);
                 cqooc_shuke_rz.setText(stringBuffer.toString());
                 Tool.tvShowBottom(cqooc_shuke_rz);
+            }
+            if (msg.what==1){
+                mThread.interrupt();
             }
         }
     };
