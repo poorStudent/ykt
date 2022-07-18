@@ -21,10 +21,39 @@ import java.io.Serializable;
  * "cover":null,"oNum":0},"classTitle":"工业机器人20级1班专本","forumNum":0,"testScore":0,
  * "scoreBody":null,"score2":"0","chooseTime":1653293922739,"dropTime":null,"type":"1",
  * "tusername":null,"tInfo":null},
-* **/
+ **/
 public class cqoocCourseInfo implements Serializable {
-private String id;
-private String signNum;
+    private String id;
+    private String signNum;
+
+    private String username;
+    private String ownerId;
+    private String staytime;
+
+    private String courseId;
+    private String title;
+    private String courseType;
+    private String score;
+    private String classTitle;
+    private String progress;
+    private String classId;
+    private String scoreBody;
+    private String testScore;
+    private String forumNum;
+    private String endDate;
+    private String courseManager;
+    private String coursePicUrl;
+
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
 
     public String getSignNum() {
         return signNum;
@@ -57,10 +86,6 @@ private String signNum;
     public void setStaytime(String staytime) {
         this.staytime = staytime;
     }
-
-    private String username;
-private String ownerId;
-private String staytime;
 
     public String getId() {
         return id;
@@ -150,11 +175,6 @@ private String staytime;
         endDate = ParmsEndDate;
     }
 
-    private String courseId;
-private String title;
-private String courseType;
-private String score;
-
     public String getCourseManager() {
         return courseManager;
     }
@@ -163,7 +183,6 @@ private String score;
         this.courseManager = courseManager;
     }
 
-    private String courseManager;
 
     public String getClassTitle() {
         return classTitle;
@@ -173,13 +192,6 @@ private String score;
         this.classTitle = classTitle;
     }
 
-    private String classTitle;
-private String progress;
-private String classId;
-private String scoreBody;
-private String testScore;
-private String forumNum;
-private String endDate;
 
     public String getCoursePicUrl() {
         return coursePicUrl;
@@ -189,5 +201,4 @@ private String endDate;
         coursePicUrl = ParmsCoursePicUrl;
     }
 
-    private String coursePicUrl;
 }

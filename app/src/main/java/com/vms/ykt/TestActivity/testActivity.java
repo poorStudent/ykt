@@ -1,23 +1,21 @@
-package com.vms.ykt;
+package com.vms.ykt.TestActivity;
 
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.util.Log;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.vms.ykt.Util.Tool;
-import com.vms.ykt.databinding.TestActivityBinding;
+
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 
 import java.lang.annotation.Annotation;
@@ -37,17 +35,13 @@ public class testActivity extends AppCompatActivity {
 
 
 
-    private TestActivityBinding mTestActivityBinding;
     private final String TAG = testActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mTestActivityBinding= DataBindingUtil.setContentView(this, R.layout.test_activity);
 
-        TestViewModel mTestViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())).get(TestViewModel.class);
-
-        mTestActivityBinding.setData(mTestViewModel);
+        TestViewModel mTestViewModel = new ViewModelProvider(this).get(TestViewModel.class);
 
         zjyUser vUsers =new zjyUser();
         vUsers.setUserName("xxxx");
@@ -80,12 +74,6 @@ public class testActivity extends AppCompatActivity {
                 }
             });
         }
-
-
-        mTestActivityBinding.button.setOnClickListener((view)->{
-            mTestViewModel.getMutableLiveDataT().getValue().setUserName("123");
-            Log.d(TAG, "onCreate: "+  mTestViewModel.getMutableLiveDataT().getValue().getUserName());
-        });
 
     }
 
@@ -145,7 +133,7 @@ public class testActivity extends AppCompatActivity {
 
 
     public static void main(String[] args) throws Exception {
-        Class vClass = Class.forName("com.vms.ykt.a");
+        Class vClass = Class.forName("com.vms.ykt.TestActivity.a");
         Field vField = vClass.getDeclaredField("b");
         Method vMethod = vClass.getDeclaredMethod("type", int.class);
         vMethod.setAccessible(true);

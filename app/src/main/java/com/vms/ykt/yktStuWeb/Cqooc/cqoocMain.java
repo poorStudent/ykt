@@ -30,28 +30,49 @@ public class cqoocMain implements Serializable {
         List<cqoocCourseInfo> vVarCqoocCourseInfoList = new ArrayList<>();
         List<cqoocCourseInfo> vVarCqoocCourseInfoList2 = new ArrayList<>();
         String resp = "";
+
+        cqoocCourseInfo vInfo = new cqoocCourseInfo();
+        vInfo.setType(22);//在线课
+        vVarCqoocCourseInfoList.add(vInfo);
+
         resp = mCqApi.getCourseInfo2(ownerId);
         if (resp != null && resp.contains("data")) {
-            List<cqoocCourseInfo> varInfoList = parseCourse(resp);
+            List<cqoocCourseInfo> varInfoList = parseCourse(resp, 2);
             vVarCqoocCourseInfoList.addAll(varInfoList);
         }
+
+        vInfo = new cqoocCourseInfo();
+        vInfo.setType(11);//公开课
+        vVarCqoocCourseInfoList.add(vInfo);
+
         resp = mCqApi.getCourseInfo1(ownerId);
         if (resp != null && resp.contains("data")) {
-            List<cqoocCourseInfo> varInfoList = parseCourse(resp);
+            List<cqoocCourseInfo> varInfoList = parseCourse(resp,1);
             vVarCqoocCourseInfoList.addAll(varInfoList);
         }
-        long endTime;
-        for (cqoocCourseInfo vVarCqoocCourseInfo : vVarCqoocCourseInfoList) {
-            if (vVarCqoocCourseInfo.getEndDate() != null) {
-                endTime = Long.parseLong(vVarCqoocCourseInfo.getEndDate());
-                if (endTime < System.currentTimeMillis()) {
-                    continue;
-                }
-            }
 
-            vVarCqoocCourseInfoList2.add(vVarCqoocCourseInfo);
 
+        vInfo = new cqoocCourseInfo();
+        vInfo.setType(33);//spoc课
+        vVarCqoocCourseInfoList.add(vInfo);
+
+        resp = mCqApi.getCourseInfo3(ownerId);
+        if (resp != null && resp.contains("data")) {
+            List<cqoocCourseInfo> varInfoList = parseCourse(resp,3);
+            vVarCqoocCourseInfoList.addAll(varInfoList);
         }
+
+
+        vInfo = new cqoocCourseInfo();
+        vInfo.setType(44);//独立云班课
+        vVarCqoocCourseInfoList.add(vInfo);
+
+        resp = mCqApi.getCourseInfo4(ownerId);
+        if (resp != null && resp.contains("data")) {
+            List<cqoocCourseInfo> varInfoList = parseCourse(resp,4);
+            vVarCqoocCourseInfoList.addAll(varInfoList);
+        }
+
 
         return vVarCqoocCourseInfoList;
     }
@@ -173,7 +194,7 @@ public class cqoocMain implements Serializable {
         return parseLessons(resps);
     }
 
-    public List<cqoocCourseInfo> parseCourse(String resp) {
+    public List<cqoocCourseInfo> parseCourse(String resp, int type) {
         //所有课程
         List<cqoocCourseInfo> vVarCqoocCourseInfoList = new ArrayList<>();
         JSONArray varJSONArray;
@@ -199,6 +220,7 @@ public class cqoocMain implements Serializable {
                         vVarCqoocCourseInfo.setCoursePicUrl("http://www.cqooc.com" + pic);
                         vVarCqoocCourseInfo.setSignNum(signNum);
                         vVarCqoocCourseInfo.setStaytime(staytime);
+                        vVarCqoocCourseInfo.setType(type);
                         vVarCqoocCourseInfoList.add(vVarCqoocCourseInfo);
                     }
                 }

@@ -179,6 +179,7 @@ public class cqoocFragment extends baseFragment {
                             if (mRecyclerAdapter == null) {
                                 mRecyclerAdapter = new cqoocRecyclerAdapter(mCqoocCourseInfo, mUserInfo,mCqoocMain,mCqApi);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
+
                             } else {
                                 mRecyclerAdapter.updateData(mCqoocCourseInfo);
                             }

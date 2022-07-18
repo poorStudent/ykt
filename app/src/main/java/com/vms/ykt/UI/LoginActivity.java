@@ -19,13 +19,14 @@ import android.widget.TextView;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.vms.ykt.BlankFragment;
+
 import com.vms.ykt.R;
+import com.vms.ykt.TestActivity.BlankFragment;
 import com.vms.ykt.Util.AppStatus;
 import com.vms.ykt.Util.CacheUs;
 
 import com.vms.ykt.Util.PermissionRequest;
-import com.vms.ykt.testActivity;
+import com.vms.ykt.TestActivity.testActivity;
 import com.vms.ykt.yktStuMobile.zjy.zjyApi;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.Util.Tool;

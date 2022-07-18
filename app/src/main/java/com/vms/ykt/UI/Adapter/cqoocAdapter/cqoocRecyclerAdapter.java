@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class cqoocRecyclerAdapter extends baseRecyclerAdapter<cqoocRecyclerAdapter.ViewHolder4> {
+public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewHolder> {
 
     List<cqoocCourseInfo> mCqoocCourseInfo;
     private Context mContext;
@@ -36,7 +36,7 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<cqoocRecyclerAdapt
     private userInfo mUserInfo;
     private cqoocMain mCqoocMain;
     private cqApi mCqApi;
-    private String TAG=this.getClass().getSimpleName();
+    private String TAG = this.getClass().getSimpleName();
     /**
      * 事件回调监听
      */
@@ -44,12 +44,12 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<cqoocRecyclerAdapt
 
     private cqoocRecyclerAdapter.initRcView mInitRcView;
 
-    public cqoocRecyclerAdapter(List<cqoocCourseInfo> data, userInfo userInfo,cqoocMain cqoocMain,cqApi cqApi) {
+    public cqoocRecyclerAdapter(List<cqoocCourseInfo> data, userInfo userInfo, cqoocMain cqoocMain, cqApi cqApi) {
         this.mCqoocCourseInfo = data;
-        this.mUserInfo=userInfo;
-        this.mCqApi=cqApi;
-        this.mCqoocMain=cqoocMain;
-        Log.d(TAG, "cqoocRecyclerAdapter: "+userInfo.getStaytime());
+        this.mUserInfo = userInfo;
+        this.mCqApi = cqApi;
+        this.mCqoocMain = cqoocMain;
+        Log.d(TAG, "cqoocRecyclerAdapter: " + userInfo.getStaytime());
     }
 
     public void updateData(List<cqoocCourseInfo> data) {
@@ -61,8 +61,8 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<cqoocRecyclerAdapt
      * 添加新的Item
      */
     public void addNewItem(cqoocCourseInfo cqoocCourseInfo, int position) {
-        if(mCqoocCourseInfo == null) {
-            mCqoocCourseInfo=new ArrayList<>();
+        if (mCqoocCourseInfo == null) {
+            mCqoocCourseInfo = new ArrayList<>();
         }
         mCqoocCourseInfo.add(cqoocCourseInfo);
         notifyItemInserted(position);
@@ -72,7 +72,7 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<cqoocRecyclerAdapt
      * 删除Item
      */
     public void deleteItem(int position) {
-        if(mCqoocCourseInfo == null || mCqoocCourseInfo.isEmpty()) {
+        if (mCqoocCourseInfo == null || mCqoocCourseInfo.isEmpty()) {
             return;
         }
         mCqoocCourseInfo.remove(position);
@@ -95,65 +95,118 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<cqoocRecyclerAdapt
     }
 
     @Override
-    public ViewHolder4 onCreateViewHolder(ViewGroup parent, int viewType) {
-        // 实例化展示的view
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cqooc_recycler_item, parent, false);
-        // 实例化viewholder
-        if (mContext==null)
-        mContext=parent.getContext();
-        if (mActivity==null)
-        mActivity=(yktMainActivity)mContext;
-
-        ViewHolder4 viewHolder = new ViewHolder4(v);
-        Log.d(TAG, "onCreateViewHolder: ");
-        return viewHolder;
+    public long getItemId(int position) {
+        return super.getItemId(position);
     }
 
     @Override
-    public void onBindViewHolder (final ViewHolder4 holder, int position) {
+    public int getItemViewType(int position) {
+
+        return mCqoocCourseInfo.get(position).getType();
+
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+
+        if (mContext == null)
+            mContext = parent.getContext();
+        if (mActivity == null)
+            mActivity = (yktMainActivity) mContext;
+
+        View v;
+        RecyclerView.ViewHolder viewHolder;
+        if (viewType < 10) {
+            //课
+            // 实例化展示的view
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cqooc_recycler_item, parent, false);
+            // 实例化viewholder
+            viewHolder = new ViewHolder1(v);
+
+            return viewHolder;
+        } else {
+            //头view
+
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cqooc_recycler_heard_item, parent, false);
+            viewHolder = new ViewHolder1(v);
+            return viewHolder;
+        }
+
+
+    }
+
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         // 绑定数据
 
+        if (holder.getItemViewType() > 10) {
+            String tag="";
+            switch (holder.getItemViewType()) {
+                case 11:
+                     tag="--公开课--";
+                    break;
+                case 22:
+                    tag="--在线课--";
+                    break;
+                case 33:
+                    tag="--spoc课--";
+                    break;
+                case 44:
+                    tag="--独立云班课--";
+                    break;
+                default:
+                    break;
+            }
+            ((ViewHolder2) holder).mTextView1.setText(tag);
+            if (holder.getItemViewType() !=11)
+            return;
+        }
+
+        ViewHolder1 vHolder1 = (cqoocRecyclerAdapter.ViewHolder1) holder;
+
         cqoocCourseInfo vCqoocCourseInfo = mCqoocCourseInfo.get(position);
-        String kcmc= vCqoocCourseInfo.getTitle();
-        String xxdf= vCqoocCourseInfo.getScore();
-        String jksj= vCqoocCourseInfo.getEndDate();
-        String cyfs= vCqoocCourseInfo.getCourseManager();
-        String tlcs=vCqoocCourseInfo.getForumNum();
-        String lsmc=vCqoocCourseInfo.getClassTitle();
-        String kctp= vCqoocCourseInfo.getCoursePicUrl();
+        String kcmc = vCqoocCourseInfo.getTitle();
+        String xxdf = vCqoocCourseInfo.getScore();
+        String jksj = vCqoocCourseInfo.getEndDate();
+        String cyfs = vCqoocCourseInfo.getCourseManager();
+        String tlcs = vCqoocCourseInfo.getForumNum();
+        String lsmc = vCqoocCourseInfo.getClassTitle();
+        String kctp = vCqoocCourseInfo.getCoursePicUrl();
 
-        if (!Tool.isDestroy(mActivity)||holder.mImageView!=null||holder.mImageView.getContext()!=null) {
-        Glide.with(holder.mImageView.getContext())
-                .load(kctp)
-                .error(R.drawable.ic_launcher_background)
-                .fitCenter()
-                .into(holder.mImageView);
+
+        if (!Tool.isDestroy(mActivity) || vHolder1.mImageView != null || vHolder1.mImageView.getContext() != null) {
+            Glide.with(vHolder1.mImageView.getContext())
+                    .load(kctp)
+                    .error(R.drawable.ic_launcher_background)
+                    .fitCenter()
+                    .into(vHolder1.mImageView);
         }
 
 
-        holder.mTextView1.setText(kcmc);
+        vHolder1.mTextView1.setText(kcmc);
 
-        holder.mTextView2.setText("讨论: "+tlcs+"次 ");
-        holder.mTextView3.setText("班级: "+lsmc);
-        holder.mTextView4.setText("得分: "+xxdf+"分 ");
-        holder.mTextView5.setText("老师: "+cyfs);
-        if (jksj!=null){
-        long endTime = Long.valueOf(jksj) ;
-        jksj=Tool.parseDataTime(endTime);
-        if (endTime < System.currentTimeMillis()) {
-            jksj=jksj+"(已结束)";
-            holder.mTextView4.setText("");
-            holder.mTextView5.setText("各分: "+vCqoocCourseInfo.getScoreBody());
+        vHolder1.mTextView2.setText("讨论: " + tlcs + "次 ");
+        vHolder1.mTextView3.setText("班级: " + lsmc);
+        vHolder1.mTextView4.setText("得分: " + xxdf + "分 ");
+        vHolder1.mTextView5.setText("老师: " + cyfs);
+        if (jksj != null) {
+            long endTime = Long.valueOf(jksj);
+            jksj = Tool.parseDataTime(endTime);
+            if (endTime < System.currentTimeMillis()) {
+                jksj = jksj + "(已结束)";
+                vHolder1.mTextView4.setText("");
+                vHolder1.mTextView5.setText("各分: " + vCqoocCourseInfo.getScoreBody());
+            }
         }
-        }
-        holder.mTextView6.setText("结课时间: "+jksj);
+        vHolder1.mTextView6.setText("结课时间: " + jksj);
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-              //  if (holder.mTextView6.getText().toString().contains("已结束"))return;
+                //  if (holder.mTextView6.getText().toString().contains("已结束"))return;
                 showSetDialog(mCqoocCourseInfo.get(position));
-                if(onItemClickListener != null) {
+                if (onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemClick(holder.itemView, pos);
                 }
@@ -165,7 +218,7 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<cqoocRecyclerAdapt
             @Override
             public boolean onLongClick(View v) {
 
-                if(onItemClickListener != null) {
+                if (onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemLongClick(holder.itemView, pos);
                 }
@@ -197,7 +250,7 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<cqoocRecyclerAdapt
         //设置AlertDiaLog宽高属性
         WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
         params.width = 900;
-        params.height = 850 ;
+        params.height = 850;
         customAlert.getWindow().setAttributes(params);
         // 移除dialog的decorview背景色
         // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
@@ -205,7 +258,7 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<cqoocRecyclerAdapt
         but_shuake.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getId()!=null) {
+                if (CourseIfno.getId() != null) {
                     Intent i = new Intent(mActivity, cqooc_shuakeActivity.class);
                     i.putExtra("Course", CourseIfno);
                     i.putExtra("cqUser", mUserInfo);
@@ -235,48 +288,64 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<cqoocRecyclerAdapt
         });
     }
 
-    public void initListener(final ViewHolder4 holder){
+    public void initListener(final ViewHolder1 holder) {
 
     }
 
-    public void pauseRequests(){
+    public void pauseRequests() {
         Glide.with(mContext).pauseRequests();
-    };
+    }
+
+    ;
 
     @Override
     public int getItemCount() {
         return mCqoocCourseInfo == null ? 0 : mCqoocCourseInfo.size();
     }
 
-    public static class ViewHolder4 extends RecyclerView.ViewHolder {
+    static class ViewHolder1 extends RecyclerView.ViewHolder {
 
-        TextView mTextView1,mTextView2,mTextView3,mTextView4,mTextView5,mTextView6;
+        TextView mTextView1, mTextView2, mTextView3, mTextView4, mTextView5, mTextView6;
         ImageView mImageView;
 
-        public ViewHolder4(View itemView) {
+        public ViewHolder1(View itemView) {
             super(itemView);
-            mImageView=itemView.findViewById(R.id.cqooc_kctp);
-            mTextView1=itemView.findViewById(R.id.cqooc_kcmc);
-            mTextView2=itemView.findViewById(R.id.cqooc_lsmc);
-            mTextView3=itemView.findViewById(R.id.cqooc_tlcs);
-            mTextView4=itemView.findViewById(R.id.cqooc_zfs);
+            mImageView = itemView.findViewById(R.id.cqooc_kctp);
+            mTextView1 = itemView.findViewById(R.id.cqooc_kcmc);
+            mTextView2 = itemView.findViewById(R.id.cqooc_lsmc);
+            mTextView3 = itemView.findViewById(R.id.cqooc_tlcs);
+            mTextView4 = itemView.findViewById(R.id.cqooc_zfs);
             mTextView5 = itemView.findViewById(R.id.cqooc_cyfs);
             mTextView6 = itemView.findViewById(R.id.cqooc_jksj);
         }
     }
 
+    static class ViewHolder2 extends RecyclerView.ViewHolder {
+
+        TextView mTextView1;
+
+        public ViewHolder2(View itemView) {
+            super(itemView);
+            mTextView1 = itemView.findViewById(R.id.cqooc_head);
+
+        }
+    }
+
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
+
         void onItemLongClick(View view, int position);
     }
 
-    public interface initRcView{
+    public interface initRcView {
         String getTitle(int position);
+
         String getCourseId(int position);
+
         String getEndTime(int position);
+
         String getParentId(int position);
     }
-
 
 
 }

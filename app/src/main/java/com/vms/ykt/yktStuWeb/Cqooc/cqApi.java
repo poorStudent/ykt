@@ -18,6 +18,7 @@ public class cqApi implements Serializable {
 
     private cqoocHttp mCqoocHttp;
 
+
     static String UsreInfo2 = "http://www.cqooc.com/user/session";
 
     public String getUsreInfo2(String xsid) {
@@ -57,6 +58,16 @@ public class cqApi implements Serializable {
     public String getCourseInfo1(String ownerId) {
         return getCourseInfoBaes(ownerId, "1");
         //公开课
+    }
+
+    public String getCourseInfo3(String ownerId) {
+        return getCourseInfoBaes(ownerId, "3");
+        //spoc课
+    }
+
+    public String getCourseInfo4(String ownerId) {
+        return getCourseInfoBaes(ownerId, "4");
+        //独立云班课
     }
 
     static String mcsCourseInfo = "http://www.cqooc.com/json/mcs";

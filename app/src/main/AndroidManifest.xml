@@ -208,7 +208,7 @@
             android:theme="@style/Theme.VmsZjy"
             android:label="cqooc"
             android:launchMode="singleTop"
-            android:name="com.vms.ykt.testActivity">
+            android:name="com.vms.ykt.TestActivity.testActivity">
         </activity>
 
         <meta-data
