@@ -62,6 +62,9 @@ android {
                     'src/main/res/layout/icve',
                     'src/main/res/layout/cqooc',
                     'src/main/res/layout/',
+                    'src/main/res/layout/test',
+                    'src/main/res/menu/test-menu',
+                    'src/main/res/menu',
                     'src/main/res'
             ]
         }
