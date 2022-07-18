@@ -25,17 +25,17 @@ public class zjyMobileLogin {
 
         String[] resp = null;
         StringBuilder postParam = new StringBuilder();
-        // postParam.append("clientId=2829e8a1bcd44efd9d2e3cca8b606aea&");
-        postParam.append("clientId=null&");
+         postParam.append("clientId=2829e8a1bcd44efd9d2e3cca8b606aea&");
+       // postParam.append("clientId=null&");
         postParam.append("sourceType=2&");
         postParam.append("userPwd=" + pass.trim() + "&");
         postParam.append("userName=" + user.trim() + "&");
         postParam.append("appVersion=" + appv + "&");
         postParam.append("equipmentAppVersion=" + appv + "&");
         postParam.append("equipmentModel=" + Tool.getDEVICEModle() + "&");
-        postParam.append("equipmentApiVersion=10");
+        postParam.append("equipmentApiVersion=9");
         String postParams = postParam.toString();
-        //Log.d(TAG, "login: " + postParams);
+        Log.d(TAG, "login: " + postParams);
         resp = loginPost(baseUrl + login, postParams);
         return resp;
     }

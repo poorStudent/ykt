@@ -2,6 +2,8 @@ package com.vms.ykt.yktStuWeb.Cqooc;
 
 import android.util.Log;
 
+import androidx.constraintlayout.solver.ArrayLinkedVariables;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.vms.ykt.Util.Tool;
@@ -9,6 +11,7 @@ import com.vms.ykt.Util.Tool;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class cqoocMain implements Serializable {
@@ -95,7 +98,6 @@ public class cqoocMain implements Serializable {
         return FinishaLessons;
     }
 
-
     public List<cellLessonsInfo> getAlllessons(cqoocCourseInfo cqoocCourseInfo) {
         List<cellLessonsInfo> varCellLessonsList = new ArrayList<>();
         String resps;
@@ -150,7 +152,6 @@ public class cqoocMain implements Serializable {
         }
         return answ.toString().replaceFirst(",", "");
     }
-
 
     public List<ModleChaptersInfo> getModleChapters(String CourseId) {
         List<ModleChaptersInfo> varModleChaptersInfoList = new ArrayList<>();
@@ -227,6 +228,58 @@ public class cqoocMain implements Serializable {
             }
         }
         return vVarCqoocCourseInfoList;
+    }
+
+    public List<examTask> getAllTasks(String courseId){
+        List<examTask> vExamTaskList;
+        vExamTaskList=getExamTask(courseId,1);
+        return vExamTaskList;
+    }
+
+    public List<examTask> getAllExam(String courseId){
+        List<examTask> vExamTaskList;
+        vExamTaskList=getExamTask(courseId,1);
+        return vExamTaskList;
+    }
+
+    private List<examTask> getExamTask(String courseId,int type){
+        List<examTask> vExamTaskList=new ArrayList<>();
+        int start=1;
+        int limt;
+        if (type==1){
+            limt=20;
+        }else {
+            limt=99;
+        }
+
+        while (true){
+            String resp="";
+            if (type==1){
+                resp=mCqApi.getTasks(courseId,limt,start);
+            }else {
+                resp=mCqApi.getExams(courseId,limt,start);
+                break;
+            }
+            if (resp==null||resp.contains("data"))break;
+            List<examTask> vExamTasks =parseExamTask(resp,type);
+            vExamTaskList.addAll(vExamTasks);
+            start=start+limt;
+
+        }
+        return vExamTaskList;
+    }
+
+    private List<examTask> parseExamTask(String resp,int type){
+        List<examTask> vExamTaskList=new ArrayList<>();
+        if (resp==null||resp.contains("data"))return vExamTaskList;
+        JSONArray vJSONArray =Tool.parseJsonA(resp, "data");
+        for (int i = 0; i < vJSONArray.size(); i++) {
+            String js = vJSONArray.getString(i);
+            examTask vExamTask = JSONObject.parseObject(js,examTask.class);
+            vExamTask.setType(type);
+            vExamTaskList.add(vExamTask);
+        }
+        return vExamTaskList;
     }
 
     public String getOtherFourmCt(String courseId, String forumId) {

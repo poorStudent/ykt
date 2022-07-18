@@ -3,6 +3,7 @@ package com.vms.ykt.yktStuWeb.Cqooc;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.Serializable;
+import java.net.ResponseCache;
 import java.util.HashMap;
 
 public class cqApi implements Serializable {
@@ -283,9 +284,10 @@ public class cqApi implements Serializable {
         return resp;
     }
 
+
     static String exams = "http://www.cqooc.com/json/exams";
 
-    public String getExams(String courseId, int limit) {
+    public String getExams(String courseId, int limit,int start) {
         //考试
         String resp = "";
         String request = "http://www.cqooc.com/learn/mooc/structure?id=" + courseId;
@@ -294,17 +296,64 @@ public class cqApi implements Serializable {
         return resp;
     }
 
+    private static String exam="http://www.cqooc.com/json/exam";
+
+    public String getExamsInfo(String courseId, String examId) {
+        //考试
+        String resp = "";
+        String request = "http://www.cqooc.com/learn/mooc/exam/do?pid="+examId+"&id=" +courseId;
+        String body =  "id="+examId+"&ts=" + System.currentTimeMillis();;
+        resp = mCqoocHttp.get(exam, request, body);
+        return resp;
+    }
+
+
+
     static String tasks = "http://www.cqooc.com/json/tasks";
 
-    public String geTasks(String courseId, int limit) {
+    public String getTasks(String courseId, int limit,int start) {
         //作业
         String resp = "";
         String request = "http://www.cqooc.com/learn/mooc/structure?id=" + courseId;
-        String body = "limit=" + limit + "&start=1&isPublish=1&courseId=" + courseId + "&sortby=id&reverse=true&select=id,title,unitId,submitEnd,pubClass,status&ts=" + System.currentTimeMillis();
+        String body = "limit=" + limit + "&start="+start+"&isPublish=1&courseId=" + courseId + "&sortby=id&reverse=true&select=id,title,unitId,submitEnd,pubClass,status&ts=" + System.currentTimeMillis();
         resp = mCqoocHttp.get(tasks, request, body);
         return resp;
     }
 
+
+    public String getTasksInfo(String courseId, String taskId) {
+        //作业详情
+        String resp = "";
+        String request = "http://www.cqooc.com/learn/mooc/task/do?tid="+taskId+"&id="+courseId;
+        String body = "id="+taskId+"&ts=" + System.currentTimeMillis();
+        resp = mCqoocHttp.get(tasks, request, body);
+        return resp;
+    }
+    static String openTasks="http://www.cqooc.com/json/task/result/search";
+
+    public String getOpenTasks(String courseId, String taskId) {
+        //作业题目
+        String resp = "";
+        String request = "http://www.cqooc.com/learn/mooc/task/do?tid="+taskId+"&id="+courseId;
+        String body = "taskId="+taskId+"&ts=" + System.currentTimeMillis();
+        resp = mCqoocHttp.get(openTasks, request, body);
+        return resp;
+    }
+
+    private static String taskAdd="http://www.cqooc.com/task/api/result/add";
+    public String getTaskAdd(userInfo UserInfo, Object answers, cqoocCourseInfo varCourseInfo,examTask examTask){
+        //        item.taskId = X.qs.tid;
+        //        item.ownerId = user.id;
+        //        item.username = username;
+        //        item.classId = classId;
+        //        item.status = '2';
+        //        item.courseId = X.qs.id;
+        //        item.name = name;
+        //        item.attachment = aForm.attachment.value;
+        //        item.content = um.getContent() || "";
+        String resp="";
+        return resp;
+    }
 
     static String papers = "http://www.cqooc.com/json/exam/papers";
 

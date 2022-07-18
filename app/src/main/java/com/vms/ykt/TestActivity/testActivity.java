@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
+import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 
 import java.lang.annotation.Annotation;
@@ -133,6 +134,7 @@ public class testActivity extends AppCompatActivity {
 
 
     public static void main(String[] args) throws Exception {
+        System.out.println(Tool.getDevice("2.8.43", "1658155541000"));
         Class vClass = Class.forName("com.vms.ykt.TestActivity.a");
         Field vField = vClass.getDeclaredField("b");
         Method vMethod = vClass.getDeclaredMethod("type", int.class);

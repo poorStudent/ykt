@@ -103,7 +103,7 @@ public class Tool {
 
     public static String getDevice(String appVersion, String time) {
         String device = md5(getDEVICEModle());
-        device = md5(device + "10");
+        device = md5(device + "9");
         device = md5(device + appVersion);
         device = md5(device + time);
         return device;
