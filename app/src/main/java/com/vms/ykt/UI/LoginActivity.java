@@ -53,6 +53,8 @@ public class LoginActivity extends Activity {
         System.loadLibrary("native-lib");
     }
 
+    private boolean isLoging=true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +124,9 @@ public class LoginActivity extends Activity {
         goLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Login();
+                if (isLoging){
+                    Login();
+                }
             }
         });
 
@@ -216,6 +220,7 @@ public class LoginActivity extends Activity {
     }
 
     private void Login() {
+
         loadingProgressBar.setVisibility(View.VISIBLE);
         final String username = userNameEdit.getText().toString().trim();
         final String password = passWordEdit.getText().toString().trim();
@@ -235,6 +240,7 @@ public class LoginActivity extends Activity {
 
         final CacheUs vCacheUs = new CacheUs(username, password);
 
+        isLoging=false;
         new Thread(new Runnable() {
 
             @Override
@@ -290,6 +296,7 @@ public class LoginActivity extends Activity {
                     @Override
                     public void run() {
 
+                        isLoging=true;
                         loadingProgressBar.setVisibility(View.GONE);
 
                         if (resp == null) return;
