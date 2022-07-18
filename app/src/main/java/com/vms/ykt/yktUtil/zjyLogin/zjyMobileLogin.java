@@ -35,7 +35,7 @@ public class zjyMobileLogin {
         postParam.append("equipmentModel=" + Tool.getDEVICEModle() + "&");
         postParam.append("equipmentApiVersion=10");
         String postParams = postParam.toString();
-        Log.d(TAG, "login: " + postParams);
+        //Log.d(TAG, "login: " + postParams);
         resp = loginPost(baseUrl + login, postParams);
         return resp;
     }
@@ -50,7 +50,7 @@ public class zjyMobileLogin {
         Map<String, Object> header = new HashMap<>();
         emit = Tool.getTime();
         device = Tool.getDevice(appv, emit);
-        Log.d(TAG, "login: " + device);
+        Log.d(TAG, "login: " + emit);
         header.put("emit", emit);
         header.put("device", device);
         header.put("Connection", "Keep-Alive");
