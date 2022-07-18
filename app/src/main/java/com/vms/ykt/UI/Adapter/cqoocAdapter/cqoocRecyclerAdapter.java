@@ -201,7 +201,7 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
             }
         }
         vHolder1.mTextView6.setText("结课时间: " + jksj);
-        if (holder.getItemViewType() !=1) return;
+        if (holder.getItemViewType() !=2) return;
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
