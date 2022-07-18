@@ -81,18 +81,9 @@ public class Tool {
         return parse;
     }
 
-    /*****/
-    @SuppressLint("SimpleDateFormat")
+
     public static String getTime() {
-        String time="";
-        SimpleDateFormat varFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:s");
-        time=varFormat.format(new Date());
-        try {
-            time=String.valueOf(varFormat.parse(time).getTime());
-        } catch (Exception ParmsE) {
-            ParmsE.printStackTrace();
-        }
-        return time;
+        return String.valueOf(System.currentTimeMillis()).substring(0,10)+"000";
     }
 
     /**

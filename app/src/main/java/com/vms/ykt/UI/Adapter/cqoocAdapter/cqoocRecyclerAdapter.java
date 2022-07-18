@@ -129,7 +129,7 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
             //头view
 
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cqooc_recycler_heard_item, parent, false);
-            viewHolder = new ViewHolder1(v);
+            viewHolder = new ViewHolder2(v);
             return viewHolder;
         }
 
@@ -144,26 +144,26 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
             String tag="";
             switch (holder.getItemViewType()) {
                 case 11:
-                     tag="--公开课--";
+                     tag="-----公开课-----";
                     break;
                 case 22:
-                    tag="--在线课--";
+                    tag="-----在线课-----";
                     break;
                 case 33:
-                    tag="--spoc课--";
+                    tag="-----spoc课-----";
                     break;
                 case 44:
-                    tag="--独立云班课--";
+                    tag="-----独立云班课-----";
                     break;
                 default:
                     break;
             }
             ((ViewHolder2) holder).mTextView1.setText(tag);
-            if (holder.getItemViewType() !=11)
-            return;
-        }
 
-        ViewHolder1 vHolder1 = (cqoocRecyclerAdapter.ViewHolder1) holder;
+        }
+        if (holder.getItemViewType() !=1) return;
+
+      final ViewHolder1 vHolder1 = (cqoocRecyclerAdapter.ViewHolder1) holder;
 
         cqoocCourseInfo vCqoocCourseInfo = mCqoocCourseInfo.get(position);
         String kcmc = vCqoocCourseInfo.getTitle();
