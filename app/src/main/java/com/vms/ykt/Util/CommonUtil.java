@@ -142,12 +142,12 @@ public class CommonUtil
         return String.valueOf(parse.getTime());
     }
 
-    public static String getSecretKey(String cellId, final String dateToStamp,String UserId,String TcpCode) {
+    public static String getSecretKey(String cellId, final String time,String UserId) {
         final StringBuilder sb = new StringBuilder();
         sb.append(UserId);
         sb.append(cellId);
-        sb.append(dateToStamp);
-        sb.append(TcpCode);
+        sb.append(time);
+        sb.append("123456789");
          String string = sb.toString();
         return getMd5(string).toUpperCase();
     }
@@ -155,8 +155,6 @@ public class CommonUtil
     public static String getVersion() {
         return "2.8.43";
     }
-
-
 
 
     public static String getThumbnailByType(final String anObject, String s) {
