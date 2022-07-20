@@ -12,13 +12,32 @@
     <uses-permission android:name="android.permission.READ_CONTACTS"/><!-- 读取手机联系人权限 -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
+    <meta-data
+        android:name="design_width_in_dp"
+        android:value="350"/>
+    <meta-data
+        android:name="design_height_in_dp"
+        android:value="700"/>
+
+    <meta-data
+        android:name="xposedmodule"
+        android:value="true" />
 
 
+    <meta-data
+        android:name="xposeddescription"
+        android:value="HookDog" />
+
+
+    <meta-data
+        android:name="xposedminversion"
+        android:value="82" />
 
 
     <meta-data
         android:name="android.max_aspect"
         android:value="4.0"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_foreground"
@@ -211,12 +230,7 @@
             android:name="com.vms.ykt.TestActivity.testActivity">
         </activity>
 
-        <meta-data
-            android:name="design_width_in_dp"
-            android:value="350"/>
-        <meta-data
-            android:name="design_height_in_dp"
-            android:value="700"/>
+
     </application>
 
 </manifest>
