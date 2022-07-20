@@ -32,10 +32,12 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
 
 
 public class testActivity extends AppCompatActivity {
@@ -141,44 +143,79 @@ public class testActivity extends AppCompatActivity {
 
     public static void main(String[] args) throws Exception {
 
+     b.getTcpCode();
 
 
-        try {
-            // 和服务器创建连接
-            Socket socket = new Socket("localhost",8088);
+    }
 
-            // 要发送给服务器的信息
-            OutputStream os = socket.getOutputStream();
-            PrintWriter pw = new PrintWriter(os);
-            pw.write("客户端发送信息");
-            pw.flush();
+}
 
-            socket.shutdownOutput();
 
-            // 从服务器接收的信息
-            InputStream is = socket.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String info = null;
-            while((info = br.readLine())!=null){
-                System.out.println("我是客户端，服务器返回信息："+info);
+
+class a {
+    @zj(v = "222")
+    private int b;
+    @zj(v = "222")
+    private int c;
+
+    @zj(v = "1111")
+    protected int type(int p) {
+        System.out.println(p);
+        return p;
+    }
+
+}
+class b extends a {
+    @Override
+    protected int type(int p) {
+
+        System.out.println(p);
+        return 2;
+    }
+
+    public static void getTcpCode(){
+        new Thread(()->{
+            String tcpIpAddress = "101.37.228.98";
+            int tcpPort = 7788;
+            try {
+                // 和服务器创建连接
+                Socket socket = new Socket(tcpIpAddress,tcpPort);
+                // 要发送给服务器的信息
+                OutputStream os = socket.getOutputStream();
+                os.write("getKey".getBytes());
+                os.flush();
+
+                socket.shutdownOutput();
+
+                // 从服务器接收的信息
+                byte[] b=new byte[1024];
+                InputStream is = socket.getInputStream();
+                int a=is.read(b);
+
+                byte[] bArr2 = new byte[a];
+                System.arraycopy(b, 0, bArr2, 0, a);
+                System.out.println(new String(bArr2, StandardCharsets.UTF_8));
+
+                is.close();
+                os.close();
+                os.close();
+                socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }).start();
 
-            br.close();
-            is.close();
-            os.close();
-            pw.close();
-            socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
+    }
+
+    public static void fscs() throws Exception {
 
         Class vClass = Class.forName("com.vms.ykt.TestActivity.a");
         Field vField = vClass.getDeclaredField("b");
         Method vMethod = vClass.getDeclaredMethod("type", int.class);
         vMethod.setAccessible(true);
         vField.setAccessible(true);
-      
+
         Object object = vClass.getDeclaredConstructor().newInstance();
         //System.out.println(vMethod.getModifiers());
         //System.out.println(vMethod.invoke(vClass.newInstance(), 1));
@@ -211,33 +248,9 @@ public class testActivity extends AppCompatActivity {
         }
         //System.out.println(vZj.v());
         //System.out.println(vClass.getClassLoader());
-
     }
 
-}
 
-
-
-class a {
-    @zj(v = "222")
-    private int b;
-    @zj(v = "222")
-    private int c;
-
-    @zj(v = "1111")
-    protected int type(int p) {
-        System.out.println(p);
-        return p;
-    }
-
-}
-class b extends a {
-    @Override
-    protected int type(int p) {
-
-        System.out.println(p);
-        return 2;
-    }
 }
 @Target({ElementType.METHOD,ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

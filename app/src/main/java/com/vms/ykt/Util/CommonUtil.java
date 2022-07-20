@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -24,10 +25,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
+import okhttp3.Response;
 
 public class CommonUtil
 {
@@ -45,21 +49,6 @@ public class CommonUtil
         }
         return sb.toString().toUpperCase();
     }
-
-    public static String dateToStamp() throws ParseException {
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        final String format = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-        Date parse;
-        try {
-            parse = simpleDateFormat.parse(format);
-        }
-        catch (Exception ex) {
-            parse = null;
-        }
-        return String.valueOf(parse.getTime());
-    }
-
-
     @Nullable
     private String getCurrentProcessName(final Context context) {
         final int myPid = Process.myPid();
@@ -75,6 +64,41 @@ public class CommonUtil
         return null;
     }
 
+
+    public String[] getEmitDevice()  {
+
+        long internetTime = Long.parseLong(Tool.getTime());
+                //DateTimeFormatUtil.getInternetTime();//时间戳前10位+000
+
+        if (internetTime == 0) {
+            internetTime = System.currentTimeMillis();
+            //13位时间戳
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(internetTime);//登录超时会用第一个时间戳
+        stringBuilder.append("");
+        String stringBuilder2 = stringBuilder.toString();
+        //加密的请求头
+        String device=getSecretMd5(stringBuilder2);
+
+        return new String[]{internetTime+"",device};
+    }
+
+    public static String getSecretMd5(String str) {
+        String systemModel = SystemUtil.getSystemModel();//手机名词和厂家
+        String systemVersion ="9";   //SystemUtil.getSystemVersion();//手机系统版本
+        String verion = getVersion();//软件版本 写死了2.8.43
+        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder2 = new StringBuilder();
+        String stringBuilder3 = StringUtils.getMd5(systemModel) +
+                systemVersion;
+        stringBuilder2.append(StringUtils.getMd5(stringBuilder3));
+        stringBuilder2.append(verion);
+        stringBuilder.append(StringUtils.getMd5(stringBuilder2.toString()));
+        stringBuilder.append(str);
+        return StringUtils.getMd5(stringBuilder.toString());
+        //标准md5加密
+    }
 
     public static String getMd5(String string) {
         if (TextUtils.isEmpty((CharSequence)string)) {
@@ -105,26 +129,35 @@ public class CommonUtil
         }
     }
 
-    public static PackageInfo getPackageInfo(Context BaseApplication) {
-        PackageInfo packageInfo = null;
+    public static String dateToStamp() throws ParseException {
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final String format = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        Date parse;
         try {
-            packageInfo = BaseApplication.getPackageManager().getPackageInfo(BaseApplication.getPackageName(), 0);
+            parse = simpleDateFormat.parse(format);
         }
-        catch (PackageManager.NameNotFoundException ex) {
-            ex.printStackTrace();
+        catch (Exception ex) {
+            parse = null;
         }
-        return packageInfo;
+        return String.valueOf(parse.getTime());
     }
 
-    public static String getSecretKey(String string, final String str,String UserId,String TcpCode) {
+    public static String getSecretKey(String cellId, final String dateToStamp,String UserId,String TcpCode) {
         final StringBuilder sb = new StringBuilder();
         sb.append(UserId);
-        sb.append(str);
-        sb.append(string);
+        sb.append(cellId);
+        sb.append(dateToStamp);
         sb.append(TcpCode);
-        string = sb.toString();
+         String string = sb.toString();
         return getMd5(string).toUpperCase();
     }
+
+    public static String getVersion() {
+        return "2.8.43";
+    }
+
+
+
 
     public static String getThumbnailByType(final String anObject, String s) {
         if (!"ppt".equals(anObject) && !"pptx".equals(anObject)) {
@@ -159,8 +192,15 @@ public class CommonUtil
         return s;
     }
 
-    public static String getVersion() {
-        return "2.8.43";
+    public static PackageInfo getPackageInfo(Context BaseApplication) {
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = BaseApplication.getPackageManager().getPackageInfo(BaseApplication.getPackageName(), 0);
+        }
+        catch (PackageManager.NameNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return packageInfo;
     }
 
     public static int getWindowDpi(final Context context) {
