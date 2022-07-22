@@ -16,7 +16,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
+import com.vms.ykt.Util.DateTimeFormatUtil;
+import com.vms.ykt.Util.StringUtils;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.Util.zjyTool;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 
 import java.io.BufferedReader;
@@ -143,7 +146,9 @@ public class testActivity extends AppCompatActivity {
 
     public static void main(String[] args) throws Exception {
 
-     b.getTcpCode();
+        System.out.println(StringUtils.getMd5("123"));
+        System.out.println(zjyTool.getMd5("123"));
+  //   b.getTcpCode();
 
 
     }
@@ -175,6 +180,7 @@ class b extends a {
 
     public static void getTcpCode(){
         new Thread(()->{
+            System.out.println(DateTimeFormatUtil.getInternetTime());
             String tcpIpAddress = "101.37.228.98";
             int tcpPort = 7788;
             try {

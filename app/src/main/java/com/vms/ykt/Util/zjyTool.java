@@ -69,9 +69,6 @@ public class zjyTool {
     }
 
     public static String getMd5(String string) {
-        if (TextUtils.isEmpty((CharSequence)string)) {
-            return "";
-        }
         try {
             final byte[] digest = MessageDigest.getInstance("MD5").digest(string.getBytes());
             string = "";

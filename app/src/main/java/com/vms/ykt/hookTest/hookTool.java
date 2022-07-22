@@ -106,12 +106,13 @@ public class hookTool {
         }
         try {
             log("findClass", "ok");
+
             return XposedHelpers.findClass(str, mOtherClassLoader);
         } catch (Exception | XposedHelpers.ClassNotFoundError unused) {
 
         }
         for (Class<?> vClass:mClassList){
-            if (str.contains(vClass.getSimpleName()))return vClass;
+            if (str.contains(vClass.getName()))return vClass;
         }
 
         return null;
@@ -288,7 +289,7 @@ public class hookTool {
     }
 
 
-    private void PrintStack(String packageName) {
+    public void PrintStack(String packageName) {
         Object object = null;
         StringBuffer varStringBuffer = new StringBuffer();
         StringBuffer varStringBuffer1 = new StringBuffer();
@@ -541,7 +542,7 @@ public class hookTool {
      * @param flag 判断标识,针对不同Hook代码分别进行判断
      * @return 是否已经注入Hook代码
      */
-    private boolean isInjecter(String flag) {
+    public boolean isInjecter(String flag) {
         try {
             if (TextUtils.isEmpty(flag)) return false;
             Field methodCacheField = XposedHelpers.class.getDeclaredField("methodCache");
@@ -561,7 +562,7 @@ public class hookTool {
     /**
      * 手动申请SD卡权限
      */
-    private void initPermission() {
+    public void initPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (mOtherContext.checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE")
                     != PackageManager.PERMISSION_GRANTED) {
@@ -586,7 +587,7 @@ public class hookTool {
      *
      * @return 进程号
      */
-    private String getCurProcessName(Context context) {
+    public String getCurProcessName(Context context) {
 
         int pid = android.os.Process.myPid();
 
@@ -606,7 +607,7 @@ public class hookTool {
         try {
             Class<?> cls = Class.forName("android.app.ActivityThread");
             log("getCurrentApplication", cls.getCanonicalName());
-            return (Application) cls.getMethod("getApplication", new Class[0]).invoke(cls.getMethod("currentActivityThread", new Class[0]).invoke(null, null), null);
+            return (Application) cls.getMethod("getApplication", new Class[0]).invoke(cls.getMethod("currentActivityThread").invoke(null, null), null);
         } catch (Exception e) {
             printStack("getCurrentApplication", e.getStackTrace());
             return null;
@@ -618,13 +619,14 @@ public class hookTool {
     }
 
     public static void log(String tag, Object resp) {
-        XposedBridge.log(tag + ":--->" + resp + "\n");
-        Log.d(tag, ":--->" + resp + "\n");
+        String str2 = TAG+"\n["+ProcName +"]\n [ "+ resp+" ]\n";
+        XposedBridge.log(str2);
+        Log.d(tag, str2);
     }
 
     public static void log(Object str) {
-        String str2 = "||"+ProcName +" [ "+ str+" ] ||";
-        Log.i(TAG, str2);
+        String str2 = TAG+"\n["+ProcName +"]\n [ "+ str+" ]\n";
+        Log.i("", str2);
         XposedBridge.log(str2);
 
     }
