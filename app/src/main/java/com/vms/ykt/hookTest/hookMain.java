@@ -10,6 +10,8 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.vms.ykt.Util.StringUtils;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -32,43 +34,40 @@ public class hookMain extends hookTool implements IXposedHookLoadPackage, IXpose
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
-        hookTool.log("========================initZygote===========================s");
+        logtag("========================initZygote===========================");
         hookTool.log(startupParam.modulePath);
-        hookTool.log("========================initZygote===========================e");
+        logtag("========================initZygote===========================");
     }
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+
+        logtag("========================handleLoadPackage===========================");
         if (lpparam.packageName.equals(pkg)) {
             hookTool.ProcName = lpparam.processName;
             hookTool.mOtherClassLoader = lpparam.classLoader;
             addClassLoader(mOtherClassLoader);
 
-            hookTool.log("========================handleLoadPackage===========================\n");
+
 
             if (lpparam.isFirstApplication) {
                 hookTool.log("yes");
             }
 
-            Context vContext=hookTool.getCurrentApplication();
-
-            hookTool.log(hookTool.ProcName);
-            hookTool.log(hookTool.mOtherClassLoader);
-            hookTool.log(vContext);
-            hookTool.log(vContext.getClassLoader());
-            hookTool.log(getCurProcessName(vContext));
-
             hookTool.log(hookTool.mOtherClassLoader.getClass().getName());
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                hookTool.log(hookTool.mOtherClassLoader.getClass().getTypeName());
-            }
             hookTool.log(hookTool.mOtherClassLoader.getClass().getSuperclass().getName());
 
+            Context vContext = hookTool.getCurrentApplication();
+            if (vContext != null) {
+                hookTool.log(vContext);
+                hookTool.log(vContext.getClassLoader());
+                hookTool.log(getCurProcessName(vContext));
+            }
             hookTest(lpparam);
-            hookTool.log("======================handleLoadPackage=============================\n");
-        }
 
+
+        }
+        logtag("======================handleLoadPackage=============================");
     }
 
 
@@ -76,9 +75,11 @@ public class hookMain extends hookTool implements IXposedHookLoadPackage, IXpose
         XposedHelpers.findAndHookMethod("com.stub.StubApp", loadPackageParam.classLoader, "attachBaseContext", Context.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                hookTool.mOtherContext=(Context)param.args[0];
-                hookTool.mOtherClassLoader=hookTool.mOtherContext.getClassLoader();
+                hookTool.mOtherContext = (Context) param.args[0];
+                hookTool.mOtherClassLoader = hookTool.mOtherContext.getClassLoader();
                 hookTool.addClassLoader(hookTool.mOtherClassLoader);
+                hookTool.log("com.stub.StubApp",mOtherClassLoader);
+                hookTool.log("com.stub.StubApp",mOtherClassLoader);
                 super.beforeHookedMethod(param);
 
             }
@@ -86,37 +87,54 @@ public class hookMain extends hookTool implements IXposedHookLoadPackage, IXpose
         XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                Context vContext=(Context)param.args[0];
-                ClassLoader vClassLoader=vContext.getClassLoader();
+                Context vContext = (Context) param.args[0];
+                ClassLoader vClassLoader = vContext.getClassLoader();
                 addClassLoader(vClassLoader);
-                hookTool.log(vContext);
-                hookTool.log(vClassLoader);
+                hookTool.log("Application.class",vContext);
+                hookTool.log("Application.class",vClassLoader);
                 super.beforeHookedMethod(param);
             }
         });
         XposedHelpers.findAndHookMethod(ContextWrapper.class, "attachBaseContext", Context.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                Context vContext=(Context)param.args[0];
-                ClassLoader vClassLoader=vContext.getClassLoader();
+                Context vContext = (Context) param.args[0];
+                ClassLoader vClassLoader = vContext.getClassLoader();
                 addClassLoader(vClassLoader);
-                hookTool.log(vContext);
-                hookTool.log(vClassLoader);
+                hookTool.log("ContextWrapper.class",vContext);
+                hookTool.log("ContextWrapper.class",vClassLoader);
+
                 super.beforeHookedMethod(param);
             }
         });
-        Class<?> clas = findClass("com.zjy.libraryframework.utils");
-        if(clas!=null){
-            log(clas.getClasses());
-            XposedHelpers.findAndHookMethod(clas, "getSecretMd5", String.class,new XC_MethodHook() {
+
+        hookGetSecretMd5(mOtherClassLoader);
+    }
+    public static void hookGetSecretMd5(ClassLoader classLoader){
+        String cls="com.zjy.libraryframework.utils.";
+
+        final Class<?> clas = findClass(cls+"SecretUtil");
+
+        if (clas != null) {
+            log("getSecretMd5",clas.getClassLoader());
+            XposedHelpers.findAndHookMethod(clas, "getSecretMd5", String.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    log(param.args[0].toString());
-                    PrintStack("");
+                    hookTool.log(clas.getName()+param.method.getName(),param.args[0].toString());
+                    super.beforeHookedMethod(param);
+                }
+            });
+        }
+        final Class<?> clas2 = findClass(cls+"StringUtils");
+        if (clas2 != null) {
+            log("getMd5",clas.getClassLoader());
+            XposedHelpers.findAndHookMethod(clas2, "getMd5", String.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    hookTool.log(clas.getName()+param.method.getName(),param.args[0].toString());
                     super.beforeHookedMethod(param);
                 }
             });
         }
     }
-
 }

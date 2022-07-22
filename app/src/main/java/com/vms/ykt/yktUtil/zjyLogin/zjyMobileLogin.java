@@ -3,10 +3,13 @@ package com.vms.ykt.yktUtil.zjyLogin;
 
 import android.util.Log;
 
+import com.vms.ykt.Util.SystemUtil;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.Util.httpRespnose;
 import com.vms.ykt.Util.httpTool;
+import com.vms.ykt.yktUtil.zjyTool;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -24,6 +27,7 @@ public class zjyMobileLogin {
     public static String[] login(String user, String pass) {
 
         String[] resp = null;
+        appv="2.8.43";
         StringBuilder postParam = new StringBuilder();
          postParam.append("clientId=2829e8a1bcd44efd9d2e3cca8b606aea&");
        // postParam.append("clientId=null&");
@@ -32,7 +36,7 @@ public class zjyMobileLogin {
         postParam.append("userName=" + user.trim() + "&");
         postParam.append("appVersion=" + appv + "&");
         postParam.append("equipmentAppVersion=" + appv + "&");
-        postParam.append("equipmentModel=" + Tool.getDEVICEModle() + "&");
+        postParam.append("equipmentModel=" + SystemUtil.getSystemModel() + "&");
         postParam.append("equipmentApiVersion=9");
         String postParams = postParam.toString();
         Log.d(TAG, "login: " + postParams);
@@ -45,12 +49,10 @@ public class zjyMobileLogin {
     public static String[] loginPost(String requestUrl, String body) {
         String resp = "";
         String ck = "";
-        String emit = "";
-        String device = "";
         Map<String, Object> header = new HashMap<>();
-        emit = Tool.getTime();
-        device = Tool.getDevice(appv, emit);
-        Log.d(TAG, "login: " + emit);
+        String[] vEmitDevice =zjyTool.getEmitDevice();
+        String emit = vEmitDevice[0];
+        String device = vEmitDevice[1];
         header.put("emit", emit);
         header.put("device", device);
         header.put("Connection", "Keep-Alive");
@@ -58,9 +60,9 @@ public class zjyMobileLogin {
         header.put("Host", "zjyapp.icve.com.cn");
         header.put("User-Agent", "okhttp/4.5.0");
         httpRespnose ret = null;
-        ret = httpTool.postT(requestUrl, header, body);
+        ret = httpTool.postJ(requestUrl, header, body);
         resp = ret.getmResp();
-        ck = ret.getHeaders().get("Set-Cookie");
+        ck = Arrays.toString(ret.getmHearderFileds().get("Set-Cookie").toArray());
         Log.d(TAG, "loginPost: " + ck);
         String reg = "auth=(.+?)(?=;)";
         Matcher m = Pattern.compile(reg).matcher(ck); //进行匹配

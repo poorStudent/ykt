@@ -18,15 +18,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.vms.ykt.Util.DateTimeFormatUtil;
 import com.vms.ykt.Util.StringUtils;
-import com.vms.ykt.Util.Tool;
-import com.vms.ykt.Util.zjyTool;
+import com.vms.ykt.yktUtil.zjyTool;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -40,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ThreadFactory;
 
 
 public class testActivity extends AppCompatActivity {

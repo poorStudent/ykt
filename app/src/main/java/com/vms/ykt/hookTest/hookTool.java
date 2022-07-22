@@ -40,24 +40,24 @@ public class hookTool {
     public static Context mContext;
     public static ClassLoader mClassLoader;
     public static Field stackTrace;
-    public static String ProcName="";
-    private static String TAG="hookmain";
+    public static String ProcName = "";
+    private static String TAG = "hookmain";
 
     static {
         try {
             Field declaredField = Throwable.class.getDeclaredField("stackTrace");
             stackTrace = declaredField;
             declaredField.setAccessible(true);
-           /** Method setAccessible = Class.class.getDeclaredMethod("setAccessible", Boolean.class);
-            setAccessible.setAccessible(true);
-            Method DeclaredMethod = Class.class.getMethod("getDeclaredMethod", String.class);
-            DeclaredMethod.setAccessible(true);
-            Method DeclaredMethods = Class.class.getMethod("getDeclaredMethods");
-            DeclaredMethods.setAccessible(true);
-            Method DeclaredField = Class.class.getDeclaredMethod("getDeclaredField", String.class);
-            DeclaredField.setAccessible(true);
-            Method DeclaredFields = Class.class.getDeclaredMethod("getDeclaredFields");
-            DeclaredFields.setAccessible(true);**/
+            /** Method setAccessible = Class.class.getDeclaredMethod("setAccessible", Boolean.class);
+             setAccessible.setAccessible(true);
+             Method DeclaredMethod = Class.class.getMethod("getDeclaredMethod", String.class);
+             DeclaredMethod.setAccessible(true);
+             Method DeclaredMethods = Class.class.getMethod("getDeclaredMethods");
+             DeclaredMethods.setAccessible(true);
+             Method DeclaredField = Class.class.getDeclaredMethod("getDeclaredField", String.class);
+             DeclaredField.setAccessible(true);
+             Method DeclaredFields = Class.class.getDeclaredMethod("getDeclaredFields");
+             DeclaredFields.setAccessible(true);**/
         } catch (Exception e) {
             log(" ", " ");
         }
@@ -69,50 +69,58 @@ public class hookTool {
             log("addClassLoader", null);
             return false;
         }
-        if (mClassLoaderList.contains(classLoader)) {
-            log("addClassLoader", "已添加");
+        for (ClassLoader vClassLoader:mClassLoaderList) {
+        if (vClassLoader.hashCode()==classLoader.hashCode()) {
+            log("addClassLoader", "已添加:"+classLoader);
             return false;
         }
+        }
         mClassLoaderList.add(classLoader);
-        log("addClassLoader", "成功");
+        log("addClassLoader", "添加成功："+classLoader);
         return true;
 
     }
 
     public static boolean addClass(Class<?> clazz) {
-        if (checkClass(clazz))return false;
+        if (checkClass(clazz)) return false;
         if (clazz == null) {
             log("addClass", null);
             return false;
         }
         if (mClassLoaderList.contains(clazz)) {
-            log("addClass", "已添加");
+            log("addClass", "已添加:"+clazz);
             return false;
         }
         mClassList.add(clazz);
-        log("addClass", "成功");
+        log("addClass", "添加成功:"+clazz);
         return true;
 
     }
 
     public static Class<?> findClass(String str) {
+
+        Class<?> vClass;
         for (ClassLoader classLoader2 : mClassLoaderList) {
             try {
-                log("findClass", "ok");
-                return XposedHelpers.findClass(str, classLoader2);
-            } catch (Exception | XposedHelpers.ClassNotFoundError unused) {
+                vClass = XposedHelpers.findClass(str, classLoader2);
+                log("findClass", "找到Class:" + str);
+                return vClass;
+            } catch (Exception e) {
 
             }
         }
         try {
-            log("findClass", "ok");
-
-            return XposedHelpers.findClass(str, mOtherClassLoader);
-        } catch (Exception | XposedHelpers.ClassNotFoundError unused) {
+            vClass = XposedHelpers.findClass(str, mOtherClassLoader);
+            log("findClass", "找到Class:" + str);
+            return vClass;
+        } catch (Exception e) {
 
         }
-        for (Class<?> vClass:mClassList){
-            if (str.contains(vClass.getName()))return vClass;
+        for (Class<?> vClass1 : mClassList) {
+            if (str.contains(vClass1.getName())) {
+                vClass = vClass1;
+                return vClass;
+            }
         }
 
         return null;
@@ -120,9 +128,10 @@ public class hookTool {
 
     public static Class<?> findClass(String str, ClassLoader classLoader) {
         try {
-            log("findClass", "ok");
-            return XposedHelpers.findClass(str, classLoader);
-        } catch (Exception | XposedHelpers.ClassNotFoundError unused) {
+            Class<?> vClass = XposedHelpers.findClass(str, classLoader);
+            log("findClass", "找到Class:" + str);
+            return vClass;
+        } catch (Exception e) {
 
         }
 
@@ -130,14 +139,12 @@ public class hookTool {
     }
 
 
-
-
     private void hookToast(final XC_LoadPackage.LoadPackageParam lpparam) {
         XposedHelpers.findAndHookMethod(Toast.class, "show", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
-                Toast vToast=(Toast)param.thisObject;
+                Toast vToast = (Toast) param.thisObject;
                 PrintStack(lpparam.packageName);
             }
         });
@@ -205,7 +212,7 @@ public class hookTool {
                         mOtherContext = (Context) param.args[0];
                         mOtherClassLoader = mOtherContext.getClassLoader();
                         addClassLoader(mOtherClassLoader);
-                        log("","拿到Classloader ");
+                        log("", "拿到Classloader ");
                     }
 
                     @Override
@@ -213,7 +220,7 @@ public class hookTool {
                         super.afterHookedMethod(param);
                     }
                 });
-            //        XposedHelpers.findAndHookMethod(Application.class,
+        //        XposedHelpers.findAndHookMethod(Application.class,
 //                "attachBaseContext",
 //                Context.class,
 //                new XC_MethodHook() {
@@ -289,11 +296,11 @@ public class hookTool {
     }
 
 
-    public void PrintStack(String packageName) {
+    public static void PrintStack(String packageName) {
         Object object = null;
         StringBuffer varStringBuffer = new StringBuffer();
         StringBuffer varStringBuffer1 = new StringBuffer();
-        printStack(packageName,  new Exception().getStackTrace());
+        printStack(packageName, new Exception().getStackTrace());
     }
 
     public static String printStack(String str, StackTraceElement[] stackTraceElementArr) {
@@ -317,7 +324,7 @@ public class hookTool {
             sb.append("[");
             sb.append(str);
             sb.append("] ************************[E N D]************************\n");
-            log("", sb.toString());
+            logtag(sb.toString());
             return sb.toString();
         }
         return "";
@@ -346,7 +353,6 @@ public class hookTool {
         }
         return stackTraceElementArr;
     }
-
 
 
     public static boolean dbgSharedPreferences() {
@@ -509,11 +515,9 @@ public class hookTool {
 
     }
 
-
-
-    public static boolean checkClass(Class<?> cls){
-        String string=cls.getCanonicalName();
-        if (string.indexOf("android")!=1){
+    public static boolean checkClass(Class<?> cls) {
+        String string = cls.getCanonicalName();
+        if (string.indexOf("android") != 1) {
             return true;
         }
         return false;
@@ -524,11 +528,11 @@ public class hookTool {
         return !Modifier.isAbstract(method.getModifiers()) && !Modifier.isNative(method.getModifiers());
     }
 
-    public static boolean ifHook(){
+    public static boolean ifHook() {
         return false;
     }
 
-    public static void checkHook(ClassLoader classLoader){
+    public static void checkHook(ClassLoader classLoader) {
         XposedHelpers.findAndHookMethod("com.vms.ykt.hookTest.hookTool", classLoader, "", new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
@@ -538,7 +542,8 @@ public class hookTool {
     }
 
     /**
-     *防止重复执行Hook代码
+     * 防止重复执行Hook代码
+     *
      * @param flag 判断标识,针对不同Hook代码分别进行判断
      * @return 是否已经注入Hook代码
      */
@@ -548,8 +553,8 @@ public class hookTool {
             Field methodCacheField = XposedHelpers.class.getDeclaredField("methodCache");
             methodCacheField.setAccessible(true);
             HashMap<String, Method> methodCache = (HashMap<String, Method>) methodCacheField.get(null);
-            Method method=XposedHelpers.findMethodBestMatch(Application.class,"onCreate");
-            String key=String.format("%s#%s",flag,method.getName());
+            Method method = XposedHelpers.findMethodBestMatch(Application.class, "onCreate");
+            String key = String.format("%s#%s", flag, method.getName());
             if (methodCache.containsKey(key)) return true;
             methodCache.put(key, method);
             return false;
@@ -595,7 +600,6 @@ public class hookTool {
 
         for (ActivityManager.RunningAppProcessInfo appProcess : Objects.requireNonNull(activityManager)
                 .getRunningAppProcesses()) {
-            log(appProcess.pid);
             if (appProcess.pid == pid) {
                 return appProcess.processName;
             }
@@ -606,8 +610,12 @@ public class hookTool {
     public static Context getCurrentApplication() {
         try {
             Class<?> cls = Class.forName("android.app.ActivityThread");
-            log("getCurrentApplication", cls.getCanonicalName());
-            return (Application) cls.getMethod("getApplication", new Class[0]).invoke(cls.getMethod("currentActivityThread").invoke(null, null), null);
+            Method currentActivityThread = cls.getDeclaredMethod("currentActivityThread", null);
+            currentActivityThread.setAccessible(true);
+            Object vO = currentActivityThread.invoke(null);
+            Method getApplication = cls.getDeclaredMethod("getApplication", null);
+            getApplication.setAccessible(true);
+            return (Application) getApplication.invoke(vO);
         } catch (Exception e) {
             printStack("getCurrentApplication", e.getStackTrace());
             return null;
@@ -615,19 +623,24 @@ public class hookTool {
     }
 
     public static void printError(String str, Exception exc) {
-        log(TAG+ProcName + "[" + str + "] ************************[START]************************\n"+exc+ProcName + "[" + str + "] ************************[E N D]************************\n");
+        logtag(TAG + ProcName + "[" + str + "] ************************[START]************************\n" + exc + ProcName + "[" + str + "] ************************[E N D]************************\n");
     }
 
     public static void log(String tag, Object resp) {
-        String str2 = TAG+"\n["+ProcName +"]\n [ "+ resp+" ]\n";
+        String str2 = "hook：" + tag + " 被hook的进程名:[" + ProcName + "] 输出内容：[ " + resp + " ]";
         XposedBridge.log(str2);
         Log.d(tag, str2);
     }
 
     public static void log(Object str) {
-        String str2 = TAG+"\n["+ProcName +"]\n [ "+ str+" ]\n";
-        Log.i("", str2);
+        String str2 = "模块名：" + TAG + " 被hook的进程名:[" + ProcName + "] 输出内容： [ " + str + " ]";
+        Log.d("", str2);
         XposedBridge.log(str2);
 
+    }
+
+    public static void logtag(String tag) {
+        Log.d("", tag);
+        XposedBridge.log(tag);
     }
 }

@@ -1,6 +1,10 @@
-package com.vms.ykt.Util;
+package com.vms.ykt.yktUtil;
 
 import android.text.TextUtils;
+
+import com.vms.ykt.Util.StringUtils;
+import com.vms.ykt.Util.SystemUtil;
+import com.vms.ykt.Util.Tool;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,7 +14,7 @@ import java.util.Date;
 
 public class zjyTool {
 
-    public String[] getEmitDevice()  {
+    public static String[] getEmitDevice()  {
 
         long internetTime = Long.parseLong(Tool.getTime());
         //DateTimeFormatUtil.getInternetTime();//时间戳前10位+000
@@ -35,8 +39,7 @@ public class zjyTool {
         String verion = getVersion();//软件版本 写死了2.8.43
         StringBuilder stringBuilder = new StringBuilder();
         StringBuilder stringBuilder2 = new StringBuilder();
-        String stringBuilder3 = StringUtils.getMd5(systemModel) +
-                systemVersion;
+        String stringBuilder3 = StringUtils.getMd5(systemModel) + systemVersion;
         stringBuilder2.append(StringUtils.getMd5(stringBuilder3));
         stringBuilder2.append(verion);
         stringBuilder.append(StringUtils.getMd5(stringBuilder2.toString()));
