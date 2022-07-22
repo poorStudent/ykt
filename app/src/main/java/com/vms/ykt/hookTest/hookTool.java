@@ -40,7 +40,7 @@ public class hookTool {
     public static Context mContext;
     public static ClassLoader mClassLoader;
     public static Field stackTrace;
-    public static String ProcName;
+    public static String ProcName="";
     private static String TAG="hookmain";
 
     static {
@@ -48,16 +48,16 @@ public class hookTool {
             Field declaredField = Throwable.class.getDeclaredField("stackTrace");
             stackTrace = declaredField;
             declaredField.setAccessible(true);
-            Method setAccessible = Class.class.getDeclaredMethod("setAccessible", Boolean.class);
+           /** Method setAccessible = Class.class.getDeclaredMethod("setAccessible", Boolean.class);
             setAccessible.setAccessible(true);
-            Method DeclaredMethod = Class.class.getDeclaredMethod("getDeclaredMethod", String.class);
+            Method DeclaredMethod = Class.class.getMethod("getDeclaredMethod", String.class);
             DeclaredMethod.setAccessible(true);
-            Method DeclaredMethods = Class.class.getDeclaredMethod("getDeclaredMethods", String.class);
+            Method DeclaredMethods = Class.class.getMethod("getDeclaredMethods");
             DeclaredMethods.setAccessible(true);
             Method DeclaredField = Class.class.getDeclaredMethod("getDeclaredField", String.class);
             DeclaredField.setAccessible(true);
-            Method DeclaredFields = Class.class.getDeclaredMethod("getDeclaredFields", String.class);
-            DeclaredFields.setAccessible(true);
+            Method DeclaredFields = Class.class.getDeclaredMethod("getDeclaredFields");
+            DeclaredFields.setAccessible(true);**/
         } catch (Exception e) {
             log(" ", " ");
         }
@@ -129,16 +129,7 @@ public class hookTool {
     }
 
 
-    public static Context getCurrentApplication() {
-        try {
-            Class<?> cls = Class.forName("android.app.ActivityThread");
-            log("getCurrentApplication", cls.getCanonicalName());
-            return (Application) cls.getMethod("getApplication", new Class[0]).invoke(cls.getMethod("currentActivityThread", new Class[0]).invoke(null, null), null);
-        } catch (Exception e) {
-            printStack("getCurrentApplication", e.getStackTrace());
-            return null;
-        }
-    }
+
 
     private void hookToast(final XC_LoadPackage.LoadPackageParam lpparam) {
         XposedHelpers.findAndHookMethod(Toast.class, "show", new XC_MethodHook() {
@@ -173,12 +164,14 @@ public class hookTool {
 
         try {
 
+
             XposedHelpers.findAndHookMethod(Dialog.class, "show", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     super.afterHookedMethod(param);
                     Dialog varDialog = (Dialog) param.thisObject;
                     varDialog.dismiss();
+                    PrintStack(lpparam.packageName);
 
                 }
             });
@@ -189,7 +182,7 @@ public class hookTool {
 
                     super.afterHookedMethod(param);
                     Dialog varDialog = (Dialog) param.thisObject;
-                    PrintStack(lpparam.packageName);
+
                     varDialog.dismiss();
                 }
             });
@@ -609,6 +602,16 @@ public class hookTool {
         return null;
     }
 
+    public static Context getCurrentApplication() {
+        try {
+            Class<?> cls = Class.forName("android.app.ActivityThread");
+            log("getCurrentApplication", cls.getCanonicalName());
+            return (Application) cls.getMethod("getApplication", new Class[0]).invoke(cls.getMethod("currentActivityThread", new Class[0]).invoke(null, null), null);
+        } catch (Exception e) {
+            printStack("getCurrentApplication", e.getStackTrace());
+            return null;
+        }
+    }
 
     public static void printError(String str, Exception exc) {
         log(TAG+ProcName + "[" + str + "] ************************[START]************************\n"+exc+ProcName + "[" + str + "] ************************[E N D]************************\n");

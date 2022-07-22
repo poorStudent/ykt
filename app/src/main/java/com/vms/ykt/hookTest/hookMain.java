@@ -23,33 +23,38 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class hookMain implements IXposedHookLoadPackage, IXposedHookZygoteInit {
-    private static String TAG="hookmain";
+    private static String TAG = "hookmain";
 
-    final String pkg="me.weishu.exp";
+    final String pkg = "com.zjy.ykt";
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
-        XposedBridge.log("========================initZygote===========================s");
-
-        XposedBridge.log(startupParam.modulePath);
-        Method setrAcces=Method.class.getMethod("setAccessible",boolean.class);
-        Method getDeclaMth=Class.class.getMethod("getDeclaredMethod", String.class, Class[].class);
-       // dbg("de.robv.android.xposed.IXposedHookLoadPackage$Wrapper", XposedBridge.class.getClassLoader());
-        XposedBridge.log("========================initZygote===========================e");
+        hookTool.log("========================initZygote===========================s");
+        hookTool.log(startupParam.modulePath);
+        hookTool.log("========================initZygote===========================e");
     }
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         if (lpparam.packageName.equals(pkg)) {
-            hookTool.ProcName=lpparam.processName;
-            hookTool.mOtherClassLoader=lpparam.classLoader;
+            hookTool.ProcName = lpparam.processName;
+            hookTool.mOtherClassLoader = lpparam.classLoader;
             if (lpparam.isFirstApplication) {
-                XposedBridge.log("yes");
+                hookTool.log("yes");
             }
 
             hookTool.log("========================handleLoadPackage===========================s");
             hookTool.log(lpparam.appInfo.processName);
-            hookTool.log(lpparam.processName);
+            hookTool.log(hookTool.ProcName);
+            hookTool.log(hookTool.mClassLoader.getClass());
+            hookTool.log(hookTool.mClassLoader.getClass().getCanonicalName());
+            hookTool.log(hookTool.mClassLoader.getClass().getName());
+            hookTool.log(hookTool.mClassLoader.getClass().getSimpleName());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                hookTool.log(hookTool.mClassLoader.getClass().getTypeName());
+            }
+            hookTool.log(hookTool.mClassLoader.getClass().getSuperclass());
+            hookTool.log(hookTool.mClassLoader.getParent().getClass());
             hookTool.log("======================handleLoadPackage=============================e");
         }
 
