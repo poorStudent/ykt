@@ -310,7 +310,7 @@ public class cqoocMain implements Serializable {
 
         resp = mCqApi.getUsreInfo2(xsid);
 
-        if (resp != null && !resp.isEmpty()) {
+        if (resp != null && resp.contains("id")) {
 
             String id = JSONObject.parseObject(resp).getString("id");
             varUserInfo.setId(id);
