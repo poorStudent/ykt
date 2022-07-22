@@ -6,7 +6,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.SavedStateHandle;
 
-import com.vms.ykt.BaseViewModel;
+import com.vms.ykt.viewModel.BaseViewModel;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 
 import org.jetbrains.annotations.NotNull;

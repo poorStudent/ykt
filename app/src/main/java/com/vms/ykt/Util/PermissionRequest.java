@@ -51,7 +51,7 @@ public class PermissionRequest {
     };
 
     public void checkPermission(Context mContext) {
-
+        mPackName=mContext.getPackageName();
         if (unPermissionList==null)unPermissionList=new ArrayList<>();
 
         unPermissionList.clear();//清空申请的没有通过的权限
@@ -76,6 +76,7 @@ public class PermissionRequest {
     }
 
     public void showPermissionDialog(Context mContext,String[] permissions) {
+
         Log.i(TAG,"mPackName: " + mPackName);
         Log.d(TAG, "showPermissionDialog: "+ Arrays.toString(permissions));
         if (mPermissionDialog == null) {
