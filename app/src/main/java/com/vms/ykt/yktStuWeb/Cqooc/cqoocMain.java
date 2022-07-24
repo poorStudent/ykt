@@ -50,7 +50,7 @@ public class cqoocMain implements Serializable {
 
         resp = mCqApi.getCourseInfo1(ownerId);
         if (resp != null && resp.contains("data")) {
-            List<cqoocCourseInfo> varInfoList = parseCourse(resp,1);
+            List<cqoocCourseInfo> varInfoList = parseCourse(resp, 1);
             vVarCqoocCourseInfoList.addAll(varInfoList);
         }
 
@@ -61,7 +61,7 @@ public class cqoocMain implements Serializable {
 
         resp = mCqApi.getCourseInfo3(ownerId);
         if (resp != null && resp.contains("data")) {
-            List<cqoocCourseInfo> varInfoList = parseCourse(resp,3);
+            List<cqoocCourseInfo> varInfoList = parseCourse(resp, 3);
             vVarCqoocCourseInfoList.addAll(varInfoList);
         }
 
@@ -72,7 +72,7 @@ public class cqoocMain implements Serializable {
 
         resp = mCqApi.getCourseInfo4(ownerId);
         if (resp != null && resp.contains("data")) {
-            List<cqoocCourseInfo> varInfoList = parseCourse(resp,4);
+            List<cqoocCourseInfo> varInfoList = parseCourse(resp, 4);
             vVarCqoocCourseInfoList.addAll(varInfoList);
         }
 
@@ -230,73 +230,85 @@ public class cqoocMain implements Serializable {
         return vVarCqoocCourseInfoList;
     }
 
-    public String getAddScore(String courseId, String resID,String score){
-    String resp="";
-    mCqApi.getAddScore(courseId, resID, score);
-    return resp;
+    public String getAddScore(String courseId, String resID, String score) {
+        String resp = "";
+        mCqApi.getAddScore(courseId, resID, score);
+        return resp;
     }
 
-    public List<examTask> getAllTasks(String courseId){
+    public List<examTask> getAllTasks(String courseId) {
         List<examTask> vExamTaskList;
-        vExamTaskList=getExamTask(courseId,1);
+        vExamTaskList = getExamTask(courseId, 1);
         return vExamTaskList;
     }
 
     public String getTasksInfo(String courseId, String taskId) {
         //作业详情
         String resp = "";
-        mCqApi.getTasksInfo(courseId,taskId);
+        mCqApi.getTasksInfo(courseId, taskId);
         return resp;
     }
 
     public String getOpenTasks(String courseId, String taskId) {
         //作业已做详情
         String resp = "";
-        mCqApi.getOpenTasks(courseId,taskId);
+        mCqApi.getOpenTasks(courseId, taskId);
+        return resp;
+    }
+
+    public String parseTaskInfo() {
+        String resp = "";
+
+        return resp;
+    }
+
+    public String parseTaskAnsw() {
+        String resp = "";
+
         return resp;
     }
 
 
-    public List<examTask> getAllExam(String courseId){
+    public List<examTask> getAllExam(String courseId) {
         List<examTask> vExamTaskList;
-        vExamTaskList=getExamTask(courseId,1);
+        vExamTaskList = getExamTask(courseId, 1);
         return vExamTaskList;
     }
 
-    private List<examTask> getExamTask(String courseId,int type){
-        List<examTask> vExamTaskList=new ArrayList<>();
-        int start=1;
+    private List<examTask> getExamTask(String courseId, int type) {
+        List<examTask> vExamTaskList = new ArrayList<>();
+        int start = 1;
         int limt;
-        if (type==1){
-            limt=20;
-        }else {
-            limt=99;
+        if (type == 1) {
+            limt = 20;
+        } else {
+            limt = 99;
         }
 
-        while (true){
-            String resp="";
-            if (type==1){
-                resp=mCqApi.getTasks(courseId,limt,start);
-            }else {
-                resp=mCqApi.getExams(courseId,limt,start);
+        while (true) {
+            String resp = "";
+            if (type == 1) {
+                resp = mCqApi.getTasks(courseId, limt, start);
+            } else {
+                resp = mCqApi.getExams(courseId, limt, start);
                 break;
             }
-            if (resp==null||resp.contains("data"))break;
-            List<examTask> vExamTasks =parseExamTask(resp,type);
+            if (resp == null || resp.contains("data")) break;
+            List<examTask> vExamTasks = parseExamTask(resp, type);
             vExamTaskList.addAll(vExamTasks);
-            start=start+limt;
+            start = start + limt;
 
         }
         return vExamTaskList;
     }
 
-    private List<examTask> parseExamTask(String resp,int type){
-        List<examTask> vExamTaskList=new ArrayList<>();
-        if (resp==null||resp.contains("data"))return vExamTaskList;
-        JSONArray vJSONArray =Tool.parseJsonA(resp, "data");
+    private List<examTask> parseExamTask(String resp, int type) {
+        List<examTask> vExamTaskList = new ArrayList<>();
+        if (resp == null || resp.contains("data")) return vExamTaskList;
+        JSONArray vJSONArray = Tool.parseJsonA(resp, "data");
         for (int i = 0; i < vJSONArray.size(); i++) {
             String js = vJSONArray.getString(i);
-            examTask vExamTask = JSONObject.parseObject(js,examTask.class);
+            examTask vExamTask = JSONObject.parseObject(js, examTask.class);
             vExamTask.setType(type);
             vExamTaskList.add(vExamTask);
         }
