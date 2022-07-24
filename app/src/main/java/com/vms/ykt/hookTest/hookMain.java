@@ -110,6 +110,7 @@ public class hookMain extends hookTool implements IXposedHookLoadPackage, IXpose
 
         hookGetSecretMd5(mOtherClassLoader);
     }
+    
     public static void hookGetSecretMd5(ClassLoader classLoader){
         String cls="com.zjy.libraryframework.utils.";
 
