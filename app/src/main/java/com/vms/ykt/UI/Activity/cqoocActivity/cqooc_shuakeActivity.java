@@ -183,6 +183,11 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
         cellResourceInfo varResourceInfo = varCellLessonsInfo.getCellResourceInfo();
         stringBuffer.append("\n--" + varCellLessonsInfo.getTitle() + " *" + varResourceInfo.getResMediaType() + " *" + varCellLessonsInfo.getForumId() + " *" + varCellLessonsInfo.getTestId());
         mHandler.sendEmptyMessage(100);
+
+        if (true){
+            //课件评分
+            String resp=mCqoocMain.getAddScore(mCourseIfno.getCourseId(), varCellLessonsInfo.getResId(), "5");
+        }
         if (cqooc_shuke_sk.isChecked()) {
             if (cqooc_shuke_tgys.isChecked()) {
                 if (varFinishaLessons.contains(varCellLessonsInfo.getId())) {

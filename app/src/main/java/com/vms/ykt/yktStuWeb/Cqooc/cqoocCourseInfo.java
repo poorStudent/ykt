@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 /**
  * {"meta":{"total":"12","start":"1","size":"12"},"data":
- * [{"id":"336682102","ownerId":"1556134","name":"魏海旭","courseId":"334570416",
+ * [
+ * {"id":"336682102","ownerId":"1556134","name":"魏海旭","courseId":"334570416",
  * "course":{"id":"334570416","title":"PLC控制技术（第五次开课）","coursePicUrl":"\/image?id=211246","
  * editStatus":"1","isQuality":null,"courseManager":"黄才彬","courseType":"2","openType":"1",
  * "school":"重庆水利电力职业技术学院","userType":"2","status":"1","isBuild":"1","startDate":1652889600000,

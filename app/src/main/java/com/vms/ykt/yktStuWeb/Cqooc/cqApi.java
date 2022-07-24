@@ -1,5 +1,7 @@
 package com.vms.ykt.yktStuWeb.Cqooc;
 
+import android.content.pm.InstrumentationInfo;
+
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.Serializable;
@@ -112,9 +114,8 @@ public class cqApi implements Serializable {
         return resp;
     }
 
-
     public String getFlishLessons(String courseId, String username, int limit, int start) {
-        //直接 获取所有课件
+        //直接 获取所有已完成课件
         String resp = "";
         String request = "http://www.cqooc.com/learn/mooc/structure?id=" + courseId;
         String body = "limit=" + limit + "&start=" + start + "&courseId=" + courseId + "&select=sectionId&username=" + username + "&ts=" + System.currentTimeMillis();
@@ -122,6 +123,16 @@ public class cqApi implements Serializable {
         return resp;
     }
 
+    private String addScore="http://www.cqooc.com/course/score/session/api/res/score/add";
+
+    public String getAddScore(String courseId, String resID,String score){
+        String resp="";
+        String Referer="http://www.cqooc.com/learn/mooc/structure?id="+courseId;
+        String body="{\"resId\":\""+resID+"\",\"score\":"+score+"," +
+                "\"url\":\""+Referer+"\"}";
+        resp = mCqoocHttp.post(addScore, body, Referer);
+        return resp;
+    }
 
     static String getRes = "http://www.cqooc.com/json/my/res";
 
@@ -338,16 +349,29 @@ public class cqApi implements Serializable {
 
     private static String taskAdd="http://www.cqooc.com/task/api/result/add";
     public String getTaskAdd(userInfo UserInfo, Object answers, cqoocCourseInfo varCourseInfo,examTask examTask){
-        //        item.taskId = X.qs.tid;
-        //        item.ownerId = user.id;
-        //        item.username = username;
-        //        item.classId = classId;
-        //        item.status = '2';
-        //        item.courseId = X.qs.id;
-        //        item.name = name;
-        //        item.attachment = aForm.attachment.value;
-        //        item.content = um.getContent() || "";
+        //attachment: ""
+        //classId: ""
+        //content: "<p><span style=\"color: rgb(102, 102, 102); font-family: 宋体; font-size: 14px; white-space: normal;\">移动互联网的发展对网络舆情带来哪些影响</span></p>"
+        //courseId: "334570518"
+        //name: "魏海旭"
+        //ownerId: 1556134
+        //status: "2"
+        //taskId: "59746"
+        //username: "137352034060125"
         String resp="";
+        String Referer="http://www.cqooc.com/learn/mooc/task/do?tid="+examTask.getId()+"&id="+varCourseInfo.getCourseId();
+        HashMap<Object,Object> bodys=new HashMap<>();
+        bodys.put("attachment","");
+        bodys.put("classId",varCourseInfo.getClassId());
+        bodys.put("courseId",varCourseInfo.getCourseId());
+        bodys.put("content",answers);
+        bodys.put("name",UserInfo.getName());
+        bodys.put("ownerId",UserInfo.getId());
+        bodys.put("status","2");
+        bodys.put("taskId",examTask.getId());
+        bodys.put("username",UserInfo.getUsername());
+        String body=JSONObject.toJSONString(bodys);
+        resp=mCqoocHttp.post(taskAdd, body , Referer;
         return resp;
     }
 

@@ -230,6 +230,11 @@ public class cqoocMain implements Serializable {
         return vVarCqoocCourseInfoList;
     }
 
+    public String getAddScore(String courseId, String resID,String score){
+    String resp="";
+    mCqApi.getAddScore(courseId, resID, score);
+    return resp;
+    }
 
     public List<examTask> getAllTasks(String courseId){
         List<examTask> vExamTaskList;
