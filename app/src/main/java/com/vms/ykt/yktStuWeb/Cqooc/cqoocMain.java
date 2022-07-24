@@ -230,10 +230,25 @@ public class cqoocMain implements Serializable {
         return vVarCqoocCourseInfoList;
     }
 
+
     public List<examTask> getAllTasks(String courseId){
         List<examTask> vExamTaskList;
         vExamTaskList=getExamTask(courseId,1);
         return vExamTaskList;
+    }
+
+    public String getTasksInfo(String courseId, String taskId) {
+        //作业详情
+        String resp = "";
+        mCqApi.getTasksInfo(courseId,taskId);
+        return resp;
+    }
+
+    public String getOpenTasks(String courseId, String taskId) {
+        //作业已做详情
+        String resp = "";
+        mCqApi.getOpenTasks(courseId,taskId);
+        return resp;
     }
 
     public List<examTask> getAllExam(String courseId){

@@ -284,9 +284,8 @@ public class cqApi implements Serializable {
         return resp;
     }
 
-
+    //考试相关
     static String exams = "http://www.cqooc.com/json/exams";
-
     public String getExams(String courseId, int limit,int start) {
         //考试
         String resp = "";
@@ -297,7 +296,6 @@ public class cqApi implements Serializable {
     }
 
     private static String exam="http://www.cqooc.com/json/exam";
-
     public String getExamsInfo(String courseId, String examId) {
         //考试
         String resp = "";
@@ -307,7 +305,7 @@ public class cqApi implements Serializable {
         return resp;
     }
 
-
+//作业相关
 
     static String tasks = "http://www.cqooc.com/json/tasks";
 
@@ -319,8 +317,6 @@ public class cqApi implements Serializable {
         resp = mCqoocHttp.get(tasks, request, body);
         return resp;
     }
-
-
     public String getTasksInfo(String courseId, String taskId) {
         //作业详情
         String resp = "";
@@ -329,10 +325,10 @@ public class cqApi implements Serializable {
         resp = mCqoocHttp.get(tasks, request, body);
         return resp;
     }
-    static String openTasks="http://www.cqooc.com/json/task/result/search";
 
+    static String openTasks="http://www.cqooc.com/json/task/result/search";
     public String getOpenTasks(String courseId, String taskId) {
-        //作业题目
+        //作业已做详情
         String resp = "";
         String request = "http://www.cqooc.com/learn/mooc/task/do?tid="+taskId+"&id="+courseId;
         String body = "taskId="+taskId+"&ts=" + System.currentTimeMillis();
