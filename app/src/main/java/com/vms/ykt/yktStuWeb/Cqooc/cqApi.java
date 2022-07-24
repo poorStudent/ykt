@@ -371,7 +371,7 @@ public class cqApi implements Serializable {
         bodys.put("taskId",examTask.getId());
         bodys.put("username",UserInfo.getUsername());
         String body=JSONObject.toJSONString(bodys);
-        resp=mCqoocHttp.post(taskAdd, body , Referer;
+        resp=mCqoocHttp.post(taskAdd, body , Referer);
         return resp;
     }
 
