@@ -256,6 +256,7 @@ public class cqoocMain implements Serializable {
         return resp;
     }
 
+
     public List<examTask> getAllExam(String courseId){
         List<examTask> vExamTaskList;
         vExamTaskList=getExamTask(courseId,1);
