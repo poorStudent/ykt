@@ -123,13 +123,13 @@ public class cqApi implements Serializable {
         return resp;
     }
 
-    private String addScore="http://www.cqooc.com/course/score/session/api/res/score/add";
+    private String addScore = "http://www.cqooc.com/course/score/session/api/res/score/add";
 
-    public String getAddScore(String courseId, String resID,String score){
-        String resp="";
-        String Referer="http://www.cqooc.com/learn/mooc/structure?id="+courseId;
-        String body="{\"resId\":\""+resID+"\",\"score\":"+score+"," +
-                "\"url\":\""+Referer+"\"}";
+    public String getAddScore(String courseId, String resID, String score) {
+        String resp = "";
+        String Referer = "http://www.cqooc.com/learn/mooc/structure?id=" + courseId;
+        String body = "{\"resId\":\"" + resID + "\",\"score\":" + score + "," +
+                "\"url\":\"" + Referer + "\"}";
         resp = mCqoocHttp.post(addScore, body, Referer);
         return resp;
     }
@@ -297,7 +297,8 @@ public class cqApi implements Serializable {
 
     //考试相关
     static String exams = "http://www.cqooc.com/json/exams";
-    public String getExams(String courseId, int limit,int start) {
+
+    public String getExams(String courseId, int limit, int start) {
         //考试
         String resp = "";
         String request = "http://www.cqooc.com/learn/mooc/structure?id=" + courseId;
@@ -306,50 +307,53 @@ public class cqApi implements Serializable {
         return resp;
     }
 
-    private static String exam="http://www.cqooc.com/json/exam";
+    private static String exam = "http://www.cqooc.com/json/exam";
+
     public String getExamsInfo(String courseId, String examId) {
         //考试
         String resp = "";
-        String request = "http://www.cqooc.com/learn/mooc/exam/do?pid="+examId+"&id=" +courseId;
-        String body =  "id="+examId+"&ts=" + System.currentTimeMillis();;
+        String request = "http://www.cqooc.com/learn/mooc/exam/do?pid=" + examId + "&id=" + courseId;
+        String body = "id=" + examId + "&ts=" + System.currentTimeMillis();
         resp = mCqoocHttp.get(exam, request, body);
         return resp;
     }
 
-//作业相关
-
+    //作业相关
     static String tasks = "http://www.cqooc.com/json/tasks";
 
-    public String getTasks(String courseId, int limit,int start) {
+    public String getTasks(String courseId, int limit, int start) {
         //作业
         String resp = "";
         String request = "http://www.cqooc.com/learn/mooc/structure?id=" + courseId;
-        String body = "limit=" + limit + "&start="+start+"&isPublish=1&courseId=" + courseId + "&sortby=id&reverse=true&select=id,title,unitId,submitEnd,pubClass,status&ts=" + System.currentTimeMillis();
-        resp = mCqoocHttp.get(tasks, request, body);
-        return resp;
-    }
-    public String getTasksInfo(String courseId, String taskId) {
-        //作业详情
-        String resp = "";
-        String request = "http://www.cqooc.com/learn/mooc/task/do?tid="+taskId+"&id="+courseId;
-        String body = "id="+taskId+"&ts=" + System.currentTimeMillis();
+        String body = "limit=" + limit + "&start=" + start + "&isPublish=1&courseId=" + courseId + "&sortby=id&reverse=true&select=id,title,unitId,submitEnd,pubClass,status&ts=" + System.currentTimeMillis();
         resp = mCqoocHttp.get(tasks, request, body);
         return resp;
     }
 
-    static String openTasks="http://www.cqooc.com/json/task/result/search";
+    public String getTasksInfo(String courseId, String taskId) {
+        //作业详情
+        String resp = "";
+        String request = "http://www.cqooc.com/learn/mooc/task/do?tid=" + taskId + "&id=" + courseId;
+        String body = "id=" + taskId + "&ts=" + System.currentTimeMillis();
+        resp = mCqoocHttp.get(tasks, request, body);
+        return resp;
+    }
+
+    static String openTasks = "http://www.cqooc.com/json/task/result/search";
+
     public String getOpenTasks(String courseId, String taskId) {
         //作业已做详情
         String resp = "";
-        String request = "http://www.cqooc.com/learn/mooc/task/do?tid="+taskId+"&id="+courseId;
-        String body = "taskId="+taskId+"&ts=" + System.currentTimeMillis();
+        String request = "http://www.cqooc.com/learn/mooc/task/do?tid=" + taskId + "&id=" + courseId;
+        String body = "taskId=" + taskId + "&ts=" + System.currentTimeMillis();
         resp = mCqoocHttp.get(openTasks, request, body);
         return resp;
     }
 
     //作业提交答案
-    private static String taskAdd="http://www.cqooc.com/task/api/result/add";
-    public String getTaskAdd(userInfo UserInfo, Object answers, cqoocCourseInfo varCourseInfo,examTask examTask){
+    private static String taskAdd = "http://www.cqooc.com/task/api/result/add";
+
+    public String getTaskAdd(userInfo UserInfo, Object answers, cqoocCourseInfo varCourseInfo, examTask examTask) {
         //attachment: ""
         //classId: ""
         //content: "<p><span style=\"color: rgb(102, 102, 102); font-family: 宋体; font-size: 14px; white-space: normal;\">移动互联网的发展对网络舆情带来哪些影响</span></p>"
@@ -359,22 +363,25 @@ public class cqApi implements Serializable {
         //status: "2"
         //taskId: "59746"
         //username: "137352034060125"
-        String resp="";
-        String Referer="http://www.cqooc.com/learn/mooc/task/do?tid="+examTask.getId()+"&id="+varCourseInfo.getCourseId();
-        HashMap<Object,Object> bodys=new HashMap<>();
-        bodys.put("attachment","");
-        bodys.put("classId",varCourseInfo.getClassId());
-        bodys.put("courseId",varCourseInfo.getCourseId());
-        bodys.put("content",answers);
-        bodys.put("name",UserInfo.getName());
-        bodys.put("ownerId",UserInfo.getId());
-        bodys.put("status","2");
-        bodys.put("taskId",examTask.getId());
-        bodys.put("username",UserInfo.getUsername());
-        String body=JSONObject.toJSONString(bodys);
-        resp=mCqoocHttp.post(taskAdd, body , Referer);
+        String resp = "";
+        String Referer = "http://www.cqooc.com/learn/mooc/task/do?tid=" + examTask.getId() + "&id=" + varCourseInfo.getCourseId();
+        HashMap<Object, Object> bodys = new HashMap<>();
+        bodys.put("attachment", "");
+        bodys.put("classId", varCourseInfo.getClassId());
+        bodys.put("courseId", varCourseInfo.getCourseId());
+        bodys.put("content", answers);
+        bodys.put("name", UserInfo.getName());
+        bodys.put("ownerId", UserInfo.getId());
+        bodys.put("status", "2");
+        bodys.put("taskId", examTask.getId());
+        bodys.put("username", UserInfo.getUsername());
+        String body = JSONObject.toJSONString(bodys);
+        resp = mCqoocHttp.post(taskAdd, body, Referer);
         return resp;
     }
+
+    //private String updat="http://www.cqooc.com/account/session/api/study/log/updat";
+
 
     static String papers = "http://www.cqooc.com/json/exam/papers";
 
