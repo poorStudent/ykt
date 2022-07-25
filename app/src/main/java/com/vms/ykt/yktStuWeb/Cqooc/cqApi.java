@@ -347,6 +347,7 @@ public class cqApi implements Serializable {
         return resp;
     }
 
+    //作业提交答案
     private static String taskAdd="http://www.cqooc.com/task/api/result/add";
     public String getTaskAdd(userInfo UserInfo, Object answers, cqoocCourseInfo varCourseInfo,examTask examTask){
         //attachment: ""

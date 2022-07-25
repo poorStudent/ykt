@@ -175,6 +175,28 @@ class a {
 
 }
 class b extends a {
+    public void cqMian(){
+        new Thread(()->{
+            cqoocHttp vCqoocHttp=new cqoocHttp();
+            vCqoocHttp.setUserCookie("player=2; xsid=9846369FAFA564C");
+            cqApi vCqApi=new cqApi();
+            vCqApi.setCqoocHttp(vCqoocHttp);
+            cqoocMain vCqoocMain=new cqoocMain();
+            vCqoocMain.setCqApi(vCqApi);
+            userInfo vUserInfo =vCqoocMain.getUsreInfo("9846369FAFA564C");
+            String resp = vCqApi.getCourseInfo2(vUserInfo.getId());
+            if (resp != null && resp.contains("data")) {
+                for (cqoocCourseInfo vCourseInfo:vCqoocMain.parseCourse(resp, 2)){
+                    if (vCourseInfo.getTitle().contains("网络舆情分析")){
+                        System.out.println(vCourseInfo.getCourseId());
+                        System.out.println(vCourseInfo.getClassId());
+                    }
+                }
+            }
+
+
+        }).start();
+    }
     @Override
     protected int type(int p) {
 
@@ -260,27 +282,7 @@ class b extends a {
         //System.out.println(vClass.getClassLoader());
     }
 
-    public void cqMian(){
-        new Thread(()->{
-            cqoocHttp vCqoocHttp=new cqoocHttp();
-            vCqoocHttp.setUserCookie("player=2; xsid=9846369FAFA564C");
-            cqApi vCqApi=new cqApi();
-            vCqApi.setCqoocHttp(vCqoocHttp);
-            cqoocMain vCqoocMain=new cqoocMain();
-            vCqoocMain.setCqApi(vCqApi);
-            userInfo vUserInfo =vCqoocMain.getUsreInfo("9846369FAFA564C");
-           String resp = vCqApi.getCourseInfo2(vUserInfo.getId());
-            if (resp != null && resp.contains("data")) {
-                for (cqoocCourseInfo vCourseInfo:vCqoocMain.parseCourse(resp, 2)){
-                    if (vCourseInfo.getTitle().contains("网络舆情分析")){
-                        System.out.println(vCourseInfo.getClassId());
-                    }
-                }
-            }
 
-
-        }).start();
-    }
 }
 @Target({ElementType.METHOD,ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
