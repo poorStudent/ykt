@@ -251,7 +251,7 @@ public class cqoocMain implements Serializable {
     }
 
     public List<TaskPreview> getOpenTasks(String courseId, String taskId) {
-        //作业已做详情 答案
+        //他人 作业已做详情 答案
         String resp =mCqApi.getOpenTasks(courseId, taskId);
         return parseTaskPreview(resp);
     }
@@ -276,7 +276,7 @@ public class cqoocMain implements Serializable {
            String resp=mCqApi.getTaskAdd(UserInfo,vPreview.getContent(),varCourseInfo,examTask);
         }
     }
-
+  //做作业
     public void DoTask(String otherXsid,examTask examTask){
 
         cqoocHttp vCqoocHttp=new cqoocHttp();
@@ -288,6 +288,8 @@ public class cqoocMain implements Serializable {
         userInfo otherUserInfo =vCqoocMain.getUsreInfo(otherXsid);
         List<TaskPreview> vPreviewList=vCqoocMain.getOpenTasks("",examTask.getId());
         if (vPreviewList.size()==0){
+            //获取答案失败 随机吧
+            vPreviewList= getTasksInfo("",examTask.getId());
 
         }else {
             // getTaskAdd();
@@ -347,6 +349,7 @@ public class cqoocMain implements Serializable {
     }
 
     public void DoExam(String otherXsid,examTask examTask){
+
         cqoocHttp vCqoocHttp=new cqoocHttp();
         cqApi vCqApi=new cqApi();
         cqoocMain vCqoocMain=new cqoocMain();
@@ -356,7 +359,7 @@ public class cqoocMain implements Serializable {
         userInfo otherUserInfo =vCqoocMain.getUsreInfo(otherXsid);
         String resp=getIfExamGen(null,"","");
         if (resp==null||!resp.contains("id"))return;
-        parseExamPreview(resp);
+
         JSONArray vJSONArray = Tool.parseJsonA(resp, "data");
         String js = vJSONArray.getString(0);
         String id =Tool.parseJsonS(js,"id");//提交用的id
@@ -364,6 +367,7 @@ public class cqoocMain implements Serializable {
         Object answ=parseExamAswn(answs);
         if (answ==null||String.valueOf(answ).isEmpty()){
             //答案获取失败 随机答案吧
+            List<ExamPreview> vExamPreviewList=parseExamPreview(resp);
 
             return;
         }
