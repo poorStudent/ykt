@@ -1,6 +1,6 @@
 package com.vms.ykt.TestActivity;
 
-import android.content.Loader;
+
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -9,6 +9,7 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.widget.Button;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
+import com.vms.ykt.R;
 import com.vms.ykt.Util.DateTimeFormatUtil;
 import com.vms.ykt.Util.StringUtils;
 import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
@@ -45,16 +47,27 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.MultipartBody;
+
 
 public class testActivity extends AppCompatActivity {
 
-
-
+    private Button mButton;
+    private TestEditor mTestEditor;
     private final String TAG = testActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.test_activity);
 
+
+        mButton=findViewById(R.id.button);
+        mTestEditor=findViewById(R.id.testEditor);
+
+        mButton.setOnClickListener((view)->{
+            mTestEditor.refreshDrawableState();
+            mTestEditor.setIcon_type(2);
+        });
 
         TestViewModel mTestViewModel = new ViewModelProvider(this).get(TestViewModel.class);
 
