@@ -290,6 +290,7 @@ unitId: "328574"*/
     }
 
     public String parseTaskAnsw(String resps) {
+
             /*attachment: ""
 classId: ""
 content: "<p><span style=\"color: rgb(102, 102, 102); font-family: 宋体; font-size: 14px; white-space: normal;\">移动互联网的发展对网络舆情带来哪些影响</span></p>"

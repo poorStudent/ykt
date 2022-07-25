@@ -1,11 +1,13 @@
 package com.vms.ykt.TestActivity;
 
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
 
@@ -18,6 +20,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.vms.ykt.Util.DateTimeFormatUtil;
 import com.vms.ykt.Util.StringUtils;
+import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
+import com.vms.ykt.yktStuWeb.Cqooc.cqoocCourseInfo;
+import com.vms.ykt.yktStuWeb.Cqooc.cqoocHttp;
+import com.vms.ykt.yktStuWeb.Cqooc.cqoocLogin;
+import com.vms.ykt.yktStuWeb.Cqooc.cqoocMain;
+import com.vms.ykt.yktStuWeb.Cqooc.userInfo;
 import com.vms.ykt.yktUtil.zjyTool;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 
@@ -141,10 +149,11 @@ public class testActivity extends AppCompatActivity {
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println(StringUtils.getMd5("123"));
-        System.out.println(zjyTool.getMd5("123"));
+        //System.out.println(StringUtils.getMd5("123"));
+        //System.out.println(zjyTool.getMd5("123"));
   //   b.getTcpCode();
 
+        new b().cqMian();
 
     }
 
@@ -251,7 +260,27 @@ class b extends a {
         //System.out.println(vClass.getClassLoader());
     }
 
+    public void cqMian(){
+        new Thread(()->{
+            cqoocHttp vCqoocHttp=new cqoocHttp();
+            vCqoocHttp.setUserCookie("player=2; xsid=9846369FAFA564C");
+            cqApi vCqApi=new cqApi();
+            vCqApi.setCqoocHttp(vCqoocHttp);
+            cqoocMain vCqoocMain=new cqoocMain();
+            vCqoocMain.setCqApi(vCqApi);
+            userInfo vUserInfo =vCqoocMain.getUsreInfo("9846369FAFA564C");
+           String resp = vCqApi.getCourseInfo2(vUserInfo.getId());
+            if (resp != null && resp.contains("data")) {
+                for (cqoocCourseInfo vCourseInfo:vCqoocMain.parseCourse(resp, 2)){
+                    if (vCourseInfo.getTitle().contains("网络舆情分析")){
+                        System.out.println(vCourseInfo.getClassId());
+                    }
+                }
+            }
 
+
+        }).start();
+    }
 }
 @Target({ElementType.METHOD,ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
