@@ -27,11 +27,17 @@ class TestView @JvmOverloads constructor(
         color= ContextCompat.getColor(context,R.color.purple_200);
 
     }
-    private var paintLine : Paint = Paint().apply{
+    private var paintCircle : Paint = Paint().apply{
         style=Paint.Style.STROKE;
         strokeWidth=3.0f;
         pathEffect=DashPathEffect(floatArrayOf(10f,10f),0f);
         color= ContextCompat.getColor(context,R.color.purple_200);
+
+    }
+    private var paintCircleLine : Paint = Paint().apply{
+        style=Paint.Style.STROKE;
+        strokeWidth=3.0f;
+        color= ContextCompat.getColor(context,R.color.teal_200);
 
     }
     var mWidth = 0.1f;
@@ -69,12 +75,12 @@ class TestView @JvmOverloads constructor(
             drawLine( sXPoint,cYPoint/2*3f,mWidth,cYPoint/2*3f,pant);
 
             drawRect(cXPoint/2,sYPoint+100f,cXPoint/2*3,sYPoint+200f,pant);
-            drawText("Test.TestView",cXPoint/1f,sYPoint+150f,paintText);
+            drawText("Test.TestView",cXPoint/1.3f,sYPoint+150f,paintText);
 
             var rsx=cXPoint;
             var rsy=cYPoint/2*3f;
-            var rs=if (rsx>rsy)rsy/2-5f else rsx-5f;
-            drawCircle(rsx,rsy,rs,paintLine);
+            var rs=if (rsx>cYPoint/2f)cYPoint/2-5f else rsx-5f;
+            drawCircle(rsx,rsy,rs,paintCircle);
         }
 
     }
