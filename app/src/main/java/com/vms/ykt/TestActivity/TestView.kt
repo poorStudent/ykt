@@ -69,11 +69,11 @@ class TestView @JvmOverloads constructor(
             drawLine( sXPoint,cYPoint/2*3f,mWidth,cYPoint/2*3f,pant);
 
             drawRect(cXPoint/2,sYPoint+100f,cXPoint/2*3,sYPoint+200f,pant);
-            drawText("TestView",cXPoint/1.5f,sYPoint+150f,paintText);
+            drawText("Test.TestView",cXPoint/1f,sYPoint+150f,paintText);
 
             var rsx=cXPoint;
             var rsy=cYPoint/2*3f;
-            var rs=if (rsx>rsy)rsy/2-5f else rsx/2-5f;
+            var rs=if (rsx>rsy)rsy/2-5f else rsx-5f;
             drawCircle(rsx,rsy,rs,paintLine);
         }
 
