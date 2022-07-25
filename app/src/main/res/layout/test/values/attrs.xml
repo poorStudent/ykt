@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="test2" />
-    <declare-styleable name="test1"></declare-styleable>
+    <declare-styleable name="test1">
+        <attr name="android:maxLines" format="reference"/>
+    </declare-styleable>
+    <declare-styleable name="TestEditor">
+        <attr name="icon_clean" format="reference"/>
+        <attr name="icon_link" format="reference"/>
+        <attr name="icon_link_off" format="reference"/>
+    </declare-styleable>
 </resources>

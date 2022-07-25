@@ -65,8 +65,9 @@ public class testActivity extends AppCompatActivity {
         mTestEditor=findViewById(R.id.testEditor);
 
         mButton.setOnClickListener((view)->{
+            mTestEditor.setEditType(2);
             mTestEditor.refreshDrawableState();
-            mTestEditor.setIcon_type(2);
+
         });
 
         TestViewModel mTestViewModel = new ViewModelProvider(this).get(TestViewModel.class);

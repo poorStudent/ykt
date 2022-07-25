@@ -610,10 +610,10 @@ public class hookTool {
     public static Context getCurrentApplication() {
         try {
             Class<?> cls = Class.forName("android.app.ActivityThread");
-            Method currentActivityThread = cls.getDeclaredMethod("currentActivityThread", null);
+            Method currentActivityThread = cls.getDeclaredMethod("currentActivityThread");
             currentActivityThread.setAccessible(true);
             Object vO = currentActivityThread.invoke(null);
-            Method getApplication = cls.getDeclaredMethod("getApplication", null);
+            Method getApplication = cls.getDeclaredMethod("getApplication");
             getApplication.setAccessible(true);
             return (Application) getApplication.invoke(vO);
         } catch (Exception e) {
