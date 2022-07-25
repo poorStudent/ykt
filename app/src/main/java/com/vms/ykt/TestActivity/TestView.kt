@@ -50,8 +50,6 @@ class TestView @JvmOverloads constructor(
         cXPoint=mWidth/2f;
         cYPoint=mHeight/2f;
 
-        sXPoint=-mWidth/2f;
-        sYPoint=-mHeight/2f;
         super.onSizeChanged(w, h, oldw, oldh)
     }
 
@@ -71,11 +69,11 @@ class TestView @JvmOverloads constructor(
             drawLine( sXPoint,cYPoint/2*3f,mWidth,cYPoint/2*3f,pant);
 
             drawRect(cXPoint/2,sYPoint+100f,cXPoint/2*3,sYPoint+200f,pant);
-            drawText("TestView",cXPoint/1.5f,cYPoint+150f,paintText);
+            drawText("TestView",cXPoint/1.5f,sYPoint+150f,paintText);
 
             var rsx=cXPoint;
             var rsy=cYPoint/2*3f;
-            var rs=if (rsx>rsy)rsy/2-20 else rsx/2-20;
+            var rs=if (rsx>rsy)rsy/2-5f else rsx/2-5f;
             drawCircle(rsx,rsy,rs,paintLine);
         }
 
