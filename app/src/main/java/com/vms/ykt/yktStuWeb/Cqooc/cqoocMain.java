@@ -252,14 +252,13 @@ public class cqoocMain implements Serializable {
 
     public List<TaskPreview> getOpenTasks(String courseId, String taskId) {
         //作业已做详情 答案
-
         String resp =mCqApi.getOpenTasks(courseId, taskId);
         return parseTaskPreview(resp);
     }
 
     public List<TaskPreview> parseTaskPreview(String resp){
+        //答案和题目共用解析
         List<TaskPreview> vTaskPreviewList =new ArrayList<>();
-
         if (resp == null || !resp.contains("data")) {
             return vTaskPreviewList;
         }
@@ -287,7 +286,7 @@ public class cqoocMain implements Serializable {
         vCqApi.setCqoocHttp(vCqoocHttp);
         vCqoocMain.setCqApi(vCqApi);
         userInfo otherUserInfo =vCqoocMain.getUsreInfo(otherXsid);
-        List<TaskPreview> vPreviewList=getOpenTasks("",examTask.getId());
+        List<TaskPreview> vPreviewList=vCqoocMain.getOpenTasks("",examTask.getId());
         if (vPreviewList.size()==0){
 
         }else {
@@ -316,6 +315,7 @@ public class cqoocMain implements Serializable {
     }
 
     public Object parseExamAswn(String resps){
+        //他人已做试卷解析答案
         JSONObject vJSONObject=null;
         if (resps==null||!resps.contains("answer"))return null;
         JSONArray vJSONArray = Tool.parseJsonA(resps, "data");
@@ -324,6 +324,7 @@ public class cqoocMain implements Serializable {
         return vJSONObject;
     }
     public List<ExamPreview> parseExamPreview(String resp){
+        //试卷解析题目
         List<ExamPreview> vExamPreviewList=new ArrayList<>();
         if (resp==null||!resp.contains("body"))return null;
         JSONArray vJSONArray = Tool.parseJsonA(resp, "data");
@@ -358,14 +359,15 @@ public class cqoocMain implements Serializable {
         parseExamPreview(resp);
         JSONArray vJSONArray = Tool.parseJsonA(resp, "data");
         String js = vJSONArray.getString(0);
-        String id =Tool.parseJsonS(js,"id");
+        String id =Tool.parseJsonS(js,"id");//提交用的id
         String answs=vCqApi.getExamPreview("", examTask.getId());
         Object answ=parseExamAswn(answs);
         if (answ==null||String.valueOf(answ).isEmpty()){
-            //答案获取失败
+            //答案获取失败 随机答案吧
+
             return;
         }
-
+        //examSubmit();
 
     }
     public void examSubmit(userInfo userInfo,String courseId, String examId,String id,Object answers){
