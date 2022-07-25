@@ -275,6 +275,13 @@ public class Tool {
         return varS;
     }
 
+    public static JSONObject parseJsonO(String jsons, String key) {
+        JSONObject varS =null;
+        JSONObject json = JSONObject.parseObject(jsons);
+        varS = json.getJSONObject(key);
+        return varS;
+    }
+
     public static <T> T parseJsonS(String jsons, String key, Class<T> clazz) {
         String js = "";
         JSONObject json = JSONObject.parseObject(jsons);

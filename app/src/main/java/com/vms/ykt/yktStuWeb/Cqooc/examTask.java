@@ -14,12 +14,12 @@ package com.vms.ykt.yktStuWeb.Cqooc;
 //title: "2021-2022财经素养公选课考试2"
 public class examTask {
     private int type;
-    private int chapter;
-    private int id;
-    private int status;
-    private int pubClass;
-    private int title;
-    private int unitId;
+    private String chapter;
+    private String id;
+    private String status;
+    private String pubClass;
+    private String title;
+    private String unitId;
 
     public int getType() {
         return type;
@@ -29,51 +29,51 @@ public class examTask {
         this.type = type;
     }
 
-    public int getChapter() {
+    public String getChapter() {
         return chapter;
     }
 
-    public void setChapter(int chapter) {
+    public void setChapter(String chapter) {
         this.chapter = chapter;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public int getPubClass() {
+    public String getPubClass() {
         return pubClass;
     }
 
-    public void setPubClass(int pubClass) {
+    public void setPubClass(String pubClass) {
         this.pubClass = pubClass;
     }
 
-    public int getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(int title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public int getUnitId() {
+    public String getUnitId() {
         return unitId;
     }
 
-    public void setUnitId(int unitId) {
+    public void setUnitId(String unitId) {
         this.unitId = unitId;
     }
 }

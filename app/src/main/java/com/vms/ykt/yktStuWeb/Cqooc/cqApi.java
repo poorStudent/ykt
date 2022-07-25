@@ -5,6 +5,7 @@ import android.content.pm.InstrumentationInfo;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.Serializable;
+import java.lang.annotation.Repeatable;
 import java.net.ResponseCache;
 import java.util.HashMap;
 
@@ -318,6 +319,60 @@ public class cqApi implements Serializable {
         return resp;
     }
 
+    private static String examGen="http://www.cqooc.com/exam/api/paper/gen";
+    public String getExamGen(userInfo userInfo,String courseId, String examId){
+        //生成试卷
+        //courseId: "334570467"
+        //examId: "7725"
+        //name: "魏海旭"
+        //ownerId: 1556134
+        //username: "137352034060125"
+
+        String resp = "";
+        String request = "http://www.cqooc.com/learn/mooc/exam/do?pid=" + examId + "&id=" + courseId;
+        String body ="{\"ownerId\":"+userInfo.getId()+",\"username\":\""+userInfo.getUsername()+"\"," +
+                "\"name\":\""+userInfo.getName()+"\",\"examId\":\""+examId+"\",\"courseId\":\""+courseId+"\"}";
+        resp = mCqoocHttp.post(examGen,body,request);
+        return resp;
+    }
+
+
+    private static String examPreview="http://www.cqooc.com/exam/get/api/paper/get";
+    public String getExamPreview(String courseId, String examId){
+        //题目和答案
+        String resp = "";
+        String request = "http://www.cqooc.com/learn/mooc/exam/do?pid=" + examId + "&id=" + courseId;
+        String body = "examId=" + examId + "&ts=" + System.currentTimeMillis();
+        resp = mCqoocHttp.get(examPreview, request, body);
+        return resp;
+    }
+
+    //提交考试答案
+    private static String examSubmit="http://www.cqooc.com/exam/do/api/submit";
+    public String getExamSubmit(userInfo userInfo,String courseId, String examId,String id,Object answers){
+        //{ownerId: 1556134, username: "137352034060125", name: "魏海旭", examId: "7725", id: "2516184",…}
+        //answers: {q963904: "0", q963409: "0", q963411: "0", q963344: "2", q963599: "2", q963374: "0", q963818: "3",…}
+        //courseId: "334570467"
+        //examId: "7725"
+        //id: "2516184"
+        //name: "魏海旭"
+        //ownerId: 1556134
+        //username: "137352034060125"
+        String resp = "";
+        String request = "http://www.cqooc.com/learn/mooc/exam/do?pid=" + examId + "&id=" + courseId;
+        HashMap<Object,Object> bodys= new HashMap<>();
+        bodys.put("courseId", courseId);
+        bodys.put("ownerId", Integer.parseInt(userInfo.getId()));
+        bodys.put("examId", examId);
+        bodys.put("id", id);
+        bodys.put("name", userInfo.getName());
+        bodys.put("username", userInfo.getUsername());
+        bodys.put("answers", answers);
+        String body = JSONObject.toJSONString(bodys);
+        resp = mCqoocHttp.post(examSubmit,body,request);
+        return resp;
+    }
+
     //作业相关
     static String tasks = "http://www.cqooc.com/json/tasks";
 
@@ -371,7 +426,7 @@ public class cqApi implements Serializable {
         bodys.put("courseId", varCourseInfo.getCourseId());
         bodys.put("content", answers);
         bodys.put("name", UserInfo.getName());
-        bodys.put("ownerId", UserInfo.getId());
+        bodys.put("ownerId", Integer.parseInt(UserInfo.getId()));
         bodys.put("status", "2");
         bodys.put("taskId", examTask.getId());
         bodys.put("username", UserInfo.getUsername());
