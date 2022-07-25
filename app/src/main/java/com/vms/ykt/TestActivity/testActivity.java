@@ -7,7 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
-import android.text.style.ForegroundColorSpan;
+
 import android.util.Log;
 import android.widget.Button;
 
@@ -21,14 +21,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.vms.ykt.R;
 import com.vms.ykt.Util.DateTimeFormatUtil;
-import com.vms.ykt.Util.StringUtils;
 import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocCourseInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocHttp;
-import com.vms.ykt.yktStuWeb.Cqooc.cqoocLogin;
+
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocMain;
 import com.vms.ykt.yktStuWeb.Cqooc.userInfo;
-import com.vms.ykt.yktUtil.zjyTool;
+
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 
 import java.io.InputStream;
@@ -47,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import okhttp3.MultipartBody;
 
 
 public class testActivity extends AppCompatActivity {
@@ -62,7 +60,7 @@ public class testActivity extends AppCompatActivity {
 
 
         mButton=findViewById(R.id.button);
-        mTestEditor=findViewById(R.id.testEditor);
+        mTestEditor=findViewById(R.id.testEditors);
 
         mButton.setOnClickListener((view)->{
             mTestEditor.setEditType(2);
