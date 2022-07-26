@@ -52,6 +52,7 @@ public class testActivity extends AppCompatActivity {
 
     private Button mButton;
     private TestEditor mTestEditor;
+    private TestView mTestView;
     private final String TAG = testActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,8 @@ public class testActivity extends AppCompatActivity {
 
         mButton=findViewById(R.id.button);
         mTestEditor=findViewById(R.id.testEditors);
-
+        mTestView =findViewById(R.id.testViews);
+        getLifecycle().addObserver(mTestView);
         mButton.setOnClickListener((view)->{
             mTestEditor.setEditType(2);
             mTestEditor.refreshDrawableState();

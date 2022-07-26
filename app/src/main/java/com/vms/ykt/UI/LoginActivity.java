@@ -249,16 +249,8 @@ public class LoginActivity extends Activity {
 
                 String[] ret = null;
                 final String resp;
-                final String appv;
+                final String appv  = "2.8.43";;
                 final String ck;
-
-                String ap;
-                ap = zjyApi.getAppVersion1();
-                if (ap == null || ap.isEmpty()) {
-                    appv = zjyApi.getAppVersion2();
-                } else {
-                    appv = ap;
-                }
 
                 if (webLoginSwitch.isChecked()) {
                     ret = zjyWebLogin.login(username, password, getApplicationContext());

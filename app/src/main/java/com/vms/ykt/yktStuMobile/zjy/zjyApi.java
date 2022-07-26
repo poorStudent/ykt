@@ -63,32 +63,26 @@ public class zjyApi {
     static String getStuAnswerList = "https://zjyapp.icve.com.cn/newmobileapi/faceTeach/getStuAnswerList";
 
     public static String getAppVersion0() {
-        String appVersion = "2.8.42";
+        String appVersion = "2.8.43";
         String data = "versionCode=2.8.43&equipmentAppVersion=2.8.43&equipmentModel=Redmi M2007J17C&equipmentApiVersion=10";
         String resp = "";
         resp = zjyHttpM.post(APPcode, data);
-        if (resp.isEmpty()) return appVersion;
+        if (resp==null||!resp.contains("VersionCode")) return appVersion;
         JSONObject json = JSONObject.parseObject(resp);
-        if (!json.getString("code").equals("1")) return appVersion;
         appVersion = json.getJSONObject("data").getJSONObject("appVersionInfo").getString("versionCode");
         return appVersion;
     }
 
     public static String getAppVersion1() {
-        String appVersion = "2.8.42";
+        String appVersion = "2.8.43";
         String resp = "";
         resp = zjyHttpM.get(AppVersion);
-        if (resp.isEmpty()) return appVersion;
+        if (resp==null||!resp.contains("VersionCode")) return getAppVersion0();
         JSONObject json = JSONObject.parseObject(resp);
-        if (!json.getString("code").equals("1")) return appVersion;
         appVersion = json.getJSONObject("appVersionInfo").getString("VersionCode");
         return appVersion;
     }
 
-    public static String getAppVersion2() {
-        String appVersion = "2.8.42";
-        return appVersion;
-    }
 
     public static String getTime() {
         String time = "";
