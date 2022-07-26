@@ -6,6 +6,10 @@ import com.vms.ykt.Util.StringUtils;
 import com.vms.ykt.Util.SystemUtil;
 import com.vms.ykt.Util.Tool;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -99,5 +103,40 @@ public class zjyTool {
 
     public static String getVersion() {
         return "2.8.43";
+    }
+
+    public static void getTcpCode(){
+        new Thread(()->{
+            String tcpIpAddress = "101.37.228.98";
+            int tcpPort = 7788;
+            try {
+                // 服务器创建连接
+                Socket socket = new Socket(tcpIpAddress,tcpPort);
+                // 要发送给服务器的信息
+                OutputStream os = socket.getOutputStream();
+                os.write("getKey".getBytes());
+                os.flush();
+
+                socket.shutdownOutput();
+
+                // 从服务器接收的信息
+                byte[] b=new byte[1024];
+                InputStream is = socket.getInputStream();
+                int a=is.read(b);
+
+                byte[] bArr2 = new byte[a];
+                System.arraycopy(b, 0, bArr2, 0, a);
+                System.out.println(new String(bArr2, StandardCharsets.UTF_8));
+
+                is.close();
+                os.close();
+                os.close();
+                socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+
     }
 }

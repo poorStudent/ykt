@@ -303,6 +303,7 @@ public class zjyApi {
     }
 
 
+    //刷课
     public static String getStuProcessCellLog(zjyUser zjyUser, zjyCourseIfno zjyCourseIfno, zjyCellList zjyCellList, zjyInfoByCelld zjyInfoByCelld, long time) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();

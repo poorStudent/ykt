@@ -165,7 +165,6 @@ public class testActivity extends AppCompatActivity {
 
         //System.out.println(StringUtils.getMd5("123"));
         //System.out.println(zjyTool.getMd5("123"));
-  //   b.getTcpCode();
 
         new b().cqMian();
 
@@ -189,6 +188,7 @@ class a {
 
 }
 class b extends a {
+
     public void cqMian(){
         new Thread(()->{
             cqoocHttp vCqoocHttp=new cqoocHttp();
@@ -211,47 +211,12 @@ class b extends a {
 
         }).start();
     }
+
     @Override
     protected int type(int p) {
 
         System.out.println(p);
         return 2;
-    }
-
-    public static void getTcpCode(){
-        new Thread(()->{
-            System.out.println(DateTimeFormatUtil.getInternetTime());
-            String tcpIpAddress = "101.37.228.98";
-            int tcpPort = 7788;
-            try {
-                // 和服务器创建连接
-                Socket socket = new Socket(tcpIpAddress,tcpPort);
-                // 要发送给服务器的信息
-                OutputStream os = socket.getOutputStream();
-                os.write("getKey".getBytes());
-                os.flush();
-
-                socket.shutdownOutput();
-
-                // 从服务器接收的信息
-                byte[] b=new byte[1024];
-                InputStream is = socket.getInputStream();
-                int a=is.read(b);
-
-                byte[] bArr2 = new byte[a];
-                System.arraycopy(b, 0, bArr2, 0, a);
-                System.out.println(new String(bArr2, StandardCharsets.UTF_8));
-
-                is.close();
-                os.close();
-                os.close();
-                socket.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-
     }
 
     public static void fscs() throws Exception {
