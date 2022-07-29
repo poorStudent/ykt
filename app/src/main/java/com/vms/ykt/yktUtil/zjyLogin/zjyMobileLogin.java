@@ -27,10 +27,10 @@ public class zjyMobileLogin {
     public static String[] login(String user, String pass) {
 
         String[] resp = null;
-        appv="2.8.43";
+        appv = "2.8.43";
         StringBuilder postParam = new StringBuilder();
-         postParam.append("clientId=2829e8a1bcd44efd9d2e3cca8b606aea&");
-       // postParam.append("clientId=null&");
+        postParam.append("clientId=2829e8a1bcd44efd9d2e3cca8b606aea&");
+        // postParam.append("clientId=null&");
         postParam.append("sourceType=2&");
         postParam.append("userPwd=" + pass.trim() + "&");
         postParam.append("userName=" + user.trim() + "&");
@@ -47,10 +47,10 @@ public class zjyMobileLogin {
     private static String TAG = zjyMobileLogin.class.getSimpleName();
 
     public static String[] loginPost(String requestUrl, String body) {
-        String resp = "";
-        String ck = "";
+        String resp ;
+        String ck = null;
         Map<String, Object> header = new HashMap<>();
-        String[] vEmitDevice =zjyTool.getEmitDevice();
+        String[] vEmitDevice = zjyTool.getEmitDevice();
         String emit = vEmitDevice[0];
         String device = vEmitDevice[1];
         header.put("emit", emit);
@@ -62,11 +62,13 @@ public class zjyMobileLogin {
         httpRespnose ret = null;
         ret = httpTool.postJ(requestUrl, header, body);
         resp = ret.getmResp();
-        ck = Arrays.toString(ret.getmHearderFileds().get("Set-Cookie").toArray());
-        Log.d(TAG, "loginPost: " + ck);
-        String reg = "auth=(.+?)(?=;)";
-        Matcher m = Pattern.compile(reg).matcher(ck); //进行匹配
-        while (m.find()) ck = m.group();
+        if (resp != null && !resp.isEmpty()) {
+            ck = Arrays.toString(ret.getmHearderFileds().get("Set-Cookie").toArray());
+            Log.d(TAG, "loginPost: " + ck);
+            String reg = "auth=(.+?)(?=;)";
+            Matcher m = Pattern.compile(reg).matcher(ck); //进行匹配
+            while (m.find()) ck = m.group();
+        }
         return new String[]{resp, ck};
     }
 }

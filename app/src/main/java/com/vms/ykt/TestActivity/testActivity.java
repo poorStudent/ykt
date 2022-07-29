@@ -9,6 +9,7 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 
 
@@ -21,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.vms.ykt.R;
 import com.vms.ykt.Util.DateTimeFormatUtil;
+import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocCourseInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocHttp;
@@ -29,6 +31,8 @@ import com.vms.ykt.yktStuWeb.Cqooc.cqoocMain;
 import com.vms.ykt.yktStuWeb.Cqooc.userInfo;
 
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,71 +51,106 @@ import java.util.Date;
 import java.util.List;
 
 
-
 public class testActivity extends AppCompatActivity {
 
     private Button mButton;
     private TestEditor mTestEditor;
     private TestView mTestView;
     private final String TAG = testActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_activity);
 
 
-        mButton=findViewById(R.id.button);
-        mTestEditor=findViewById(R.id.testEditors);
-        mTestView =findViewById(R.id.testViews);
+        mButton = findViewById(R.id.button);
+        mTestEditor = findViewById(R.id.testEditors);
+        mTestView = findViewById(R.id.testViews);
+
         getLifecycle().addObserver(mTestView);
-        mButton.setOnClickListener((view)->{
+        mButton.setOnClickListener((view) -> {
             mTestEditor.setEditType(2);
             mTestEditor.refreshDrawableState();
 
         });
 
+
         TestViewModel mTestViewModel = new ViewModelProvider(this).get(TestViewModel.class);
 
-        zjyUser vUsers =new zjyUser();
+        zjyUser vUsers = new zjyUser();
         vUsers.setUserName("xxxx");
         mTestViewModel.setMutableLiveDataT(vUsers);
 
         mTestViewModel.getMutableLiveDataT().observe(this, new Observer<zjyUser>() {
             @Override
             public void onChanged(zjyUser o) {
-                Log.d(TAG, "onChanged: "+o.getUserName());
+                Log.d(TAG, "onChanged: " + o.getUserName());
             }
         });
 
 
         List<MutableLiveData<zjyUser>> vMutableLiveDataList = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            zjyUser vUser =new zjyUser();
-            vUser.setUserName("mk"+i);
-            vUser.setType(i+100);
-            MutableLiveData<zjyUser> vMutableLiveData=new MutableLiveData<>();
+            zjyUser vUser = new zjyUser();
+            vUser.setUserName("mk" + i);
+            vUser.setType(i + 100);
+            MutableLiveData<zjyUser> vMutableLiveData = new MutableLiveData<>();
             vMutableLiveData.setValue(vUser);
             vMutableLiveDataList.add(vMutableLiveData);
         }
         mTestViewModel.setLiveDataListTLL(vMutableLiveDataList);
 
-        for (MutableLiveData<zjyUser> vLiveData:mTestViewModel.getLiveDataListTLL()){
+        for (MutableLiveData<zjyUser> vLiveData : mTestViewModel.getLiveDataListTLL()) {
             vLiveData.observe(this, new Observer<zjyUser>() {
                 @Override
                 public void onChanged(zjyUser zjyUser) {
-                    Log.d(TAG, "onChanged: "+(zjyUser).getUserName());
+                    Log.d(TAG, "onChanged: " + (zjyUser).getUserName());
                 }
             });
         }
 
+
+        initTestPage();
+    }
+
+    private void initTestPage() {
+
+        List<Integer> imge = new ArrayList<>();
+        imge.add(R.drawable.ic_launcher_foreground);
+        imge.add(R.drawable.ic_baseline_link_off_24);
+        imge.add(R.drawable.ic_baseline_link_24);
+        imge.add(R.drawable.ic_baseline_clear_24);
+        List<mdata> vMdata = new ArrayList<>();
+
+        for (Integer vInteger : imge) {
+            vMdata.add(new mdata(vInteger + "", vInteger));
+        }
+
+        TestPageView testPageView = findViewById(R.id.testPageView);
+
+        testPageView.initPagerAdapter(vMdata.size());
+        testPageView.setBindTitleListener((int position) -> vMdata.get(position).getTitle());
+        testPageView.setBindImageListener((int position) -> vMdata.get(position).getImag());
+        testPageView.setPageItemOnClick(new TestPageView.PageItemOnClick() {
+
+            @Override
+            public boolean ItemOnLongClick(@NotNull View view, int position) {
+                return false;
+            }
+
+            @Override
+            public void ItemOnClick(@NotNull View view, int position) {
+                Tool.toast(testActivity.this,position+"");
+            }
+        });
+
     }
 
 
-
-
     private void getContentCallLog() {
-         Uri callUri = CallLog.Calls.CONTENT_URI;
-         String[] columns = {CallLog.Calls.CACHED_NAME// 通话记录的联系人
+        Uri callUri = CallLog.Calls.CONTENT_URI;
+        String[] columns = {CallLog.Calls.CACHED_NAME// 通话记录的联系人
                 , CallLog.Calls.NUMBER// 通话记录的电话号码
                 , CallLog.Calls.DATE// 通话记录的日期
                 , CallLog.Calls.DURATION// 通话时长
@@ -120,7 +159,7 @@ public class testActivity extends AppCompatActivity {
                 columns
                 , null, null, CallLog.Calls.DEFAULT_SORT_ORDER// 按照时间逆序排列，最近打的最先显示
         );
-        Log.i(TAG,"cursor count:" + cursor.getCount());
+        Log.i(TAG, "cursor count:" + cursor.getCount());
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));  //姓名
             String number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));  //号码
@@ -129,9 +168,9 @@ public class testActivity extends AppCompatActivity {
             int duration = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.DURATION));//获取通话时长，值为多少秒
             int type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE)); //获取通话类型：1.呼入2.呼出3.未接
 
-            Log.i(TAG,"Call log: " + "\n"
-                    + "name: " + name +"\n"
-                    + "phone number: " + number  + "\n"
+            Log.i(TAG, "Call log: " + "\n"
+                    + "name: " + name + "\n"
+                    + "phone number: " + number + "\n"
 
             );
 
@@ -142,9 +181,9 @@ public class testActivity extends AppCompatActivity {
     //获取联系人
     private void getConnect() {
         Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                new String[] { "display_name", "sort_key", "contact_id",
-                        "data1" }, null, null, null);
-        Log.i(TAG,"cursor connect count:" + cursor.getCount());
+                new String[]{"display_name", "sort_key", "contact_id",
+                        "data1"}, null, null, null);
+        Log.i(TAG, "cursor connect count:" + cursor.getCount());
 //        moveToNext方法返回的是一个boolean类型的数据
         while (cursor.moveToNext()) {
             //读取通讯录的姓名
@@ -154,8 +193,8 @@ public class testActivity extends AppCompatActivity {
             String number = cursor.getString(cursor
                     .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-            Log.i(TAG,"获取的通讯录是： " + name + "\n"
-                    +  " number : " + number);
+            Log.i(TAG, "获取的通讯录是： " + name + "\n"
+                    + " number : " + number);
         }
         cursor.close();
     }
@@ -173,7 +212,6 @@ public class testActivity extends AppCompatActivity {
 }
 
 
-
 class a {
     @zj(v = "222")
     private int b;
@@ -187,21 +225,22 @@ class a {
     }
 
 }
+
 class b extends a {
 
-    public void cqMian(){
-        new Thread(()->{
-            cqoocHttp vCqoocHttp=new cqoocHttp();
+    public void cqMian() {
+        new Thread(() -> {
+            cqoocHttp vCqoocHttp = new cqoocHttp();
             vCqoocHttp.setUserCookie("player=2; xsid=9846369FAFA564C");
-            cqApi vCqApi=new cqApi();
+            cqApi vCqApi = new cqApi();
             vCqApi.setCqoocHttp(vCqoocHttp);
-            cqoocMain vCqoocMain=new cqoocMain();
+            cqoocMain vCqoocMain = new cqoocMain();
             vCqoocMain.setCqApi(vCqApi);
-            userInfo vUserInfo =vCqoocMain.getUsreInfo("9846369FAFA564C");
+            userInfo vUserInfo = vCqoocMain.getUsreInfo("9846369FAFA564C");
             String resp = vCqApi.getCourseInfo2(vUserInfo.getId());
             if (resp != null && resp.contains("data")) {
-                for (cqoocCourseInfo vCourseInfo:vCqoocMain.parseCourse(resp, 2)){
-                    if (vCourseInfo.getTitle().contains("网络舆情分析")){
+                for (cqoocCourseInfo vCourseInfo : vCqoocMain.parseCourse(resp, 2)) {
+                    if (vCourseInfo.getTitle().contains("网络舆情分析")) {
                         System.out.println(vCourseInfo.getCourseId());
                         System.out.println(vCourseInfo.getClassId());
                     }
@@ -238,7 +277,7 @@ class b extends a {
                 }
             }
         }
-        for (Method vMethod1 : vClass.getDeclaredMethods()){
+        for (Method vMethod1 : vClass.getDeclaredMethods()) {
             vMethod1.setAccessible(true);
         }
         for (Field v : vClass.getDeclaredFields()) {
@@ -263,8 +302,9 @@ class b extends a {
 
 
 }
-@Target({ElementType.METHOD,ElementType.FIELD})
+
+@Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@interface zj{
+@interface zj {
     String v() default "0";
 }

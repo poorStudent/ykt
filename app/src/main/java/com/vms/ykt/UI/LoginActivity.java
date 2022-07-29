@@ -265,7 +265,7 @@ public class LoginActivity extends Activity {
                     zjyMobileLogin.appv = appv;
                     String[] cache = vCacheUs.readCacheUs(mPreferences, "ykt");
 
-                    if (!cache[0].equals("null")) {
+                    if (cache!=null&&!cache[0].equals("null")) {
                         zjyUser vZjyUser = JSONObject.parseObject(cache[0], zjyUser.class);
                         vZjyUser.setAppv(appv);
                         Log.d(TAG, "run: " + cache[0]);
@@ -291,7 +291,7 @@ public class LoginActivity extends Activity {
                         isLoging=true;
                         loadingProgressBar.setVisibility(View.GONE);
 
-                        if (resp == null) return;
+                        if (resp == null||resp.isEmpty()) return;
                         if (!JSONObject.parseObject(resp).getString("code").equals("1")) {
                             Tool.toast(LoginActivity.this, resp);
                             return;

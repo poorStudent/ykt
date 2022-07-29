@@ -685,7 +685,7 @@ public class Tool {
     }
 
     //直接传一个float的单位为dp的值，然后方法会返回单位为px的数，直接设置即可
-    public int dp2px(Context context,float dpValue) {
+    public static int dp2px(Context context,float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }

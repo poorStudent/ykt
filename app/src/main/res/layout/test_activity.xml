@@ -56,23 +56,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.16" />
+        app:layout_constraintGuide_percent="0.08" />
 
 
     <com.vms.ykt.TestActivity.TestEditor
         android:id="@+id/testEditors"
+        style="@style/Widget.AppCompat.EditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Name"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="TestEditor"
         android:maxLines="1"
+        android:text="Name"
         app:icon_type="1"
-        style="@style/Widget.AppCompat.EditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline4" />
+
+    <com.vms.ykt.TestActivity.TestPageView
+        android:id="@+id/testPageView"
+        android:layout_marginTop="2dp"
+        android:layout_width="match_parent"
+        android:clipChildren="false"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toTopOf="@+id/testViews"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/testEditors" />
 
     <com.vms.ykt.TestActivity.TestView
         android:id="@+id/testViews"
@@ -83,7 +94,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/testEditors"
+        app:layout_constraintTop_toBottomOf="@+id/testPageView"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
