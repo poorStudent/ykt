@@ -2,15 +2,43 @@
 <resources>
 
     <declare-styleable name="TestEditor">
-        <attr name="icon_type" format="integer"/>
-        <attr name="icon_clean" format="reference"/>
-        <attr name="icon_link" format="reference"/>
-        <attr name="icon_link_off" format="reference"/>
+        <attr name="icon_type" format="integer" />
+        <attr name="icon_clean" format="reference" />
+        <attr name="icon_link" format="reference" />
+        <attr name="icon_link_off" format="reference" />
     </declare-styleable>
 
     <attr name="test2" />
     <declare-styleable name="test1">
-        <attr name="android:maxLines" format="reference"/>
+        <attr name="android:maxLines" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="FlowLayout">
+        <attr name="maxLines" format="reference|integer" />
+        <attr name="marginHorizontal" format="reference|dimension" />
+        <attr name="marginVertical" format="reference|dimension" />
+        <attr name="lines" format="reference|integer" />
+        <attr name="textMaxlength" format="reference|integer" />
+        <attr name="textColor" format="reference|color" />
+
+        <attr name="fontPath" format="string" />
+
+        <attr name="typeface">
+            <enum name="normal" value="0" />
+            <enum name="sans" value="1" />
+            <enum name="serif" value="2" />
+            <enum name="monospace" value="3" />
+        </attr>
+
+        <attr name="textStyle">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+
+        <attr name="borderColor" format="reference|color" />
+        <attr name="borderWidth" format="reference|dimension" />
+        <attr name="borderRadio" format="reference|dimension" />
     </declare-styleable>
 
 </resources>

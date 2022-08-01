@@ -66,7 +66,7 @@ android {
                     'src/main/res'
             ]
 
-            //jniLibs.srcDirs = ['libs']
+            jniLibs.srcDirs = ['libs']
         }
     }
 

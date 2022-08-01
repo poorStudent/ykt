@@ -2,6 +2,7 @@ package com.vms.ykt.TestActivity;
 
 
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -68,6 +70,7 @@ public class testActivity extends AppCompatActivity {
         mButton = findViewById(R.id.button);
         mTestEditor = findViewById(R.id.testEditors);
         mTestView = findViewById(R.id.testViews);
+        TextView vTextView = findViewById(R.id.text11);
 
         getLifecycle().addObserver(mTestView);
         mButton.setOnClickListener((view) -> {
@@ -114,6 +117,7 @@ public class testActivity extends AppCompatActivity {
 
         initTestPage();
     }
+
 
     private void initTestPage() {
 

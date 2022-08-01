@@ -30,14 +30,16 @@ class TestEditor @JvmOverloads constructor(
 
         context.theme.obtainStyledAttributes(attrs, R.styleable.TestEditor, 0, 0).apply {
             try {
-
+                Log.d(TAG, " $indexCount")
                 (0..indexCount).forEach { i ->
+
                     val attr = getIndex(i)
 
                     when (attr) {
                         R.styleable.TestEditor_icon_type -> {
                             Log.d(TAG, "TestEditor_icon_type: $attr")
                             icon_type = getInteger(attr, 1);
+                            Log.d(TAG, "TestEditor_icon_type: $icon_type")
                         }
 
                         R.styleable.TestEditor_icon_clean -> {
