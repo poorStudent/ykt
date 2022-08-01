@@ -43,6 +43,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -204,11 +205,23 @@ public class testActivity extends AppCompatActivity {
 
         //System.out.println(StringUtils.getMd5("123"));
         //System.out.println(zjyTool.getMd5("123"));
+        //new b().cqMian();
+        Method vMethod = testActivity.nn.class.getDeclaredMethod("main", String[].class);
 
-        new b().cqMian();
+System.out.println(testActivity.nn.class.getName());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            System.out.println(vMethod.getParameterCount());
+        }
 
     }
+    class nn{
+        public void main(String[] args) throws Exception {
 
+        }
+    }
+
+    native String getCpu(int i,double d,float f);
 }
 
 

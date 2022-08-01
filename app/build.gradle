@@ -13,7 +13,6 @@ def buildTimes() {
 android {
 
     signingConfigs {
-
         debug {
             storeFile file('E:\\appprojicet\\vms.jks')
             storePassword '2579988653'
@@ -29,7 +28,6 @@ android {
 
         }
     }
-
 
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -67,6 +65,8 @@ android {
                     'src/main/res/menu',
                     'src/main/res'
             ]
+
+            //jniLibs.srcDirs = ['libs']
         }
     }
 
@@ -104,7 +104,7 @@ android {
 
     externalNativeBuild {
         cmake {
-            path file('src/main/cpp/CMakeLists.txt')
+            path file('src/main/jni/CMakeLists.txt')
             version '3.10.2'
         }
     }
