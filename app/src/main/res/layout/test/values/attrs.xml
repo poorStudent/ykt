@@ -40,5 +40,12 @@
         <attr name="borderWidth" format="reference|dimension" />
         <attr name="borderRadio" format="reference|dimension" />
     </declare-styleable>
+    <declare-styleable name="SlideMenu" >
+        <attr name="sliderStyle" >
+            <flag name="1" value="1"/>
+            <flag name="2" value="1"/>
+            <flag name="3" value="1"/>
+        </attr>
+    </declare-styleable>
 
 </resources>
