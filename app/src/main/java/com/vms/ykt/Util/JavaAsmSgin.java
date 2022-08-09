@@ -110,8 +110,18 @@ public class JavaAsmSgin {
         }
         return "L" + getType(returnType) + ";";
     }
+    public static String getDesc2(final Class<?> returnType) {
+        if (returnType.isPrimitive()) {
+            return getPrimitiveLetter(returnType);
+        }
+        if (returnType.isArray()) {
+            return returnType.getName();
+        }
+        return "L" + getType(returnType) + ";";
+    }
 
     public static String getType(final Class<?> parameterType) {
+
         if (parameterType.isArray()) {
             return "[" + getDesc(parameterType.getComponentType());
         }

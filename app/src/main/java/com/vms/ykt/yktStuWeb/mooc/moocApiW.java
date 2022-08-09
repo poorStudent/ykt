@@ -1,9 +1,9 @@
 package com.vms.ykt.yktStuWeb.mooc;
 
 
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.support.hsf.HSFJSONUtils;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktStuMobile.mooc.courseInfoForTeach;
 import com.vms.ykt.yktStuMobile.mooc.moocCellInfo;
@@ -321,7 +321,7 @@ public class moocApiW implements Serializable {
             if (!json.getString("code").equals("1")) break;
             JSONArray varArray = json.getJSONArray("list");
             if (varArray.isEmpty()) break;
-            List<courseInfoForTeach> varForTeachLists = JSONArray.parseArray(varArray.toJSONString(), courseInfoForTeach.class);
+            List<courseInfoForTeach> varForTeachLists = JSONArray.parseArray(varArray.toString(), courseInfoForTeach.class);
             varForTeachList.addAll(varForTeachLists);
             if (page == 3) break;
         }///

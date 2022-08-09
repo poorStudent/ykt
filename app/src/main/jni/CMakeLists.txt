@@ -17,7 +17,7 @@ project("vmsZjy")
 
 # 设置生成的so动态库最后输出的路径，set后面两个参数，
 # 前面一个是命令，后面是路径
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../jniLibs/${ANDROID_ABI})
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../jniLibs/${ANDROID_ABI})
 
 file(GLOB jni "*.cpp")#设置统配符
 

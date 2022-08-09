@@ -44,6 +44,7 @@ class SlideMenu @JvmOverloads constructor(
         val contViewWidthMeasure = contView.measuredWidth
         val contViewHeightMeasure = contView.measuredHeight
 
+
         view.measure(
             MeasureSpec.makeMeasureSpec(width / 4 * 2, MeasureSpec.EXACTLY),
             MeasureSpec.makeMeasureSpec(contViewHeightMeasure, MeasureSpec.EXACTLY)
@@ -58,7 +59,7 @@ class SlideMenu @JvmOverloads constructor(
 
     fun initAttrs(attrs: AttributeSet? = null) {
         context.theme.obtainStyledAttributes(attrs, R.styleable.FlowLayout, 0, 0).apply {
-            getInt(R.styleable.SlideMenu_sliderStyle, 0)
+            getInt(R.styleable.SlideMenu_sliderStyles, 0)
             recycle();
         }
     }

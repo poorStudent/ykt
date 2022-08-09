@@ -283,7 +283,7 @@ public class icveMainW implements Serializable {
             JSONArray varJSONArray = JSONObject.parseArray(json);
             for (int ii = 0; ii < varJSONArray.size(); ii++) {
                 JSONArray varJSONArray1 = varJSONArray.getJSONObject(ii).getJSONArray("Questions");
-                ArrayList<AnswersInfo> varAnswersInfos = paserAnsw(varJSONArray1.toJSONString());
+                ArrayList<AnswersInfo> varAnswersInfos = paserAnsw(varJSONArray1.toString());
                 answ.addAll(varAnswersInfos);
             }
         }
@@ -308,7 +308,7 @@ public class icveMainW implements Serializable {
         JSONArray varJSONArray = JSONObject.parseArray(json);
         for (int i = 0; i < varJSONArray.size(); i++) {
             JSONArray varJSONArray1 = varJSONArray.getJSONObject(i).getJSONArray("Questions");
-            ArrayList<AnswersInfo> varAnswersInfos = paserAnsw(varJSONArray1.toJSONString());
+            ArrayList<AnswersInfo> varAnswersInfos = paserAnsw(varJSONArray1.toString());
             answ.addAll(varAnswersInfos);
         }
         return answ;

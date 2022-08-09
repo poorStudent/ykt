@@ -66,7 +66,7 @@ public class testActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_activity);
 
-
+        String ck=Tool.ck(this);
         mButton = findViewById(R.id.button);
         mTestEditor = findViewById(R.id.testEditors);
         mTestView = findViewById(R.id.testViews);
@@ -210,13 +210,21 @@ public class testActivity extends AppCompatActivity {
         //System.out.println(StringUtils.getMd5("123"));
         //System.out.println(zjyTool.getMd5("123"));
         //new b().cqMian();
-        Method vMethod = testActivity.nn.class.getDeclaredMethod("main", String[].class);
 
-System.out.println(testActivity.nn.class.getName());
+        System.out.println(byte.class.getName());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            System.out.println(vMethod.getParameterCount());
-        }
+            System.out.println(byte.class.getTypeName());
+        System.out.println(byte.class.isArray());
+        System.out.println(byte.class.getComponentType());
+        System.out.println(byte.class.isPrimitive());
+        System.out.println("=====================================");
+        System.out.println(byte[].class.isPrimitive());
+        System.out.println(byte[].class.isArray());
+        System.out.println(Tool[][].class.getName());
+        System.out.println(byte[][].class.getComponentType());
+
+            System.out.println(byte[].class.getTypeName());
+
 
     }
     class nn{
@@ -225,7 +233,6 @@ System.out.println(testActivity.nn.class.getName());
         }
     }
 
-    native String getCpu(int i,double d,float f);
 }
 
 

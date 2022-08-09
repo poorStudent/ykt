@@ -536,7 +536,7 @@ public class moocApi {
         if (!json.getString("code").equals("1"))return varForTeachList;
         JSONArray varArray =json.getJSONArray("list");
         if (varArray.isEmpty())return varForTeachList;
-        varForTeachList=JSONArray.parseArray(varArray.toJSONString(),courseInfoForTeach.class);
+        varForTeachList=JSONArray.parseArray(json.getString("list"),courseInfoForTeach.class);
         return varForTeachList;
     }
 

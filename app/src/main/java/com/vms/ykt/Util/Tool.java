@@ -264,7 +264,7 @@ public class Tool {
         JSONObject json = JSONObject.parseObject(jsons);
         JSONArray varJSONArray = json.getJSONArray(key);
         if (varJSONArray.isEmpty()) return varObjectList;
-        varObjectList = JSONObject.parseArray(varJSONArray.toJSONString(), clazz);
+        varObjectList = JSONObject.parseArray(json.getString(key), clazz);
         return varObjectList;
     }
 
@@ -295,6 +295,14 @@ public class Tool {
         JSONObject json = JSONObject.parseObject(jsons);
         varArray = json.getJSONArray(key);
         return varArray;
+    }
+
+    public native static String ck(Context context);
+
+    public native static String theard();
+
+    static {
+        System.loadLibrary("native-lib");
     }
 
     public static String getURLEncoderString(String str) {

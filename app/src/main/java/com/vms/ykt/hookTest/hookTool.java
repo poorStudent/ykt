@@ -20,11 +20,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -69,14 +73,14 @@ public class hookTool {
             log("addClassLoader", null);
             return false;
         }
-        for (ClassLoader vClassLoader:mClassLoaderList) {
-        if (vClassLoader.hashCode()==classLoader.hashCode()) {
-            log("addClassLoader", "已添加:"+classLoader);
-            return false;
-        }
+        for (ClassLoader vClassLoader : mClassLoaderList) {
+            if (vClassLoader.hashCode() == classLoader.hashCode()) {
+                log("addClassLoader", "已添加:" + classLoader);
+                return false;
+            }
         }
         mClassLoaderList.add(classLoader);
-        log("addClassLoader", "添加成功："+classLoader);
+        log("addClassLoader", "添加成功：" + classLoader);
         return true;
 
     }
@@ -88,11 +92,11 @@ public class hookTool {
             return false;
         }
         if (mClassLoaderList.contains(clazz)) {
-            log("addClass", "已添加:"+clazz);
+            log("addClass", "已添加:" + clazz);
             return false;
         }
         mClassList.add(clazz);
-        log("addClass", "添加成功:"+clazz);
+        log("addClass", "添加成功:" + clazz);
         return true;
 
     }
@@ -293,6 +297,57 @@ public class hookTool {
                 }
             });
         }
+    }
+
+    public static void hook() {
+        Set<XC_MethodHook.Unhook> vUnhook = XposedBridge.hookAllMethods(MessageDigest.class, "update", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                MessageDigest md = (MessageDigest) param.thisObject;
+                String jmlx = md.getAlgorithm();
+                String nmae = param.args[0].getClass().getName();
+                String data = null;
+                if (nmae.contains("byte")) {
+                    byte vB = (byte) param.args[0];
+                    data = String.valueOf(vB);
+                } else if (nmae.contains("[B")) {
+                    byte[] vB = (byte[]) param.args[0];
+                    data = new String(vB, StandardCharsets.UTF_8);
+                } else if (nmae.contains("ByteBuffer")) {
+                    ByteBuffer vB = (ByteBuffer) param.args[0];
+                    data = String.valueOf(vB.getChar());
+                }
+                StringBuilder vStringBuilder = new StringBuilder();
+                vStringBuilder.append("----加密类型----：\n");
+                vStringBuilder.append(jmlx);
+                vStringBuilder.append("----被加密参数----：\n");
+                vStringBuilder.append(data);
+                logtag("");
+                super.afterHookedMethod(param);
+            }
+        });
+        XposedHelpers.findAndHookMethod(MessageDigest.class, "digest", int.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                MessageDigest md = (MessageDigest) param.thisObject;
+                String jmlx = md.getAlgorithm();
+                String data = null;
+                byte[] vB = (byte[]) param.args[0];
+                data = new String(vB, StandardCharsets.UTF_8);
+                StringBuilder vStringBuilder = new StringBuilder();
+                vStringBuilder.append("----加密类型----：\n");
+                vStringBuilder.append(jmlx);
+                vStringBuilder.append("----被加密参数----：\n");
+                vStringBuilder.append(data);
+                logtag("");
+                super.afterHookedMethod(param);
+            }
+        });
+        for (XC_MethodHook.Unhook vUnhook1 : vUnhook) {
+            XposedBridge.unhookMethod(vUnhook1.getHookedMethod(),
+                    vUnhook1.getCallback());
+        }
+
     }
 
 
@@ -592,7 +647,7 @@ public class hookTool {
      *
      * @return 进程号
      */
-    public String getCurProcessName(Context context) {
+    public static String getCurProcessName(Context context) {
 
         int pid = android.os.Process.myPid();
 

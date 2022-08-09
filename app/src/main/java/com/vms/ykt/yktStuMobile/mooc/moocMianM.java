@@ -379,7 +379,7 @@ public class moocMianM {
         List<homeWorkAnswInfo> varWorkAnswInfoList = new ArrayList<>();
         JSONArray varJSONArray = json.getJSONArray("questions");
         if (varJSONArray.size() != 0) {
-            varWorkAnswInfoList = JSONArray.parseArray(varJSONArray.toJSONString(), homeWorkAnswInfo.class);
+            varWorkAnswInfoList = JSONArray.parseArray( json.getString("questions"), homeWorkAnswInfo.class);
         }
         return varWorkAnswInfoList;
     }

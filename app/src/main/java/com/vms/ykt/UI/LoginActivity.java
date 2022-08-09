@@ -49,9 +49,7 @@ public class LoginActivity extends Activity {
     private String cookI = "";
     private boolean isRembPass;
 
-    static {
-        System.loadLibrary("native-lib");
-    }
+
 
     private boolean isLoging=true;
 
