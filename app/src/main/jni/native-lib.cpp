@@ -1,4 +1,7 @@
 #include <jni.h>
+#include <unwind.h>
+#include <dlfcn.h>
+#include <vector>
 #include <string>
 #include <android/log.h>
 #include <unistd.h>
@@ -10,15 +13,51 @@
 #include <sys/reg.h>
 #include <stdio.h>
 #include "common.h"
-
 using namespace std;
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_vms_ykt_UI_LoginActivity_stringFromJNI(JNIEnv *env, jobject thiz) {
-    // TODO: implement stringFromJNI()
-    std::string hello = "Hello from C++";
-    return env->NewStringUTF(hello.c_str());
+
+static _Unwind_Reason_Code unwindCallback(struct _Unwind_Context* context, void* arg)
+{
+    std::vector<_Unwind_Word> &stack = *(std::vector<_Unwind_Word>*)arg;
+    stack.push_back(_Unwind_GetIP(context));
+    return _URC_NO_REASON;
 }
+
+void callstackDump(std::string &dump) {
+    std::vector<_Unwind_Word> stack;
+    _Unwind_Backtrace(unwindCallback, (void*)&stack);
+    dump.append("                                                               \n"
+                "*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***\n"
+                "pid: 17980, tid: 17980, name: callstack.dump  >>> callstack.dump <<<\n"
+                "signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x0\n"
+                "r0 00000000  r1 00000000  r2 00000001  r3 00000001\n"
+                "r4 e8efe008  r5 e0537b99  r6 ff970b88  r7 ff970a98\n"
+                "r8 ff970de0  r9 e7904400  sl e790448c  fp ff970b14\n"
+                "ip e8ef985c  sp ff970a60  lr e8eca00f  pc e0537d86  cpsr 200b0030\n"
+                "backtrace:\n");
+
+    char buff[256];
+    for (size_t i = 0; i < stack.size(); i++) {
+        Dl_info info;
+        if (!dladdr((void*)stack[i], &info)) {
+            continue;
+        }
+        int addr = (char*)stack[i] - (char*)info.dli_fbase - 1;
+        if (info.dli_sname == NULL || strlen(info.dli_sname) == 0) {
+            sprintf(buff, "#%02x pc %08x  %s\n", i, addr, info.dli_fname);
+        } else {
+            sprintf(buff, "#%02x pc %08x  %s (%s+00)\n", i, addr, info.dli_fname, info.dli_sname);
+        }
+        dump.append(buff);
+    }
+}
+
+void callstackLogcat(int prio, const char* tag) {
+    std::string dump;
+    callstackDump(dump);
+    __android_log_print(prio, tag, "%s", dump.c_str());
+}
+
+
 
 static void ki(int num) {
     int status;
@@ -83,8 +122,9 @@ int has_debugger3() {
     return debugger;
 }
 
-JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jclass type, jobject thiz) {
-    std::string pk = base64d(base64e("pk",sizeof("pk")));
+
+JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject thi, jobject thiz) {
+    std::string pk = base64d(base64e("com.vms.zjy",sizeof("com.vms.zjy")));
     std::string si = base64d(base64e("pk",sizeof("pk")));
 
     jclass jclass1 = jniEnv->GetObjectClass(thiz);
@@ -114,6 +154,8 @@ JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jclass type, jobject thiz) {
     jmethodId2 = jniEnv->GetMethodID(jclass2, "toCharsString", "()Ljava/lang/String;");
     jstring jstring2 = (jstring) jniEnv->CallObjectMethod(jobject2, jmethodId2);
 
+    LOGD("jstring1",jstring1);
+    LOGD("jstring2",jstring2);
     if (strcmp(pk.c_str(), jniEnv->GetStringUTFChars(jstring1, NULL)) != 0 ||
         strcmp(si.c_str(), jniEnv->GetStringUTFChars(jstring2, NULL)) != 0) {
         return jniEnv->NewStringUTF("1");
@@ -121,7 +163,7 @@ JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jclass type, jobject thiz) {
     return jniEnv->NewStringUTF("-1");
 }
 
-JNIEXPORT jstring JNICALL gothread(JNIEnv *jniEnv, jclass type) {
+JNIEXPORT jstring JNICALL gothread(JNIEnv *jniEnv, jobject thiz) {
     has_debugger2();
     if (has_debugger3() || debugger_present) {
         ki(getpid());
@@ -134,9 +176,11 @@ JNIEXPORT jstring JNICALL gothread(JNIEnv *jniEnv, jclass type) {
 
 
 static JNINativeMethod mMethods[] = {
-        {"ck", "(Ljava/lang/Object;)Ljava/lang/String;", (void *) gck},
+        {"ck", "(Landroid/content/Context;)Ljava/lang/String;", (void *) gck},
         {"thread", "()Ljava/lang/String;", (void *) gothread},
 };
+
+JavaVM *vm = nullptr;
 
 static int
 registerNativeMethods(JNIEnv *env, const char *className, const JNINativeMethod *gMethods,
@@ -159,9 +203,13 @@ static int registerNative(JNIEnv *env) {
                                  sizeof(mMethods) / sizeof(mMethods[0]));
 }
 
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
     LOGE("JNI_OnLoad ------------------------------ ");
+
+    vm=jvm;
+
     JNIEnv *env = NULL;
+
     jint result = -1;
     /*
      * JavaVM::GetEnv 原型为 jint (*GetEnv)(JavaVM*, void**, jint);
@@ -169,17 +217,20 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
      * 由于Dalvik虚拟机通常是Multi-threading的。每一个线程调用JNI_OnLoad()时，
      * 所用的JNI Env是不同的，因此我们必须在每次进入函数时都要通过vm->GetEnv重新获取
      */
-    if (vm->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
-        return -1;
+    if (vm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
+        return result;
     }
 
     if (registerNative(env) != JNI_OK) {
-        return -1;
+        return result;
     }
 
-    result = JNI_VERSION_1_4;
+    result = JNI_VERSION_1_6;
     return result;
 }
+
+
+
 
 
 static const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -189,7 +240,6 @@ static const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 static inline bool is_base64(const char c) {
     return (isalnum(c) || (c == '+') || (c == '/'));
 }
-
 //加密
 string base64e(const char *bytes_to_encode, unsigned int in_len) {
     std::string ret;
@@ -275,3 +325,9 @@ std::string base64d(std::string const &encoded_string) {
     return ret;
 }
 
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_vms_ykt_Util_Tool_stringFromJNI(JNIEnv *env, jobject thiz) {
+    std::string hello = "Hello from C++";
+    return env->NewStringUTF(hello.c_str());
+}

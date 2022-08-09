@@ -12,7 +12,7 @@ import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
+
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -299,11 +299,9 @@ public class Tool {
 
     public native static String ck(Context context);
 
-    public native static String theard();
+    public native static String thread();
 
-    static {
-        System.loadLibrary("native-lib");
-    }
+    public native String stringFromJNI();
 
     public static String getURLEncoderString(String str) {
         String result = "";

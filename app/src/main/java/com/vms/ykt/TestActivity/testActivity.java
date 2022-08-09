@@ -60,6 +60,9 @@ public class testActivity extends AppCompatActivity {
     private TestEditor mTestEditor;
     private TestView mTestView;
     private final String TAG = testActivity.class.getSimpleName();
+    static {
+        System.loadLibrary("native-lib");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class testActivity extends AppCompatActivity {
         setContentView(R.layout.test_activity);
 
         String ck=Tool.ck(this);
+        getPackageName();
         mButton = findViewById(R.id.button);
         mTestEditor = findViewById(R.id.testEditors);
         mTestView = findViewById(R.id.testViews);

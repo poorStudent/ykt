@@ -66,7 +66,7 @@ android {
                     'src/main/res'
             ]
 
-            jniLibs.srcDirs = ['libs']
+            //jniLibs.srcDirs = ['libs']
         }
     }
 
@@ -147,7 +147,6 @@ dependencies {
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-alpha07'
     implementation 'androidx.core:core-ktx:1.5.0-alpha02'
-    def kotlin_version = '1.6.10'
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
@@ -165,7 +164,9 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
 
 
 }

@@ -325,7 +325,7 @@ public class LoginActivity extends Activity {
         }).start();
     }
 
-    public native String stringFromJNI();
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

@@ -44,7 +44,8 @@ IMPORTED_LOCATION
 
 对应于Android.mk 下的 LOCAL_LDLIBS
 ]]
-
+include_directories(utils
+        )
 
 add_library( # 设置库的名称。
         native-lib
@@ -66,15 +67,21 @@ find_library(
         # 指定 NDK 库的名称
         # you want CMake to locate.
         log)
+find_library(
+
+        utils-lib
+
+
+        utils)
 
 # 指定库 CMake 应链接到您的目标库。您可以链接多个库，例如您在此构建脚本中定义的库、预构建的第三方库或系统库。
 
 target_link_libraries( # 指定目标库。
         native-lib
-
         # Links the target library to the log library
         # included in the NDK.
-        ${log-lib})
+        ${log-lib}
+        ${utils})
 
 #[[
 target_link_libraries(
