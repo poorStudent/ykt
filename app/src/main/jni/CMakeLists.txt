@@ -24,7 +24,7 @@ add_library(cloud-core SHARED IMPORTED)
 set_target_properties(cloud-core
         PROPERTIES
         IMPORTED_LOCATION
-        ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libleancloud-core.so)
+        ${CMAKE_SOURCE_DIR}/../libsOut/${ANDROID_ABI}/libnative-lib.so)
 
 add_library( # 设置库的名称。
         native-lib
