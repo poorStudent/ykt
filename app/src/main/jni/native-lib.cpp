@@ -11,7 +11,6 @@
 #include <unistd.h>
 #include <sys/user.h>
 #include <sys/reg.h>
-#include <stdio.h>
 #include "common.h"
 
 using namespace std;
