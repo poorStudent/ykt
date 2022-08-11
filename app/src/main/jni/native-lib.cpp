@@ -13,7 +13,13 @@
 #include <sys/reg.h>
 #include <stdio.h>
 #include "common.h"
+
 using namespace std;
+
+JavaVM *vm = nullptr;
+
+static int debugger_present = -1;
+
 
 static _Unwind_Reason_Code unwindCallback(struct _Unwind_Context* context, void* arg)
 {
@@ -69,32 +75,6 @@ static void ki(int num) {
         printf("chile process receive signal %d\n", WTERMSIG(status));
 }
 
-int has_debugger() {
-    char buff1[24], buff2[26];
-    FILE *f;
-
-    snprintf(buff1, 24, "/proc/%d/status", getppid());
-    f = fopen(buff1, "r");
-    // the first line in status is name
-    if (f == NULL) {
-        printf("can not load file!");
-        return 1;
-    }
-    while (!feof(f)) {
-        fgets(buff2, 26, f);
-        int has_gdb = (strstr(buff2, "gdb") || strstr(buff2, "ltrace") || strstr(buff2, "strace"));
-        if (has_gdb != 0) {
-            printf("debugger attached!\n");
-            ki(getpid());
-            return has_gdb;
-        }
-    }
-    fclose(f);
-
-    return 0;
-}
-
-static int debugger_present = -1;
 
 static void sigtrap_handler(int signum) {
     debugger_present = 0;
@@ -122,16 +102,64 @@ int has_debugger3() {
     return debugger;
 }
 
+int has_debugger() {
+    char buff1[24], buff2[100];
+    FILE *f;
 
-JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject thi, jobject thiz) {
-    std::string pk = base64d(base64e("com.vms.zjy",sizeof("com.vms.zjy")));
-    std::string si = base64d(base64e("pk",sizeof("pk")));
+    snprintf(buff1, 24, "/proc/%d/status", getppid());
+    f = fopen(buff1, "r");
+    // the first line in status is name
+    if (f == NULL) {
+        printf("can not load file!");
+        return 0;
+    }
+    while (!feof(f)) {
+        fgets(buff2, 100, f);
+        int has_gdb = (strstr(buff2, "gdb") || strstr(buff2, "ltrace") || strstr(buff2, "strace"));
+        if (has_gdb != 0) {
+            printf("debugger attached!\n");
+            ki(getpid());
+        }
+    }
+    fclose(f);
+
+    return 0;
+}
+
+void *threadTask(void* args){
+    JNIEnv *env;
+    jint result = vm->AttachCurrentThread(&env,0);
+    if (result != JNI_OK){
+        return 0;
+    }
+
+    while (1) {
+        usleep(3000);
+        has_debugger2();
+        if (has_debugger3() || debugger_present) {
+            ki(getpid());
+            break;
+        }
+        has_debugger();
+    }
+    // ...
+
+    // 线程 task 执行完后不要忘记分离
+    vm->DetachCurrentThread();
+}
+
+
+JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject cls, jobject thiz) {
+    std::string pk ="com.vms.zjy"; //base64d(base64e("com.vms.zjy",sizeof("com.vms.zjy")));
+    std::string si = "pk";//base64d(base64e("pk",sizeof("pk")));
 
     jclass jclass1 = jniEnv->GetObjectClass(thiz);
     jmethodID jmethodId = jniEnv->GetMethodID(jclass1, "getPackageName", "()Ljava/lang/String;");
     jobject jobject1 = jniEnv->CallObjectMethod(thiz, jmethodId);
     if (jobject1 == NULL) return jniEnv->NewStringUTF("0");
-    auto jstring1 = (jstring) jobject1;
+    jstring jstring1 = (jstring) jobject1;
+
+    jniEnv->DeleteLocalRef(jclass1);
     jniEnv->DeleteLocalRef(jobject1);
 
     jmethodID jmethodId1 = jniEnv->GetMethodID(jclass1, "getPackageManager",
@@ -154,10 +182,21 @@ JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject thi, jobject thiz) {
     jmethodId2 = jniEnv->GetMethodID(jclass2, "toCharsString", "()Ljava/lang/String;");
     jstring jstring2 = (jstring) jniEnv->CallObjectMethod(jobject2, jmethodId2);
 
-    LOGD("jstring1",jstring1);
-    LOGD("jstring2",jstring2);
-    if (strcmp(pk.c_str(), jniEnv->GetStringUTFChars(jstring1, NULL)) != 0 ||
-        strcmp(si.c_str(), jniEnv->GetStringUTFChars(jstring2, NULL)) != 0) {
+    jniEnv->DeleteLocalRef(jarray1);
+    jniEnv->DeleteLocalRef(jobject2);
+    jniEnv->DeleteLocalRef(jclass2);
+
+    const char * pks =  jniEnv->GetStringUTFChars(jstring1, 0);
+    const char * sins= jniEnv->GetStringUTFChars(jstring2, 0);
+
+    if (pks== nullptr || sins == nullptr){
+        LOGD("pks sins","%s","nullptr");
+    }
+    LOGD("%s", pks);
+    LOGD("%s",sins);
+
+    if (strcmp(pk.c_str(), pks)!= 0 ||
+        strcmp(si.c_str(), sins) != 0) {
         return jniEnv->NewStringUTF("1");
     }
     return jniEnv->NewStringUTF("-1");
@@ -166,11 +205,7 @@ JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject thi, jobject thiz) {
 JNIEXPORT jstring JNICALL gothread(JNIEnv *jniEnv, jobject thiz) {
     has_debugger2();
     if (has_debugger3() || debugger_present) {
-        ki(getpid());
-        return jniEnv->NewStringUTF("1");
     }
-    has_debugger();
-   return jniEnv->NewStringUTF("-1");
 
 }
 
@@ -180,7 +215,7 @@ static JNINativeMethod mMethods[] = {
         {"thread", "()Ljava/lang/String;", (void *) gothread},
 };
 
-JavaVM *vm = nullptr;
+
 
 static int
 registerNativeMethods(JNIEnv *env, const char *className, const JNINativeMethod *gMethods,
@@ -221,6 +256,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
         return result;
     }
 
+    pthread_t pid;
+    pthread_create(&pid,0,threadTask,0);
+
     if (registerNative(env) != JNI_OK) {
         return result;
     }
@@ -228,7 +266,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
     result = JNI_VERSION_1_6;
     return result;
 }
-
 
 
 

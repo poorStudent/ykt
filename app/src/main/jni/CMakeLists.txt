@@ -44,8 +44,13 @@ IMPORTED_LOCATION
 
 对应于Android.mk 下的 LOCAL_LDLIBS
 ]]
-include_directories(utils
-        )
+add_library(libutils
+        SHARED
+        IMPORTED)
+set_target_properties( libutils
+        PROPERTIES
+        IMPORTED_LOCATION
+        ......../libutils.so )
 
 add_library( # 设置库的名称。
         native-lib
@@ -81,6 +86,7 @@ target_link_libraries( # 指定目标库。
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib}
+        ${libutils}
         ${utils})
 
 #[[
