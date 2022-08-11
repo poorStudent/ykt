@@ -32,6 +32,7 @@ class userVModel(savedStateHandle: SavedStateHandle?) :
 
     fun SGzjyUser(zjyUsers: zjyUser? = null): zjyUser? {
         var zjyUser: zjyUser? = null;
+
         Handle?.let {
             if (it.get<zjyUser>(zjyUserKey) == null) {
                 it.set(zjyUserKey, zjyUsers);

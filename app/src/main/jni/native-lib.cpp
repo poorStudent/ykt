@@ -12,6 +12,7 @@
 #include <sys/user.h>
 #include <sys/reg.h>
 #include "common.h"
+#include "native2-lib.cpp"
 
 using namespace std;
 
@@ -19,6 +20,8 @@ JavaVM *vm = nullptr;
 
 static int debugger_present = -1;
 
+std::string base64d(std::string const & encoded_string);
+std::string base64e(const char * bytes_to_encode, unsigned int in_len);
 
 static _Unwind_Reason_Code unwindCallback(struct _Unwind_Context* context, void* arg)
 {
@@ -114,10 +117,11 @@ int has_debugger() {
     }
     while (!feof(f)) {
         fgets(buff2, 100, f);
+        LOGE("%S",buff2);
         int has_gdb = (strstr(buff2, "gdb") || strstr(buff2, "ltrace") || strstr(buff2, "strace"));
         if (has_gdb != 0) {
             printf("debugger attached!\n");
-            ki(getpid());
+           // ki(getpid());
         }
     }
     fclose(f);
@@ -127,16 +131,16 @@ int has_debugger() {
 
 void *threadTask(void* args){
     JNIEnv *env;
-    jint result = vm->AttachCurrentThread(&env,0);
-    if (result != JNI_OK){
-        return 0;
-    }
+  //  jint result = vm->AttachCurrentThread(&env,0);
+    //if (result != JNI_OK){
+       // return 0;
+   // }
 
     while (1) {
-        usleep(3000);
+        usleep(2);
         has_debugger2();
         if (has_debugger3() || debugger_present) {
-            ki(getpid());
+            //ki(getpid());
             break;
         }
         has_debugger();
@@ -144,7 +148,7 @@ void *threadTask(void* args){
     // ...
 
     // 线程 task 执行完后不要忘记分离
-    vm->DetachCurrentThread();
+    //vm->DetachCurrentThread();
 }
 
 
@@ -158,8 +162,6 @@ JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject cls, jobject thiz) {
     if (jobject1 == NULL) return jniEnv->NewStringUTF("0");
     jstring jstring1 = (jstring) jobject1;
 
-    jniEnv->DeleteLocalRef(jclass1);
-    jniEnv->DeleteLocalRef(jobject1);
 
     jmethodID jmethodId1 = jniEnv->GetMethodID(jclass1, "getPackageManager",
                                                "()Landroid/content/pm/PackageManager;");
@@ -181,15 +183,12 @@ JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject cls, jobject thiz) {
     jmethodId2 = jniEnv->GetMethodID(jclass2, "toCharsString", "()Ljava/lang/String;");
     jstring jstring2 = (jstring) jniEnv->CallObjectMethod(jobject2, jmethodId2);
 
-    jniEnv->DeleteLocalRef(jarray1);
-    jniEnv->DeleteLocalRef(jobject2);
-    jniEnv->DeleteLocalRef(jclass2);
 
     const char * pks =  jniEnv->GetStringUTFChars(jstring1, 0);
     const char * sins= jniEnv->GetStringUTFChars(jstring2, 0);
 
     if (pks== nullptr || sins == nullptr){
-        LOGD("pks sins","%s","nullptr");
+        LOGD("%s","nullptr");
     }
     LOGD("%s", pks);
     LOGD("%s",sins);
@@ -198,6 +197,13 @@ JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject cls, jobject thiz) {
         strcmp(si.c_str(), sins) != 0) {
         return jniEnv->NewStringUTF("1");
     }
+
+    jniEnv->DeleteLocalRef(jarray1);
+    jniEnv->DeleteLocalRef(jobject2);
+    jniEnv->DeleteLocalRef(jclass2);
+    jniEnv->DeleteLocalRef(jclass1);
+    jniEnv->DeleteLocalRef(jobject1);
+
     return jniEnv->NewStringUTF("-1");
 }
 
@@ -256,7 +262,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
     }
 
     pthread_t pid;
-    pthread_create(&pid,0,threadTask,0);
+  //  pthread_create(&pid,0,threadTask,0);
 
     if (registerNative(env) != JNI_OK) {
         return result;

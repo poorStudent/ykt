@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.appcompat.widget.ViewUtils;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,6 +26,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.vms.ykt.R;
 import com.vms.ykt.Util.DateTimeFormatUtil;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.viewModel.ViewModelUtils;
+import com.vms.ykt.viewModel.userVModel;
 import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocCourseInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocHttp;
@@ -63,7 +66,7 @@ public class testActivity extends AppCompatActivity {
     static {
         System.loadLibrary("native-lib");
     }
-
+    private userVModel mUserVModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,28 +100,12 @@ public class testActivity extends AppCompatActivity {
             }
         });
 
-
-        List<MutableLiveData<zjyUser>> vMutableLiveDataList = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            zjyUser vUser = new zjyUser();
-            vUser.setUserName("mk" + i);
-            vUser.setType(i + 100);
-            MutableLiveData<zjyUser> vMutableLiveData = new MutableLiveData<>();
-            vMutableLiveData.setValue(vUser);
-            vMutableLiveDataList.add(vMutableLiveData);
-        }
-        mTestViewModel.setLiveDataListTLL(vMutableLiveDataList);
-
-        for (MutableLiveData<zjyUser> vLiveData : mTestViewModel.getLiveDataListTLL()) {
-            vLiveData.observe(this, new Observer<zjyUser>() {
-                @Override
-                public void onChanged(zjyUser zjyUser) {
-                    Log.d(TAG, "onChanged: " + (zjyUser).getUserName());
-                }
-            });
-        }
-
-
+        mUserVModel=ViewModelUtils.getPrivateViewModel(getApplication(), userVModel.class, this);
+        String vS = String.valueOf(Tool.getRandomInt( 0,999999));
+        userInfo vUserInfo= new userInfo();
+        vUserInfo.setId(vS);
+        mUserVModel.SGcqoocUser(vUserInfo);
+        Tool.toast(this,mUserVModel.SGcqoocUser(null).getId());
         initTestPage();
     }
 
@@ -217,7 +204,7 @@ public class testActivity extends AppCompatActivity {
 
         System.out.println(byte.class.getName());
 
-            System.out.println(byte.class.getTypeName());
+        System.out.println(byte.class.getTypeName());
         System.out.println(byte.class.isArray());
         System.out.println(byte.class.getComponentType());
         System.out.println(byte.class.isPrimitive());

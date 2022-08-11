@@ -19,7 +19,7 @@ project("vmsZjy")
 # 前面一个是命令，后面是路径
 #set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../jniLibs/${ANDROID_ABI})
 
-file(GLOB jni native-lib.cpp native2-lib.cpp)#设置统配符
+file(GLOB jni native-lib.cpp)#设置统配符
 
 #[[
 #设置头文件搜索路径（和此txt同个路径的头文件无需设置），可选 对应于Android.mk 下的 LOCAL_C_INCLUDES

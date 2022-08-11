@@ -1,5 +1,7 @@
-#include "common.h"
 #include <jni.h>
 
-jint appInit(){
+jint appInit(JNIEnv *jniEnv, jobject cls, jobject thiz){
+
+    return  1;
+
 }

@@ -16,6 +16,7 @@ import java.io.Serializable;
  "qqAccessToken":null,"wxOpenId":null,"wxAccessToken":null}
  **/
 public class userInfo implements Serializable {
+
     private String id;
 
     public String getStaytime() {

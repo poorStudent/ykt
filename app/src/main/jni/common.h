@@ -5,12 +5,9 @@
 #ifndef VMSZJY_COMMON_H
 #define VMSZJY_COMMON_H
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-std::string base64d(std::string const & encoded_string);
-std::string base64e(const char * bytes_to_encode, unsigned int in_len);
 #define LOGOPEN 1 //日志开关，1为开，其它为关
 #define LOG_TAG    "[CLOUDWISE-NDK]"
 #if(LOGOPEN==1)
