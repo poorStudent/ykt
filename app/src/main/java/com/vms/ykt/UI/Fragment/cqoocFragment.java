@@ -38,6 +38,8 @@ import com.vms.ykt.UI.Adapter.cqoocAdapter.cqoocRecyclerAdapter;
 import com.vms.ykt.UI.yktMainActivity;
 import com.vms.ykt.Util.CacheUs;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.viewModel.ViewModelUtils;
+import com.vms.ykt.viewModel.userVModel;
 import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocCourseInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocHttp;
@@ -73,10 +75,12 @@ public class cqoocFragment extends baseFragment {
     private cqoocHttp mCqoocHttp;
     private cqoocMain mCqoocMain;
     private cqApi mCqApi;
-
+    private static userVModel mUserVModel;
 
     public static Fragment newInstance(int icve) {
         cqoocFragment vIcveFragment = new cqoocFragment();
+        mUserVModel=((yktMainActivity)vIcveFragment.requireActivity()).mUserVModel;
+
         goCqooc=icve;
         return vIcveFragment;
     }
@@ -155,9 +159,10 @@ public class cqoocFragment extends baseFragment {
     }
 
     private void loadData() {
+
+        mUserInfo=mUserVModel.SGcqoocUser(null);
         if (mUserInfo == null || mUserInfo.getUsername() == null) {
             mSwipeRefreshLayout.setRefreshing(false);
-
             mProgressBar.setVisibility(View.GONE);
             mCqoocHttp =new cqoocHttp();
             mCqoocMain=new cqoocMain();
@@ -362,6 +367,9 @@ public class cqoocFragment extends baseFragment {
                                 Tool.toast(mActivity, "登录失败\n" + ck);
                                 return;
                             }
+
+                            mUserVModel.SGcqoocUser(mUserInfo);
+
                             vCacheUs.writeCacheUs(mEditor, "cq", "null", ck);
                             mUserInfo.setCookie("player=1; xsid=" + ck);
                             Tool.toast(mActivity, "登录成功");

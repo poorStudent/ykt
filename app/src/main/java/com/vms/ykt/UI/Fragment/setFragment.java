@@ -32,6 +32,7 @@ public class setFragment extends baseFragment{
 
     public static Fragment newInstance(String set) {
         setFragment vSetFragment=new setFragment();
+
         return vSetFragment;
     }
     @Override
@@ -56,6 +57,7 @@ public class setFragment extends baseFragment{
     public void onViewCreated( View view,  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated: ");
+
         initView(view);
 
     }

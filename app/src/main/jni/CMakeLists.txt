@@ -19,7 +19,7 @@ project("vmsZjy")
 # 前面一个是命令，后面是路径
 #set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../jniLibs/${ANDROID_ABI})
 
-file(GLOB jni "*.cpp")#设置统配符
+file(GLOB jni native-lib.cpp native2-lib.cpp)#设置统配符
 
 #[[
 #设置头文件搜索路径（和此txt同个路径的头文件无需设置），可选 对应于Android.mk 下的 LOCAL_C_INCLUDES
@@ -44,13 +44,6 @@ IMPORTED_LOCATION
 
 对应于Android.mk 下的 LOCAL_LDLIBS
 ]]
-add_library(libutils
-        SHARED
-        IMPORTED)
-set_target_properties( libutils
-        PROPERTIES
-        IMPORTED_LOCATION
-        ......../libutils.so )
 
 add_library( # 设置库的名称。
         native-lib
@@ -72,10 +65,10 @@ find_library(
         # 指定 NDK 库的名称
         # you want CMake to locate.
         log)
+
+
 find_library(
-
         utils-lib
-
 
         utils)
 
@@ -86,7 +79,6 @@ target_link_libraries( # 指定目标库。
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib}
-        ${libutils}
         ${utils})
 
 #[[

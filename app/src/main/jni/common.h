@@ -5,6 +5,7 @@
 #ifndef VMSZJY_COMMON_H
 #define VMSZJY_COMMON_H
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
