@@ -17,6 +17,7 @@ jstring sk(JNIEnv *jniEnv, jclass cls, jstring jstring1){
     return jstring2;
 
 }
+
 jstring sm(JNIEnv *jniEnv, jclass cls, jstring jstring1,jstring jstring2){
     jclass sbclass=jniEnv->FindClass("java/lang/StringBuilder");
     jmethodID sbinit=jniEnv->GetMethodID(sbclass,"<init>","()V");
