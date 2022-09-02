@@ -3,13 +3,14 @@ package com.vms.ykt.Util
 import android.content.SharedPreferences
 
 
-open class CacheUs {
+open class CacheUs(mUserName: String?, mPassWord: String?) {
 
     var flag: String="";
 
-    constructor(mUserName: String?, mPassWord: String?) {
-        this.flag = mUserName + mPassWord;
+    init {
+        this.flag = mUserName + mPassWord
     }
+
 
     public fun readCacheUs(mPreferences: SharedPreferences?,flg:String): Array<String?>? {
         val usInfo = arrayOfNulls<String>(2)

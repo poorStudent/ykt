@@ -49,8 +49,6 @@ public class LoginActivity extends Activity {
     private String cookI = "";
     private boolean isRembPass;
 
-
-
     private boolean isLoging=true;
 
     @Override
@@ -251,14 +249,14 @@ public class LoginActivity extends Activity {
                 final String ck;
 
                 if (webLoginSwitch.isChecked()) {
-                    ret = zjyWebLogin.login(username, password, getApplicationContext());
+                    ret = zjyWebLogin.login(username, password, LoginActivity.this);
                     resp = ret[0];
                     ck = ret[1];
                 } else if (otherLoginSwitch.isChecked()) {
                     String userInfo = cookEdit.getText().toString();
-                    zjyOtherLogin.login(userInfo);
+                    String[] vLogin = zjyOtherLogin.login(userInfo);
                     resp = userInfo;
-                    ck = ret[1];
+                    ck = "";
                 } else {
                     zjyMobileLogin.appv = appv;
                     String[] cache = vCacheUs.readCacheUs(mPreferences, "ykt");
@@ -325,8 +323,6 @@ public class LoginActivity extends Activity {
         }).start();
     }
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -350,6 +346,19 @@ public class LoginActivity extends Activity {
             Log.e(TAG, "onRequestPermissionsResult >>>已全部授权");
         }
 
+    }
+
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        switch (resultCode){
+            case 1001:
+                break;
+            case 1002:
+                break;
+            default:
+                break;
+        }
+        super.onActivityReenter(resultCode, data);
     }
 }
 

@@ -218,7 +218,8 @@ JNIEXPORT jstring JNICALL gothread(JNIEnv *jniEnv, jobject thiz) {
 static JNINativeMethod mMethods[] = {
         {"ck", "(Landroid/content/Context;)Ljava/lang/String;", (void *) gck},
         {"thread", "()Ljava/lang/String;", (void *) gothread},
-        {"thread", "()Ljava/lang/String;", (void *) appInit}
+        {"sk", "(Ljava/lang/String;)Ljava/lang/String;", (void *) sk},
+        {"sm", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", (void *) sm}
 };
 
 
