@@ -1,6 +1,9 @@
 package com.vms.ykt.Util;
 
+import android.location.Location;
 import android.util.Log;
+
+import com.alibaba.fastjson.JSONObject;
 
 import okhttp3.*;
 
@@ -14,7 +17,9 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -69,105 +74,6 @@ public class httpTool {
 
         return ssfFactory;
 
-    }
-
-    public static String doGet(String url) {
-        return doGet(url, null);
-    }
-
-    public static String doGet(String url, Map<String, Object> header) {
-
-        return doGet(url, header, "").getmResp();
-    }
-
-    public static httpRespnose doGet(String url, Map<String, Object> header, String body) {
-
-        return doGets(url, header, null, body);
-    }
-
-    public static String doGet(String url, Map<String, Object> header, Map<String, Object> query) {
-
-        return doGets(url, header, query, "").getmResp();
-    }
-
-    /**
-     * get 请求
-     *
-     * @param url    url
-     * @param header 请求头参数
-     * @param query  参数
-     * @return
-     */
-    public static httpRespnose doGets(String url, Map<String, Object> header, Map<String, Object> query, String body) {
-
-        // 创建一个请求 Builder
-        Request.Builder builder = new Request.Builder();
-        // 创建一个 request
-        if (body != null || !body.isEmpty()) {
-            url = url + "?" + body;
-        }
-        Request request = builder.url(url).build();
-        //    Request.Builder request = builder.url(url);
-
-        // 创建一个 Headers.Builder
-        Headers.Builder headerBuilder = request.headers().newBuilder();
-
-        // 装载请求头参数
-        if (header != null) {
-            Iterator<Map.Entry<String, Object>> headerIterator = header.entrySet().iterator();
-            while (headerIterator.hasNext()) {
-                Map.Entry<String, Object> entry = headerIterator.next();
-                headerBuilder.add(entry.getKey(), (String) entry.getValue());
-
-            }
-        }
-
-        // 或者 FormBody.create 方式，只适用于接口只接收文件流的情况
-        // RequestBody requestBody = FormBody.create(MediaType.parse("application/octet-stream"), file);
-        MultipartBody.Builder requestBuilder = new MultipartBody.Builder();
-
-        // 状态请求参数
-
-
-        // 装载请求的参数
-        if (query != null) {
-            Iterator<Map.Entry<String, Object>> headerIterator = query.entrySet().iterator();
-            while (headerIterator.hasNext()) {
-                Map.Entry<String, Object> entry = headerIterator.next();
-                requestBuilder.addFormDataPart(entry.getKey(), (String) entry.getValue());
-
-            }
-        }
-
-        // 设置自定义的 builder
-        // 因为 get 请求的参数，是在 URL 后面追加  http://xxxx:8080/user?name=xxxx?sex=1
-        //   builder.url(urlBuilder.build()).headers(headerBuilder.build());
-
-
-        httpRespnose varMRespnose = new httpRespnose();
-        ;
-        try (Response execute = client.newCall(builder.build()).execute()) {
-
-            if (execute.code() == 503) {
-                //  return doGets(url, header, query,body);
-
-            }
-            if (execute.code() != 200) {
-                Log.d(TAG, "doGets: "+execute.code());
-            }
-
-
-            varMRespnose.setHeaders(execute.headers());
-            String resp = execute.body().string();
-
-            varMRespnose.setmResp(resp);
-            varMRespnose.setBytes(resp.getBytes(StandardCharsets.UTF_8));
-
-            return varMRespnose;
-        } catch (Exception ParmsE) {
-            ParmsE.printStackTrace();
-        }
-        return varMRespnose;
     }
 
 
@@ -280,6 +186,123 @@ public class httpTool {
         return "";
     }
 
+    public static String downPic(String url, String pathName) {
+
+        httpRespnose ret = null;
+        String ck = "";
+        try {
+            ret = getT(url, null, null, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ck = ret.getSetCookie();
+
+        InputStream inputStream = new ByteArrayInputStream(ret.getRespBytes());
+
+
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(new File(pathName));
+            byte[] buffer = new byte[2048];
+            int len = 0;
+            while ((len = inputStream.read(buffer)) != -1) {
+                fileOutputStream.write(buffer, 0, len);
+            }
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+
+        return ck;
+    }
+
+
+
+    /**
+     * get 请求
+     *
+     * @param url    url
+     * @param header 请求头参数
+     * @param query  参数
+     * @return
+     */
+    public static httpRespnose getT(String url, Map<String, Object> header, Map<String, Object> query, String body) {
+
+        // 创建一个请求 Builder
+        Request.Builder builder = new Request.Builder();
+        // 创建一个 request
+        if (body != null && !body.isEmpty()) {
+            url = url + "?" + body;
+        }
+        Request request = builder.url(url).build();
+        //    Request.Builder request = builder.url(url);
+
+        // 创建一个 Headers.Builder
+        Headers.Builder headerBuilder = request.headers().newBuilder();
+
+        // 装载请求头参数
+        if (header != null) {
+            Iterator<Map.Entry<String, Object>> headerIterator = header.entrySet().iterator();
+            while (headerIterator.hasNext()) {
+                Map.Entry<String, Object> entry = headerIterator.next();
+                headerBuilder.add(entry.getKey(), (String) entry.getValue());
+
+            }
+        }
+
+        // 或者 FormBody.create 方式，只适用于接口只接收文件流的情况
+        // RequestBody requestBody = FormBody.create(MediaType.parse("application/octet-stream"), file);
+        MultipartBody.Builder requestBuilder = new MultipartBody.Builder();
+
+        // 状态请求参数
+
+
+        // 装载请求的参数
+        if (query != null) {
+            Iterator<Map.Entry<String, Object>> headerIterator = query.entrySet().iterator();
+            while (headerIterator.hasNext()) {
+                Map.Entry<String, Object> entry = headerIterator.next();
+                requestBuilder.addFormDataPart(entry.getKey(), (String) entry.getValue());
+
+            }
+        }
+
+        // 设置自定义的 builder
+        // 因为 get 请求的参数，是在 URL 后面追加  http://xxxx:8080/user?name=xxxx?sex=1
+        //   builder.url(urlBuilder.build()).headers(headerBuilder.build());
+
+
+        httpRespnose varHttpRespnose = new httpRespnose();
+        try (Response execute = client.newCall(builder.build()).execute()) {
+
+            if (execute.code() == 503) {
+                //  return doGets(url, header, query,body);
+
+            }
+            Headers Header = execute.headers();
+           // System.out.println(Header.get("set-cookie"));
+            if (execute.code() != 200) {
+                if (execute.code() == 302) {
+
+                }
+                //Log.d(TAG, "getT: " + execute.code());
+            }
+            varHttpRespnose.setHearderFileds(Header.toMultimap());
+            varHttpRespnose.setCode(String.valueOf(execute.code()));
+            varHttpRespnose.setLocation(Header.get("Location"));
+            String resp = execute.body().string();
+            varHttpRespnose.setResp(resp);
+            varHttpRespnose.setRespBytes(resp.getBytes(StandardCharsets.UTF_8));
+            return varHttpRespnose;
+        } catch (Exception ParmsE) {
+            ParmsE.printStackTrace();
+        }
+        return varHttpRespnose;
+    }
     /**
      * JSON数据格式请求
      *
@@ -288,7 +311,6 @@ public class httpTool {
      * @param json
      * @return
      */
-
     public static httpRespnose postT(String url, Map<String, Object> header, String json) {
         // 创建一个请求 Builder
         Request.Builder builder = new Request.Builder();
@@ -316,22 +338,28 @@ public class httpTool {
         builder.headers(headerBuilder.build()).post(requestBody);
 
         httpRespnose varHttpRespnose = new httpRespnose();
-        ;
 
         try (Response execute = client.newCall(builder.build()).execute()) {
             if (execute.code() == 503) {
 
                 //   return postT( url,  header, json);
             }
+            Headers Header = execute.headers();
+
             if (execute.code() != 200) {
-                Log.d(TAG, "postT: "+execute.code());
+                if (execute.code() == 302) {
+
+                }
+               // Log.d(TAG, "postT: " + execute.code());
             }
 
 
-            varHttpRespnose.setHeaders(execute.headers());
+            varHttpRespnose.setHearderFileds(Header.toMultimap());
+            varHttpRespnose.setCode(String.valueOf(execute.code()));
+            varHttpRespnose.setLocation(Header.get("Location"));
             String resp = execute.body().string();
-            varHttpRespnose.setmResp(resp);
-            varHttpRespnose.setBytes(resp.getBytes(StandardCharsets.UTF_8));
+            varHttpRespnose.setResp(resp);
+            varHttpRespnose.setRespBytes(resp.getBytes(StandardCharsets.UTF_8));
 
             return varHttpRespnose;
         } catch (IOException ParmsE) {
@@ -340,52 +368,39 @@ public class httpTool {
         return varHttpRespnose;
     }
 
-    public static String downPic(String url, String pathName) {
 
-        httpRespnose ret = null;
-        String ck = "";
-        try {
-            ret = doGets(url, null, null, "");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static httpRespnose getJ(String requestUrl, Map<String, Object> header, Map<String, Object> query, String body) {
 
-        ck = ret.getHeaders().get("Set-Cookie");
-
-        InputStream inputStream = new ByteArrayInputStream(ret.getBytes());
-
-
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(new File(pathName));
-            byte[] buffer = new byte[2048];
-            int len = 0;
-            while ((len = inputStream.read(buffer)) != -1) {
-                fileOutputStream.write(buffer, 0, len);
-            }
-            fileOutputStream.flush();
-            fileOutputStream.close();
-            inputStream.close();
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-
-        return ck;
-    }
-
-    public static httpRespnose getJ(String requestUrl, Map<String, Object> header, String body) {
         httpRespnose varRespnose = new httpRespnose();
+
         String resp = "";
+
         try {
+
+            if (query!=null){
+                StringBuilder data= new StringBuilder();
+                Iterator<Map.Entry<String, Object>> headerIterator = query.entrySet().iterator();
+                while (headerIterator.hasNext()) {
+                    Map.Entry<String, Object> entry = headerIterator.next();
+                    String key=entry.getKey();
+                    String vu=(String) entry.getValue();
+                    data.append("&");
+                    data.append(key);
+                    data.append("=");
+                    data.append(vu);
+                }
+                String datas=data.toString().replaceFirst("&", "");
+                requestUrl = requestUrl + "?" + datas;
+            }
 
             if (body != null) {
                 if (!body.isEmpty())
-                requestUrl = requestUrl + "?" + body;
+                    requestUrl = requestUrl + "?" + body;
             }
             URL url = new URL(requestUrl);
             HttpURLConnection conn = null;
             conn = (HttpURLConnection) url.openConnection();
+            conn.setInstanceFollowRedirects(false);
             conn.setRequestMethod("GET");
 
             if (header != null) {
@@ -398,10 +413,9 @@ public class httpTool {
             }
 
 
-            if (!(conn.getResponseCode() == 200)) {
-                Log.d(TAG, "getJ: "+conn.getResponseCode());
-            }
-
+            varRespnose.setHearderFileds(conn.getHeaderFields());
+            varRespnose.setCode(String.valueOf(conn.getResponseCode()));
+            varRespnose.setLocation(conn.getHeaderField("Location"));
 
             //指定页面编码读取　否则乱码
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF8"));
@@ -413,21 +427,30 @@ public class httpTool {
 
             br.close();
 
-            varRespnose.setmResp(resp);
-            varRespnose.setBytes(resp.getBytes(StandardCharsets.UTF_8));
-            varRespnose.setmHearderFileds(conn.getHeaderFields());
-            varRespnose.setCode(String.valueOf(conn.getResponseCode()));
+            if (!(conn.getResponseCode() == 200)) {
+                if (conn.getResponseCode() == 302) {
+                    // return toLocationJ(Map, Location, "", 1);
+                }
+
+                // Log.d(TAG, "getJ: " + conn.getResponseCode());
+            }
+
+
+
+
+
+            varRespnose.setResp(resp);
+            varRespnose.setRespBytes(resp.getBytes(StandardCharsets.UTF_8));
+
             return varRespnose;
         } catch (IOException e) {
 
+
             if (e.getMessage().contains("503")) {
 
-
-                //   return getJ(requestUrl,header,body);
+                //return getJ(requestUrl,header,body);
             }
-
             e.printStackTrace();
-
         }
         return varRespnose;
     }
@@ -442,6 +465,7 @@ public class httpTool {
             conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
+            conn.setInstanceFollowRedirects(false);
             if (header != null) {
                 Iterator<Map.Entry<String, Object>> headerIterator = header.entrySet().iterator();
                 while (headerIterator.hasNext()) {
@@ -450,13 +474,15 @@ public class httpTool {
 
                 }
             }
+            if (json==null)json="";
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(conn.getOutputStream()));
             pw.write(json);
             pw.flush();
 
-            if (!(conn.getResponseCode() == 200)) {
-                Log.d(TAG, "postJ: " + conn.getResponseCode());
-            }
+            varRespnose.setHearderFileds(conn.getHeaderFields());
+            varRespnose.setCode(String.valueOf(conn.getResponseCode()));
+            varRespnose.setLocation(conn.getHeaderField("Location"));
+
             //指定页面编码读取　否则乱码
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF8"));
             String cache = "";
@@ -467,10 +493,19 @@ public class httpTool {
             br.close();
             pw.close();
 
-            varRespnose.setmResp(resp);
-            varRespnose.setBytes(resp.getBytes(StandardCharsets.UTF_8));
-            varRespnose.setmHearderFileds(conn.getHeaderFields());
-            varRespnose.setCode(String.valueOf(conn.getResponseCode()));
+            if (!(conn.getResponseCode() == 200)) {
+                if (conn.getResponseCode() == 302) {
+
+                        //return toLocationJ(Map, Location, "", 2);
+                    }
+
+                // Log.d(TAG, "postJ: " + conn.getResponseCode());
+            }
+
+            varRespnose.setResp(resp);
+            varRespnose.setRespBytes(resp.getBytes(StandardCharsets.UTF_8));
+
+
             return varRespnose;
 
         } catch (IOException e) {
@@ -487,4 +522,89 @@ public class httpTool {
         }
         return varRespnose;
     }
+
+
+    public static httpRespnose toLocation(Map<String, Object> Map,httpRespnose httpRespnose , String data, int type) {
+
+        String Location= httpRespnose.getLocation();
+        if (Location==null || Location.isEmpty())return httpRespnose;
+        Map.put("",httpRespnose.getSetCookie());
+        if (type == 1) {
+            return getJ(Location, Map,null, data);
+        } else {
+            return postJ(Location, Map, data);
+            ///return getJ(Location, Map, data);
+        }
+
+
+    }
+
+    private static httpRespnose toLocationT(Headers header, String s, int i) {
+        String Location = header.get("Location");
+        HashMap<String, Object> headers = new HashMap();
+        headers.clear();
+        for (String key : header.names()) {
+            if (key == null || key.equals("")) continue;
+
+            List<String> Values = header.values(key);
+            StringBuilder strd = new StringBuilder();
+            for (String vS : Values) {
+                strd.append(vS);
+            }
+            String Value = strd.toString();
+            if (key.contains("Accept-Encoding") || key.contains("Location")) continue;
+
+            if (key.contains("Set-Cookie")) {
+                headers.put("Cookie", Value);
+            } else {
+                headers.put(key, Value);
+            }
+            if (i == 1) {
+                return getT(Location, headers, null, "");
+            } else {
+                return postT(Location, headers, "");
+
+            }
+        }
+        return null;
+    }
+
+    public static httpRespnose toLocationJ(Map<String, List<String>> Map, String Location, String data, int type) {
+        HashMap<String, Object> header = new HashMap();
+        header.clear();
+        Iterator<Map.Entry<String, List<String>>> headerIterator = Map.entrySet().iterator();
+        while (headerIterator.hasNext()) {
+            Map.Entry<String, List<String>> entry = headerIterator.next();
+            String key = entry.getKey();
+
+            if (key == null || key.equals("")) continue;
+
+            List<String> Values = entry.getValue();
+            StringBuilder strd = new StringBuilder();
+            for (String vS : Values) {
+                strd.append(vS);
+            }
+            String Value = strd.toString();
+            if (key.contains("Accept-Encoding") || key.contains("Location")) continue;
+
+            if (key.contains("Set-Cookie")) {
+                header.put("Cookie", Value);
+            } else {
+                header.put(key, Value);
+            }
+        }
+        System.out.println(Location);
+        System.out.println(JSONObject.toJSONString(header));
+        if (type == 1) {
+            return getJ(Location, header, null,data);
+        } else {
+            return  postJ(Location, header, data);
+            //return getJ(Location, header, data);
+        }
+
+
+    }
+
+
+
 }

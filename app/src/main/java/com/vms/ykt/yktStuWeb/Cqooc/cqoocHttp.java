@@ -51,7 +51,7 @@ public class cqoocHttp implements Serializable {
         String resp="";
         if (!userCookie.isEmpty()) header.put("Cookie", getUserCookie());;
         try {
-            resp= Http.get(requestUrl, header,referer,body);
+            resp= Http.get(requestUrl, header,referer,body).getResp();;
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -75,7 +75,7 @@ public class cqoocHttp implements Serializable {
         //System.out.println(header.get("Cookie"));
 
         ret= Http.post(requestUrl, header,body,referer,userAgent,origin);
-        resp=ret.getmResp();
+        resp=ret.getResp();
 
         return resp;
     }

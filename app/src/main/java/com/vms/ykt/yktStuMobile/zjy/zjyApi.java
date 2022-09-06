@@ -684,7 +684,7 @@ public class zjyApi {
         header.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
         header.put("token", Token);
 
-        resp = httpTool.postJ(getAnswerList, header, postParams).getmResp();
+        resp = httpTool.postJ(getAnswerList, header, postParams).getResp();
         return resp;
     }
 
@@ -705,7 +705,7 @@ public class zjyApi {
         header.put("Host", "zjy.coolcr.cn");
         header.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
-        resp = httpTool.postJ(getAnswer, header, postParams).getmResp();
+        resp = httpTool.postJ(getAnswer, header, postParams).getResp();
         return resp;
     }
 
@@ -722,7 +722,7 @@ public class zjyApi {
         header.put("Host", "app.fuyaoup.cn");
         header.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
-        resp = httpTool.postJ(getToken, header, postParams).getmResp();
+        resp = httpTool.postJ(getToken, header, postParams).getResp();
         return resp;
     }
 

@@ -51,7 +51,7 @@ public class moocHttpW implements Serializable {
         if (!getUserCookie().isEmpty()){
             header.put("Cookie", getUserCookie());
         }
-            resp= Http.get(requestUrl, header,referer,body);
+            resp= Http.get(requestUrl, header,referer,body).getResp();;
         return resp;
     }
 
@@ -69,7 +69,7 @@ public class moocHttpW implements Serializable {
 
             //  System.out.println(header.get("Cookie"));
             ret= Http.post(requestUrl, header,body,referer,userAgent,origin);
-            resp=ret.getmResp();
+            resp=ret.getResp();
 
 
         return resp;

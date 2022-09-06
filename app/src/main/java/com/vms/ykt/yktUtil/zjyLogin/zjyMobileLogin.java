@@ -4,7 +4,6 @@ package com.vms.ykt.yktUtil.zjyLogin;
 import android.util.Log;
 
 import com.vms.ykt.Util.SystemUtil;
-import com.vms.ykt.Util.Tool;
 import com.vms.ykt.Util.httpRespnose;
 import com.vms.ykt.Util.httpTool;
 import com.vms.ykt.yktUtil.zjyTool;
@@ -61,9 +60,10 @@ public class zjyMobileLogin {
         header.put("User-Agent", "okhttp/4.5.0");
         httpRespnose ret = null;
         ret = httpTool.postJ(requestUrl, header, body);
-        resp = ret.getmResp();
+        resp = ret.getResp();
         if (resp != null && !resp.isEmpty()) {
-            ck = Arrays.toString(ret.getmHearderFileds().get("Set-Cookie").toArray());
+            ck = Arrays.toString(ret
+                    .getHearderFileds().get("Set-Cookie").toArray());
             Log.d(TAG, "loginPost: " + ck);
             String reg = "auth=(.+?)(?=;)";
             Matcher m = Pattern.compile(reg).matcher(ck); //进行匹配

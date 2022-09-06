@@ -61,7 +61,7 @@ public class zjyHttpW implements Serializable
         }**/
 
         try {
-            resp= Http.get(requestUrl, header,referer,body);
+            resp= Http.get(requestUrl, header,referer,body).getResp();
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -83,7 +83,7 @@ public class zjyHttpW implements Serializable
         }
 
             ret= Http.post(requestUrl, header,body,referer,userAgent,origin);
-            resp=ret.getmResp();
+            resp=ret.getResp();
 
 
         return resp;

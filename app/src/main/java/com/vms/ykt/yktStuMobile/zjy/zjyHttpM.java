@@ -69,13 +69,9 @@ public class zjyHttpM {
             header.put("Cookie", getUserCookie());
 
         }
-        if (referer != null) {
-
-            header.put("Referer", referer);
-        }
 
 
-        resp = Http.get(requestUrl, header, referer, body);
+        resp = Http.get(requestUrl, header, referer, body).getResp();;
 
         return resp;
     }
@@ -92,16 +88,9 @@ public class zjyHttpM {
         if (!getUserCookie().isEmpty()) {
             header.put("Cookie", getUserCookie());
         }
-        if (referer != null) {
-            header.put("Referer", referer);
-        }
-
-        if (userAgent != null) {
-            header.put("User-Agent", userAgent);
-        }
 
         ret = Http.post(requestUrl, header, body, referer, userAgent, null);
-        resp = ret.getmResp();
+        resp = ret.getResp();
 
 
         return resp;

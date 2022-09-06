@@ -1,8 +1,6 @@
 package com.vms.ykt.yktStuWeb.icve;
 
 
-import android.util.Log;
-
 import com.vms.ykt.Util.Http;
 import com.vms.ykt.Util.httpRespnose;
 import com.vms.ykt.yktUtil.yktHeaders;
@@ -49,7 +47,7 @@ public class icveHttpW implements Serializable {
         String resp="";
 
         try {
-            resp= Http.get(requestUrl, header,referer,body);
+            resp= Http.get(requestUrl, header,referer,body).getResp();;
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -72,7 +70,7 @@ public class icveHttpW implements Serializable {
 
             //  System.out.println(header.get("Cookie"));
             ret= Http.post(requestUrl, header,body,referer,userAgent,origin);
-            resp=ret.getmResp();
+            resp=ret.getResp();
 
 
 

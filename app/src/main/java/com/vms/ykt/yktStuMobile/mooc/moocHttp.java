@@ -51,7 +51,7 @@ public class moocHttp {
         }
 
         try {
-            resp = Http.get(requestUrl, header, referer, body);
+            resp = Http.get(requestUrl, header, referer, body).getResp();;
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -74,7 +74,7 @@ public class moocHttp {
 
         //  System.out.println(header.get("Cookie"));
         ret = Http.post(requestUrl, header, body, referer, userAgent, origin);
-        resp = ret.getmResp();
+        resp = ret.getResp();
 
 
         return resp;

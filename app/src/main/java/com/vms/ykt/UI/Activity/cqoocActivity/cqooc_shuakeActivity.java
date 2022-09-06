@@ -46,7 +46,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
     private cqApi mCqApi;
 
     private Button cqooc_shuke_sz, cqooc_shuke_ks, cqooc_shuke_zt;
-    private SwitchCompat cqooc_shuke_zdtl, cqooc_shuke_zdcy, cqooc_shuke_tgys, cqooc_shuke_sk;
+    private SwitchCompat cqooc_shuke_zdtl, cqooc_shuke_zdcy,cqooc_shuke_zdzy,cqooc_shuke_zdks,cqooc_shuke_sk, cqooc_shuke_tgys;
     private TextView cqooc_shuke_rz, cqooc_shuke_jd;
 
     public boolean isShuke_zt;
@@ -97,6 +97,8 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
         cqooc_shuke_rz = findViewById(R.id.cqooc_shuke_rz);
         cqooc_shuke_zdtl = findViewById(R.id.cqooc_shuke_zdtl);
         cqooc_shuke_zdcy = findViewById(R.id.cqooc_shuke_zdcy);
+        cqooc_shuke_zdzy= findViewById(R.id.cqooc_shuke_zdzy);
+        cqooc_shuke_zdks= findViewById(R.id.cqooc_shuke_zdks);
         cqooc_shuke_tgys = findViewById(R.id.cqooc_shuke_tgys);
         cqooc_shuke_sk = findViewById(R.id.cqooc_shuke_sk);
         cqooc_shuke_sk.setChecked(true);
@@ -176,7 +178,15 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
 
 
         }
+
         //作业考试
+        if (cqooc_shuke_zdzy.isChecked()){
+
+        }
+        if (cqooc_shuke_zdks.isChecked()){
+
+        }
+
     }
 
     public void shuake(cellLessonsInfo varCellLessonsInfo, ArrayList<String> varFinishaLessons) {

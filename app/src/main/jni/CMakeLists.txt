@@ -17,7 +17,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
 
 file(GLOB
         jni
-        native-lib.cpp)#设置统配符
+        native-lib.cpp MD5.cpp)#设置统配符
 
 add_library(cloud-core SHARED IMPORTED)
 

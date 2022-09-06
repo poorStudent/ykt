@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -401,8 +402,8 @@ public class Tool {
         List<T> varObjectList = new ArrayList<>();
         JSONObject json = JSONObject.parseObject(jsons);
         JSONArray varJSONArray = json.getJSONArray(key);
-        if (varJSONArray.isEmpty()) return varObjectList;
-        varObjectList = JSONObject.parseArray(json.getString(key), clazz);
+        if (varJSONArray==null || varJSONArray.size()==0) return varObjectList;
+        varObjectList = varJSONArray.toJavaList(clazz);
         return varObjectList;
     }
 

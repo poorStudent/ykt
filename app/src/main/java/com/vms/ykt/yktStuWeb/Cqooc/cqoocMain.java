@@ -271,13 +271,17 @@ public class cqoocMain implements Serializable {
         return vTaskPreviewList;
     }
     //提交作业
-    public void getTaskAdd(List<TaskPreview> previewList,userInfo UserInfo, cqoocCourseInfo varCourseInfo,examTask examTask){
+    public String getTaskAdd(List<TaskPreview> previewList,userInfo UserInfo, cqoocCourseInfo varCourseInfo,examTask examTask){
+        StringBuilder vStringBuilder = new StringBuilder();
         for (TaskPreview vPreview :previewList){
-           String resp=mCqApi.getTaskAdd(UserInfo,vPreview.getContent(),varCourseInfo,examTask);
+           String resp=mCqApi.getTaskAdd(UserInfo,vPreview.getContent()+"",varCourseInfo,examTask);
+            vStringBuilder.append(resp);
+            vStringBuilder.append("\n");
         }
+        return vStringBuilder.toString();
     }
   //做作业
-    public void DoTask(String otherXsid,examTask examTask){
+    public void DoTask(String otherXsid,examTask examTask,cqoocCourseInfo varCourseInfo){
 
         cqoocHttp vCqoocHttp=new cqoocHttp();
         cqApi vCqApi=new cqApi();
@@ -286,15 +290,13 @@ public class cqoocMain implements Serializable {
         vCqApi.setCqoocHttp(vCqoocHttp);
         vCqoocMain.setCqApi(vCqApi);
         userInfo otherUserInfo =vCqoocMain.getUsreInfo(otherXsid);
-        List<TaskPreview> vPreviewList=vCqoocMain.getOpenTasks("",examTask.getId());
+        List<TaskPreview> vPreviewList=vCqoocMain.getOpenTasks(varCourseInfo.getCourseId(),examTask.getId());
         if (vPreviewList.size()==0){
             //获取答案失败 随机吧
-            vPreviewList= getTasksInfo("",examTask.getId());
-
-        }else {
-            // getTaskAdd();
+            vPreviewList= getTasksInfo(varCourseInfo.getCourseId(),examTask.getId());
         }
-
+        userInfo UserInfo=null;
+       String resp= getTaskAdd(vPreviewList,UserInfo,varCourseInfo,examTask);
 
     }
     //考试相关
@@ -318,13 +320,14 @@ public class cqoocMain implements Serializable {
 
     public Object parseExamAswn(String resps){
         //他人已做试卷解析答案
-        JSONObject vJSONObject=null;
+        JSONObject vJSONObject;
         if (resps==null||!resps.contains("answer"))return null;
         JSONArray vJSONArray = Tool.parseJsonA(resps, "data");
-        String js = vJSONArray.getString(0);
+         String js = vJSONArray.getString(0);
          vJSONObject = Tool.parseJsonO(js, "answer");
         return vJSONObject;
     }
+
     public List<ExamPreview> parseExamPreview(String resp){
         //试卷解析题目
         List<ExamPreview> vExamPreviewList=new ArrayList<>();
@@ -349,7 +352,7 @@ public class cqoocMain implements Serializable {
     }
 
     public void DoExam(String otherXsid,examTask examTask){
-
+        cqoocCourseInfo varCourseInfo=null;
         cqoocHttp vCqoocHttp=new cqoocHttp();
         cqApi vCqApi=new cqApi();
         cqoocMain vCqoocMain=new cqoocMain();
@@ -357,26 +360,34 @@ public class cqoocMain implements Serializable {
         vCqApi.setCqoocHttp(vCqoocHttp);
         vCqoocMain.setCqApi(vCqApi);
         userInfo otherUserInfo =vCqoocMain.getUsreInfo(otherXsid);
+
         String resp=getIfExamGen(null,"","");
         if (resp==null||!resp.contains("id"))return;
 
         JSONArray vJSONArray = Tool.parseJsonA(resp, "data");
         String js = vJSONArray.getString(0);
         String id =Tool.parseJsonS(js,"id");//提交用的id
-        String answs=vCqApi.getExamPreview("", examTask.getId());
-        Object answ=parseExamAswn(answs);
-        if (answ==null||String.valueOf(answ).isEmpty()){
-            //答案获取失败 随机答案吧
-            List<ExamPreview> vExamPreviewList=parseExamPreview(resp);
-
+        if (id==null || id.equals("")){
             return;
         }
+        String answs=vCqApi.getExamPreview(varCourseInfo.getCourseId(), examTask.getId());
+
+        Object answ=parseExamAswn(answs);
+        List<ExamPreview> vExamPreviewList;
+        if (answ==null||String.valueOf(answ).isEmpty()){
+            //答案获取失败 随机答案吧
+            vExamPreviewList=parseExamPreview(resp);
+            return;
+        }
+        vExamPreviewList=parseExamPreview((String) answ);
         //examSubmit();
 
     }
+
     public void examSubmit(userInfo userInfo,String courseId, String examId,String id,Object answers){
         mCqApi.getExamSubmit(userInfo,courseId,examId,id,answers);
     }
+
     private List<examTask> getExamTask(String courseId, int type) {
         List<examTask> vExamTaskList = new ArrayList<>();
         int start = 1;

@@ -3,7 +3,6 @@ package com.vms.ykt.Util;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,8 +18,8 @@ public class AppStatus {
 
         try {
             vEncrypDES = new EncrypDES();
-            resp = httpTool.getJ(vEncrypDES.decrypt("90a56f8f06527516c7d4656fe2250b800f734c3de961cc5e1db75ac6da3a86f01029f17d1590a4760b831a84ceb2c587764ed271cffd60c48636057269ca5809"), null, null);
-            ret = Tool.decodeUnicode(resp.getmResp());
+            resp = httpTool.getJ(vEncrypDES.decrypt("90a56f8f06527516c7d4656fe2250b800f734c3de961cc5e1db75ac6da3a86f01029f17d1590a4760b831a84ceb2c587764ed271cffd60c48636057269ca5809"), null, null,null);
+            ret = Tool.decodeUnicode(resp.getResp());
             Tool.logi( "",ret);
             ret=getAppStatus(ret, "\"html_content\":\"(.+?)\"");
             Log.d(TAG, "AppStatusInit: " + ret);

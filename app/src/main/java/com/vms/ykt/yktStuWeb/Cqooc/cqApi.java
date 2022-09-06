@@ -349,6 +349,7 @@ public class cqApi implements Serializable {
 
     //提交考试答案
     private static String examSubmit="http://www.cqooc.com/exam/do/api/submit";
+
     public String getExamSubmit(userInfo userInfo,String courseId, String examId,String id,Object answers){
         //{ownerId: 1556134, username: "137352034060125", name: "魏海旭", examId: "7725", id: "2516184",…}
         //answers: {q963904: "0", q963409: "0", q963411: "0", q963344: "2", q963599: "2", q963374: "0", q963818: "3",…}

@@ -38,6 +38,28 @@ public class yktHeaders {
         return header;
     }
 
+    public static HashMap<String, Object> getNewZjyMHeader() {
+
+        String host = "user.icve.com.cn";
+        String Origin = "https://user.icve.com.cn";
+        String defaultAgent = "Mozilla/5.0 (Linux; Android 11; M2007J17C Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/92.0.4515.131 Mobile Safari/537.36 whatyApp whatyApiApp";
+        String ctype = "application/x-www-form-urlencoded; charset=UTF-8";
+
+        HashMap<String, Object> header = new HashMap<>();
+        header.put("Connection", "Keep-Alive");
+        header.put("Content-Type", ctype);
+        header.put("Origin", Origin);
+        header.put("User-Agent", defaultAgent);
+        //header.put("Sec-Fetch-Site", "same-site");
+       // header.put("Sec-Fetch-Dest", "empty");
+        //header.put("Sec-Fetch-Mode", "cors");
+        //header.put("Accept", "application/json, text/javascript, */*; q=0.01");
+        // header.put("Accept-Encoding", "gzip, deflate, br");
+        header.put("X-Requested-With", "XMLHttpRequest");
+        header.put("Host", host);
+        return header;
+    }
+
     public static HashMap<String, Object> getMoocWHeader() {
 
         String host = "moocapp.icve.com.cn";

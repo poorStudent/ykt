@@ -19,10 +19,104 @@ using namespace std;
 JavaVM *vm = nullptr;
 
 static int debugger_present = -1;
+//加解密
 
-std::string base64d(std::string const & encoded_string);
-std::string base64e(const char * bytes_to_encode, unsigned int in_len);
 
+static const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                        "abcdefghijklmnopqrstuvwxyz"
+                                        "0123456789+/";
+
+static inline bool is_base64(const char c) {
+    return (isalnum(c) || (c == '+') || (c == '/'));
+}
+//加密
+string base64e(const char *bytes_to_encode, unsigned int in_len) {
+    std::string ret;
+    int i = 0;
+    int j = 0;
+    unsigned char char_array_3[3];
+    unsigned char char_array_4[4];
+
+    while (in_len--) {
+        char_array_3[i++] = *(bytes_to_encode++);
+        if (i == 3) {
+            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+            char_array_4[3] = char_array_3[2] & 0x3f;
+            for (i = 0; (i < 4); i++) {
+                ret += base64_chars[char_array_4[i]];
+            }
+            i = 0;
+        }
+    }
+    if (i) {
+        for (j = i; j < 3; j++) {
+            char_array_3[j] = '\0';
+        }
+
+        char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+        char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+        char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+        char_array_4[3] = char_array_3[2] & 0x3f;
+
+        for (j = 0; (j < i + 1); j++) {
+            ret += base64_chars[char_array_4[j]];
+        }
+
+        while ((i++ < 3)) {
+            ret += '=';
+        }
+
+    }
+    return ret;
+}
+
+//解密
+string base64d(std::string const &encoded_string) {
+    int in_len = (int) encoded_string.size();
+    int i = 0;
+    int j = 0;
+    int in_ = 0;
+    unsigned char char_array_4[4], char_array_3[3];
+    std::string ret;
+
+    while (in_len-- && (encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
+        char_array_4[i++] = encoded_string[in_];
+        in_++;
+        if (i == 4) {
+            for (i = 0; i < 4; i++)
+                char_array_4[i] = base64_chars.find(char_array_4[i]);
+
+            char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+            char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+            char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+            for (i = 0; (i < 3); i++)
+                ret += char_array_3[i];
+            i = 0;
+        }
+    }
+    if (i) {
+        for (j = i; j < 4; j++)
+            char_array_4[j] = 0;
+
+        for (j = 0; j < 4; j++)
+            char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+        char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+        char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+        char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+        for (j = 0; (j < i - 1); j++) ret += char_array_3[j];
+    }
+
+    return ret;
+}
+
+
+
+//堆栈打印
 static _Unwind_Reason_Code unwindCallback(struct _Unwind_Context* context, void* arg)
 {
     std::vector<_Unwind_Word> &stack = *(std::vector<_Unwind_Word>*)arg;
@@ -62,11 +156,15 @@ void callstackDump(std::string &dump) {
 void callstackLogcat(int prio, const char* tag) {
     std::string dump;
     callstackDump(dump);
-    __android_log_print(prio, tag, "%s", dump.c_str());
+    LOGD("%s", dump.c_str());
 }
 
 
 
+
+
+
+//反调试
 static void ki(int num) {
     int status;
     status = kill(num, SIGKILL);
@@ -76,7 +174,6 @@ static void ki(int num) {
     if (WIFSIGNALED(status))
         printf("chile process receive signal %d\n", WTERMSIG(status));
 }
-
 
 static void sigtrap_handler(int signum) {
     debugger_present = 0;
@@ -112,7 +209,7 @@ int has_debugger() {
     f = fopen(buff1, "r");
     // the first line in status is name
     if (f == NULL) {
-        printf("can not load file!");
+        LOGD("%s","can not load file!");
         return 0;
     }
     while (!feof(f)) {
@@ -120,7 +217,7 @@ int has_debugger() {
         LOGE("%S",buff2);
         int has_gdb = (strstr(buff2, "gdb") || strstr(buff2, "ltrace") || strstr(buff2, "strace"));
         if (has_gdb != 0) {
-            printf("debugger attached!\n");
+            LOGD("%s","debugger attached!\n");
            // ki(getpid());
         }
     }
@@ -131,16 +228,17 @@ int has_debugger() {
 
 void *threadTask(void* args){
     JNIEnv *env;
-  //  jint result = vm->AttachCurrentThread(&env,0);
-    //if (result != JNI_OK){
-       // return 0;
-   // }
+    jint result = vm->AttachCurrentThread(&env,0);
+    if (result != JNI_OK){
+        return 0;
+    }
 
     while (1) {
         usleep(2);
         has_debugger2();
         if (has_debugger3() || debugger_present) {
             //ki(getpid());
+            LOGD("%s","debugger attached!\n");
             break;
         }
         has_debugger();
@@ -148,10 +246,21 @@ void *threadTask(void* args){
     // ...
 
     // 线程 task 执行完后不要忘记分离
-    //vm->DetachCurrentThread();
+    vm->DetachCurrentThread();
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL gothread(JNIEnv *jniEnv, jobject thiz) {
+    has_debugger2();
+    if (has_debugger3() || debugger_present) {
+        LOGD("%s","debugger attached!\n");
+    }
+
 }
 
 
+//检查包名和签名
+extern "C"
 JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject cls, jobject thiz) {
     std::string pk ="com.vms.zjy"; //base64d(base64e("com.vms.zjy",sizeof("com.vms.zjy")));
     std::string si = "pk";//base64d(base64e("pk",sizeof("pk")));
@@ -207,14 +316,9 @@ JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject cls, jobject thiz) {
     return jniEnv->NewStringUTF("-1");
 }
 
-JNIEXPORT jstring JNICALL gothread(JNIEnv *jniEnv, jobject thiz) {
-    has_debugger2();
-    if (has_debugger3() || debugger_present) {
-    }
-
-}
 
 
+//动态注册
 static JNINativeMethod mMethods[] = {
         {"ck", "(Landroid/content/Context;)Ljava/lang/String;", (void *) gck},
         {"thread", "()Ljava/lang/String;", (void *) gothread},
@@ -277,97 +381,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
 
 
 
-static const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                        "abcdefghijklmnopqrstuvwxyz"
-                                        "0123456789+/";
-
-static inline bool is_base64(const char c) {
-    return (isalnum(c) || (c == '+') || (c == '/'));
-}
-//加密
-string base64e(const char *bytes_to_encode, unsigned int in_len) {
-    std::string ret;
-    int i = 0;
-    int j = 0;
-    unsigned char char_array_3[3];
-    unsigned char char_array_4[4];
-
-    while (in_len--) {
-        char_array_3[i++] = *(bytes_to_encode++);
-        if (i == 3) {
-            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-            char_array_4[3] = char_array_3[2] & 0x3f;
-            for (i = 0; (i < 4); i++) {
-                ret += base64_chars[char_array_4[i]];
-            }
-            i = 0;
-        }
-    }
-    if (i) {
-        for (j = i; j < 3; j++) {
-            char_array_3[j] = '\0';
-        }
-
-        char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-        char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-        char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-        char_array_4[3] = char_array_3[2] & 0x3f;
-
-        for (j = 0; (j < i + 1); j++) {
-            ret += base64_chars[char_array_4[j]];
-        }
-
-        while ((i++ < 3)) {
-            ret += '=';
-        }
-
-    }
-    return ret;
-}
-
-//解密
-std::string base64d(std::string const &encoded_string) {
-    int in_len = (int) encoded_string.size();
-    int i = 0;
-    int j = 0;
-    int in_ = 0;
-    unsigned char char_array_4[4], char_array_3[3];
-    std::string ret;
-
-    while (in_len-- && (encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
-        char_array_4[i++] = encoded_string[in_];
-        in_++;
-        if (i == 4) {
-            for (i = 0; i < 4; i++)
-                char_array_4[i] = base64_chars.find(char_array_4[i]);
-
-            char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-            char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-            char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-
-            for (i = 0; (i < 3); i++)
-                ret += char_array_3[i];
-            i = 0;
-        }
-    }
-    if (i) {
-        for (j = i; j < 4; j++)
-            char_array_4[j] = 0;
-
-        for (j = 0; j < 4; j++)
-            char_array_4[j] = base64_chars.find(char_array_4[j]);
-
-        char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-        char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-        char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-
-        for (j = 0; (j < i - 1); j++) ret += char_array_3[j];
-    }
-
-    return ret;
-}
 
 extern "C"
 JNIEXPORT jstring JNICALL

@@ -1,5 +1,8 @@
 #include <jni.h>
-
+#include <stdio.h>
+#include <string.h>
+#include "MD5.h"
+using namespace std;
 
 jstring sk(JNIEnv *jniEnv, jclass cls, jstring jstring1){
     jclass sbclass=jniEnv->FindClass("java/lang/StringBuilder");
@@ -32,4 +35,12 @@ jstring sm(JNIEnv *jniEnv, jclass cls, jstring jstring1,jstring jstring2){
     jniEnv->DeleteLocalRef(sb);
     return jstring2;
 
+}
+
+jstring  stringFormMD5(JNIEnv*env,jobject clazz){
+    const char* test = "MD5 ++++";
+    MD5 md5 = MD5(test);
+    string md5Result = md5.hexdigest();
+    return env->NewStringUTF(md5Result.c_str());
+    
 }

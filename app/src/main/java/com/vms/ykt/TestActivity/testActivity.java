@@ -1,6 +1,7 @@
 package com.vms.ykt.TestActivity;
 
 
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -28,6 +29,8 @@ import com.vms.ykt.Util.DateTimeFormatUtil;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.viewModel.ViewModelUtils;
 import com.vms.ykt.viewModel.userVModel;
+import com.vms.ykt.yktStuMobile.newZJY.newZjyApi;
+import com.vms.ykt.yktStuMobile.newZJY.newZjyMain;
 import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocCourseInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocHttp;
@@ -36,6 +39,8 @@ import com.vms.ykt.yktStuWeb.Cqooc.cqoocMain;
 import com.vms.ykt.yktStuWeb.Cqooc.userInfo;
 
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
+import com.vms.ykt.yktStuWeb.newZJY.newZjyTestApi;
+import com.vms.ykt.yktStuWeb.newZJY.zjyMian;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -63,9 +68,9 @@ public class testActivity extends AppCompatActivity {
     private TestEditor mTestEditor;
     private TestView mTestView;
     private final String TAG = testActivity.class.getSimpleName();
-    static {
+   /** static {
         System.loadLibrary("native-lib");
-    }
+    }*/
     private userVModel mUserVModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,26 +206,31 @@ public class testActivity extends AppCompatActivity {
         //System.out.println(StringUtils.getMd5("123"));
         //System.out.println(zjyTool.getMd5("123"));
         //new b().cqMian();
+        new Thread(()->{
 
-        System.out.println(byte.class.getName());
+          //  zjyMian.doTest();
+            newZjyMain.doMain();
 
-        System.out.println(byte.class.getTypeName());
-        System.out.println(byte.class.isArray());
-        System.out.println(byte.class.getComponentType());
-        System.out.println(byte.class.isPrimitive());
-        System.out.println("=====================================");
-        System.out.println(byte[].class.isPrimitive());
-        System.out.println(byte[].class.isArray());
-        System.out.println(Tool[][].class.getName());
-        System.out.println(byte[][].class.getComponentType());
+        }).start();
 
-            System.out.println(byte[].class.getTypeName());
 
 
     }
     class nn{
         public void main(String[] args) throws Exception {
+            System.out.println(byte.class.getName());
 
+            System.out.println(byte.class.getTypeName());
+            System.out.println(byte.class.isArray());
+            System.out.println(byte.class.getComponentType());
+            System.out.println(byte.class.isPrimitive());
+            System.out.println("=====================================");
+            System.out.println(byte[].class.isPrimitive());
+            System.out.println(byte[].class.isArray());
+            System.out.println(Tool[][].class.getName());
+            System.out.println(byte[][].class.getComponentType());
+
+            System.out.println(byte[].class.getTypeName());
         }
     }
 

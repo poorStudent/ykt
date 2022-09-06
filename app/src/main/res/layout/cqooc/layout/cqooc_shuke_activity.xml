@@ -50,7 +50,31 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal">
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/cqooc_shuke_zdzy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/teal_200"
+                android:gravity="center"
+                android:text="自动作业" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/cqooc_shuke_zdks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/teal_200"
+                android:gravity="center"
+                android:text="自动考试" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
         <androidx.appcompat.widget.LinearLayoutCompat

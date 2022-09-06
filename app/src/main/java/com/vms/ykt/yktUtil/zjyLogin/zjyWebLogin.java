@@ -33,8 +33,8 @@ public class zjyWebLogin {
         String Code="";
         try {
             ret = loginPost(userName,userPwd,Code);
-            ck= ret.getHeaders().get("Set-Cookie");
-            resp=ret.getmResp();
+            ck= ret.getSetCookie();
+            resp=ret.getResp();
         } catch (IOException e) {
             e.printStackTrace();
         }
