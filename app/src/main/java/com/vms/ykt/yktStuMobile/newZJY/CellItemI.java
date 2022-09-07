@@ -2,10 +2,46 @@ package com.vms.ykt.yktStuMobile.newZJY;
 
 public class CellItemI {
     private String itemId;
+    private String parentid;
     private String name;
     private String eType;
+    private String waretype;
     private String resID;
     private String resUrl;
+    private String videotime;
+    private int over;
+
+    public int getOver() {
+        return over;
+    }
+
+    public void setOver(int over) {
+        this.over = over;
+    }
+
+    public String getWaretype() {
+        return waretype;
+    }
+
+    public void setWaretype(String waretype) {
+        this.waretype = waretype;
+    }
+
+    public String getParentid() {
+        return parentid;
+    }
+
+    public void setParentid(String parentid) {
+        this.parentid = parentid;
+    }
+
+    public String getVideotime() {
+        return videotime;
+    }
+
+    public void setVideotime(String videotime) {
+        this.videotime = videotime;
+    }
 
     public String getItemId() {
         return itemId;

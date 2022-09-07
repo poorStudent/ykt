@@ -10,6 +10,8 @@ import com.vms.ykt.yktUtil.yktHeaders;
 
 import java.util.HashMap;
 
+import retrofit2.http.POST;
+
 public class newZjyApi {
 
     //修改加课权限
@@ -23,18 +25,20 @@ public class newZjyApi {
 
 
     //更改分数权重
-    static String saveAssessment="https://user.icve.com.cn/zhzj/zhzjTeacher_saveAssessment.action";
-    public static String getSaveAssessment(String courseId,String classId){
-        String data ="token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=&courseId="+courseId+"&classId="+classId+"&total_learn_time_rate=10&total_learn_time_full=100&node_rate=10&node_rate_full=100&effective_time_rate=10&effective_time_full=100&test_rate=10&test_rate_full=100&work_rate=10&work_rate_full=100&pop_quiz_rate=10&pop_quiz_full=100&exam_score_rate=10&exam_score=100&questions_rate=10&questions_rate_full=100&sign_num_rate=20&sign_num_full=100";
+    static String saveAssessment = "https://user.icve.com.cn/zhzj/zhzjTeacher_saveAssessment.action";
+
+    public static String getSaveAssessment(String courseId, String classId) {
+        String data = "token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=&courseId=" + courseId + "&classId=" + classId + "&total_learn_time_rate=10&total_learn_time_full=100&node_rate=10&node_rate_full=100&effective_time_rate=10&effective_time_full=100&test_rate=10&test_rate_full=100&work_rate=10&work_rate_full=100&pop_quiz_rate=10&pop_quiz_full=100&exam_score_rate=10&exam_score=100&questions_rate=10&questions_rate_full=100&sign_num_rate=20&sign_num_full=100";
         String resp = newZjyHttp.post(saveAssessment, data);
         return resp;
     }
 
-    static String createStuAssess="https://user.icve.com.cn/zhzj/zhzjTeacher_createStuAssess.action";
-    public static String getCreateStuAssess(String courseId,String classId){
+    static String createStuAssess = "https://user.icve.com.cn/zhzj/zhzjTeacher_createStuAssess.action";
+
+    public static String getCreateStuAssess(String courseId, String classId) {
         //
-        String data ="token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=&classId="+classId+"&courseId="+courseId;
-        String resp =newZjyHttp.post(createStuAssess, data);
+        String data = "token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=&classId=" + classId + "&courseId=" + courseId;
+        String resp = newZjyHttp.post(createStuAssess, data);
         return resp;
     }
 
@@ -105,16 +109,17 @@ public class newZjyApi {
 
     //更新rest_token cookie
     public static void upRest_token(String upCookie) {
-        String nck="rest_token=" + upCookie;
+        String nck = "rest_token=" + upCookie;
         addCookie(nck);
 
     }
+
     public static void addCookie(String upCookie) {
-        String ock=newZjyHttp.getUserCookie();
-        if (ock!=null&&!ock.isEmpty()){
-            upCookie=upCookie+";"+ock;
+        String ock = newZjyHttp.getUserCookie();
+        if (ock != null && !ock.isEmpty()) {
+            upCookie = upCookie + ";" + ock;
         }
-        newZjyHttp.addHeader("Cookie",upCookie);
+        newZjyHttp.addHeader("Cookie", upCookie);
     }
 
     public static void printHeader() {
@@ -302,20 +307,39 @@ public class newZjyApi {
     }
 
     //获取ucokie
-    static String signLearn="https://course.icve.com.cn/learnspace/sign/signLearn.action";
-    public static String getSignLearn(String courseId ,String loginId){
-        String data="sign=mobile&loginType=true&courseId="+courseId+
-                "&loginId="+loginId+"&siteCode=zhzj&domain=spoc.icve.com.cn";
+    static String signLearn = "https://course.icve.com.cn/learnspace/sign/signLearn.action";
+
+    public static String getSignLearn(String courseId, String loginId) {
+        String data = "sign=mobile&loginType=true&courseId=" + courseId +
+                "&loginId=" + loginId + "&siteCode=zhzj&domain=spoc.icve.com.cn";
         newZjyHttp.addHeader("Host", "course.icve.com.cn");
-        httpRespnose ret = newZjyHttp.get(signLearn, null,data);
+        httpRespnose ret = newZjyHttp.get(signLearn, null, data);
         return JSONObject.toJSONString(ret.getHearderFileds());
     }
+
     //获取课件
     static String learnspace = "https://course.icve.com.cn/learnspace/learn/weixin/app/index.action";
 
     public static String getLearnspace(String courseId) {
-        String data = "params.courseId="+courseId+"___";
+        String data = "params.courseId=" + courseId + "___";
         String resp = newZjyHttp.get(learnspace, data);
+        return resp;
+    }
+
+    //老师api获取课件全部
+    static  String ScormCourseItemByName="https://spoc-classroom.icve.com.cn/classroom-teaching-api/courseWare/getScormCourseItemByName";
+
+    public static String getScormCourseItemByName(String courseId) {
+        String data = "{\"params\":{\"courseId\":\""+courseId+"\"}}";
+        String resp = newZjyHttp.post(ScormCourseItemByName, data);
+        return resp;
+    }
+    //未知
+    static  String CourseNodeInfo="https://spoc-classroom.icve.com.cn/classroom-teaching-api/courseWare/getCourseNodeInfo";
+
+    public static String getCourseNodeInfo(String courseId) {
+        String data = "{\"params\":{\"courseId\":\""+courseId+"\"}}";
+        String resp = newZjyHttp.post(CourseNodeInfo, data);
         return resp;
     }
 
@@ -324,7 +348,6 @@ public class newZjyApi {
 
     public static String getUpdateLearningItem(String itemId) {
         String data = "itemId=" + itemId;
-        //newZjyHttp.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         String resp = newZjyHttp.post(updateLearningItem, data);
         return resp;
     }
@@ -338,24 +361,24 @@ public class newZjyApi {
         return resp;
     }
 
-    //保存学习项目
+    //视频时间保存
     static String saveLearningItem = "https://course.icve.com.cn/learnspace/u/scorm/saveLearningItem.json";
 
     public static String getSaveLearningItem(String videoTime, String courseId, String itemId) {
-        String data = "entity.videoTime="+videoTime+"&entity.courseId=" + courseId + "&" +
+        String data = "entity.videoTime=" + videoTime + "&entity.courseId=" + courseId + "&" +
                 "entity.itemId=" + itemId;
         String resp = newZjyHttp.post(saveLearningItem, data);
         return resp;
     }
 
-    //记录进度
+    //视频记录进度
     static String saveVideoForBatch = "https://course.icve.com.cn/learnspace/u/scorm/saveVideoLearnDetailRecordForBatch.json";
 
-    public static String getSaveVideoForBatch(String itemId,String courseId) {
+    public static String getSaveVideoForBatch(String itemId, String courseId) {
         String data = "entity.itemRecords=[{\"itemId\":\"" + itemId + "\"," +
-                "\"resourceTotalTime\":\"00:60:00\",\"studyRecords\":[{\"endTime\":\"00:60:00\"," +
-                "\"saveStudyTimeFlag\":\"0\",\"startTime\":\"00:00:00\"}],\"studyTime\":\"99999\"," +
-                "\"videoIndex\":\"0\"}]&entity.courseId="+courseId;
+                "\"resourceTotalTime\":\"00:30:00\",\"studyRecords\":[{\"endTime\":\"00:30:00\"," +
+                "\"saveStudyTimeFlag\":\"9999\",\"startTime\":\"00:00:01\"}],\"studyTime\":\"9999\"," +
+                "\"videoIndex\":\"0\"}]&entity.courseId=" + courseId;
         String resp = newZjyHttp.post(saveVideoForBatch, data);
         return resp;
     }
@@ -398,7 +421,7 @@ public class newZjyApi {
         return resp;
     }
 
-    //非视频学习记录
+    //学习记录
     static String saveCourseItem = "https://course.icve.com.cn/learnspace/course/study/learningTime_saveCourseItemLearnRecord.action";
 
     public static String getSaveCourseItem(String courseId, String studyTime, String itemId) {
@@ -409,48 +432,110 @@ public class newZjyApi {
         return resp;
     }
 
-    //test api
+    //正在学习的条目
+    static String queryLearningItem = "https://course.icve.com.cn/learnspace/learn/learnCourseware/queryLearningItem.json";
 
-    static String TeachingDesign="https://course.icve.com.cn/learnspace/course/design/courseTeachingDesign_intoTeachingDesign.action";
+    public static String getQueryLearningItem(String courseId) {
+        String data = "params.courseId=" + courseId + "___";
+        String resp = newZjyHttp.post(queryLearningItem, data);
+        return resp;
+    }
+
+    //学习进度
+    static String learnRecord = "https://course.icve.com.cn/learnspace/course/study/learnRecord_teacherCount.action?pager.pageSize=100&pager.curPage=1";
+
+    public static String getLearnRecord(String courseId) {
+        String data = "courseId=" + courseId + "&params.userName=&params.loginId=&params.classId=&params.label=";
+        String resp = newZjyHttp.post(learnRecord, data);
+        return resp;
+    }
+
+    //test api
+    // 进度详情
+    static String stuLearnRecord = "https://course.icve.com.cn/learnspace/course/study/learnRecord_stuLearnRecord.action";
+
+    public static String getStuLearnRecord(String courseId, String userId) {
+        String data = "courseId=" + courseId + "&userId=" + userId;
+        String resp = newZjyHttp.get(stuLearnRecord, data);
+        return resp;
+    }
+
+    //test api 课程公告
+    static String saveCourseNotice = "https://course.icve.com.cn/learnspace/learn/learnCourseNotice/saveCourseNotice.json";
+
+    public static String getSaveCourseNotice(String courseId) {
+        String data = "params.courseId=39e272199dab487ba6f8f76115cbfd2c___&params.title=11111" +
+                "&params.note=%3Cp%3E11111111%3C%2Fp%3E&params.isTop=true";
+        String resp = newZjyHttp.post(saveCourseNotice, data);
+        return resp;
+    }
+
+    //老师课件设计
+    static String TeachingDesign = "https://course.icve.com.cn/learnspace/course/design/courseTeachingDesign_intoTeachingDesign.action";
+
     //https://course.icve.com.cn/learnspace/course/design/courseTeachingDesign_intoTeachingDesign.action?courseId=39e272199dab487ba6f8f76115cbfd2c&editState=1
-    public static String getTeachingDesign(){
-        String data ="courseId=39e272199dab487ba6f8f76115cbfd2c&params.cloudRoleId=&" +
+    public static String getTeachingDesign() {
+        String data = "courseId=39e272199dab487ba6f8f76115cbfd2c&params.cloudRoleId=&" +
                 "params.cloudMetaId=&params.examRoleId=";
         String resp = newZjyHttp.get(TeachingDesign, data);
         return resp;
     }
-    //test api
 
-    static String queryChapterItem="https://course.icve.com.cn/learnspace/course/design/designCourseItem_queryChapterItem.action";
-    public static String getQueryChapterItem(){
-        String data ="courseId=39e272199dab487ba6f8f76115cbfd2c";
+    //test api 查询
+    static String queryChapterItem = "https://course.icve.com.cn/learnspace/course/design/designCourseItem_queryChapterItem.action";
+
+    public static String getQueryChapterItem() {
+        String data = "courseId=39e272199dab487ba6f8f76115cbfd2c";
         String resp = newZjyHttp.get(queryChapterItem, data);
         return resp;
     }
-    //test api
 
-    static String queryChildItem="https://course.icve.com.cn/learnspace/course/design/designCourseItem_queryChildItem.action";
-    public static String getQueryChildItem(){
-        String data ="itemId=99ffe49b4da24327b98c6f6409868ddb&courseId=39e272199dab487ba6f8f76115cbfd2c";
+    //test api 获取查询全部课件
+    static String queryChildItem = "https://course.icve.com.cn/learnspace/course/design/designCourseItem_queryChildItem.action";
+
+    public static String getQueryChildItem() {
+        String data = "itemId=99ffe49b4da24327b98c6f6409868ddb&courseId=39e272199dab487ba6f8f76115cbfd2c";
         String resp = newZjyHttp.post(queryChildItem, data);
         return resp;
     }
 
-    //test api
+    //test api 删除课件
 
-    static String delItemById="https://course.icve.com.cn/learnspace/course/design/designCourseItem_delItemById.action";
-    public static String getDelItemById(){
-        String data ="itemId=03fa7ab6e8564cc9baba3f4d90ad5589&courseId=39e272199dab487ba6f8f76115cbfd2c";
+    static String delItemById = "https://course.icve.com.cn/learnspace/course/design/designCourseItem_delItemById.action";
+
+    public static String getDelItemById() {
+        String data = "itemId=03fa7ab6e8564cc9baba3f4d90ad5589&courseId=39e272199dab487ba6f8f76115cbfd2c";
         String resp = newZjyHttp.post(delItemById, data);
         return resp;
     }
-    //test api
 
-    static String addSectionCourseItem="https://course.icve.com.cn/learnspace/course/design/designCourseItem_addSectionCourseItem.action";
-    public static String getAddSectionCourseItem(){
-        String data ="courseId=39e272199dab487ba6f8f76115cbfd2c&parentId=5fe19e246d524044b8af39a2afda14e3&" +
+    //test api 添加节
+    static String addSectionCourseItem = "https://course.icve.com.cn/learnspace/course/design/designCourseItem_addSectionCourseItem.action";
+
+    public static String getAddSectionCourseItem() {
+        String data = "courseId=39e272199dab487ba6f8f76115cbfd2c&parentId=5fe19e246d524044b8af39a2afda14e3&" +
                 "itemTitle=%E6%96%B0%E8%AE%B2%E8%AF%BE&sectionIndex=3";
         String resp = newZjyHttp.post(addSectionCourseItem, data);
+        return resp;
+    }
+
+    //答案
+    static String PaperStructureForPreview = "https://spoc-exam.icve.com.cn/testpaper/paper_getPaperStructureForPreview.action";
+
+    public static String getPaperStructureForPreview() {
+        String data = "params.paperId=3960ed80fd384bf9a1ace9f7e23ddbd9";
+        String ck =//"qBankId3960ed80fd384bf9a1ace9f7e23ddbd9=fc4103d4ff60426fb2fa8a9cff0eac7f; " +
+                //"&/college/exam/examBatch_loadExamListData.action&2=null&&&39e272199dab487ba6f8f76115cbfd2c&1&10; ";
+                "USERSESSIONID=402883e682f4d8ea0182f7123f521677#interface#batchCode#attachData;";
+        //"&/college/exam/examBatch_loadExamListData.action&1=null&&&39e272199dab487ba6f8f76115cbfd2c&1&10; "
+        //"acw_tc=0a5cc92216625598162546262e01310c80252bf67bb9b63798c76b26d1f4c2;" ;
+        //"JSESSIONID=CDD600113DE03ADC62A77B81B9C59D44;" ;
+        //"JSESSIONID=CDD600113DE03ADC62A77B81B9C59D44;" ;
+        //"SERVERID=0bcc1a348a5607f0d3c141a00975e26c|1662559931|1662450345";
+        newZjyApi.addCookie(ck);
+        newZjyHttp.addHeader("Host", "spoc-exam.icve.com.cn");
+        //printHeader();
+        String resp = newZjyHttp.post(PaperStructureForPreview, data);
         return resp;
     }
 }

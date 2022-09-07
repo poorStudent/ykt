@@ -1,26 +1,16 @@
 package com.vms.ykt.yktStuMobile.newZJY;
 
-import androidx.databinding.adapters.DatePickerBindingAdapter;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.vms.ykt.Util.Tool;
-import com.vms.ykt.yktStuWeb.newZJY.newZjyTestApi;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Retention;
-import java.lang.invoke.CallSite;
-import java.net.ResponseCache;
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.List;
-
-import io.reactivex.internal.operators.completable.CompletableFromAction;
-import kotlin.OverloadResolutionByLambdaReturnType;
 
 public class newZjyMain {
 
@@ -28,10 +18,11 @@ public class newZjyMain {
         String resp = newZjyApi.getMobileLogin(mobile, passwd);
         if (resp == null || !resp.contains("token")) return null;
         newZjyUser vUser = JSONObject.parseObject(resp, newZjyUser.class);
-        resp=newZjyApi.getUserInfo(vUser.getToken());
+        resp = newZjyApi.getUserInfo(vUser.getToken());
+        System.out.println(resp);
         if (resp != null && resp.contains("userInfo")) {
-            JSONArray vJsonA=Tool.parseJsonA(resp, "userInfo");
-            String userid=vJsonA.getString(0);
+            JSONArray vJsonA = Tool.parseJsonA(resp, "userInfo");
+            String userid = vJsonA.getString(0);
             System.out.println(userid);
         }
         return vUser;
@@ -93,13 +84,13 @@ public class newZjyMain {
     }
 
     //UNTYXLCOOKIE
-    public static boolean upUNTYXLCOOKIE(newZjyUser user,String courseid){
-        String resp=newZjyApi.getSignLearn(courseid ,user.getLoginId());
-        if (resp==null|| !resp.contains("UNTYXLCOOKIE"))return false;
-        JSONArray jsona = Tool.parseJsonA(resp , "Set-Cookie");
-        for (int i = 0; i <jsona.size(); i++) {
-            String js=jsona.getString(i);
-            if (js.contains("UNTYXLCOOKIE")){
+    public static boolean upUNTYXLCOOKIE(newZjyUser user, String courseid) {
+        String resp = newZjyApi.getSignLearn(courseid, user.getLoginId());
+        if (resp == null || !resp.contains("UNTYXLCOOKIE")) return false;
+        JSONArray jsona = Tool.parseJsonA(resp, "Set-Cookie");
+        for (int i = 0; i < jsona.size(); i++) {
+            String js = jsona.getString(i);
+            if (js.contains("UNTYXLCOOKIE")) {
                 user.setUNTYXLCOOKIE(js);
                 return true;
             }
@@ -264,16 +255,127 @@ public class newZjyMain {
         return parseSignStudent(resp);
     }
 
-    public static List<CellItemI> parseCellItem(String resp){
-        List<CellItemI> CellItemIList =new ArrayList<>();
-        if (resp==null || !resp.contains("grandChildItem"))return CellItemIList;
 
-
+    public static List<CellItemI> parseCellItem(String resp) {
+        List<CellItemI> CellItemIList = new ArrayList<>();
+        if (resp == null || !resp.contains("chapterbox")) return CellItemIList;
 
         try {
-            File input = new File("/tmp/input.html");
-            Document doc = Jsoup.parse(input, "UTF-8");
-        } catch (IOException e) {
+            // File input = new File("E:\\appprojicet\\zjy.html");
+            Document doc = Jsoup.parse(resp, "UTF-8");
+            Element course_item = doc.getElementById("course_item");
+            int size = course_item.childrenSize();
+            Element courseitem = null;
+            for (int i = 0; i < size; i++) {
+                if (course_item.child(i).childrenSize() >= 3) {
+                    courseitem = course_item.child(i);
+                    break;
+                } else {
+                    courseitem = course_item.child(1);
+                    break;
+                }
+            }
+            if (courseitem != null) {
+                Element courseitems = courseitem.getElementById("cTab_con_2");
+                if (courseitems != null) {
+                    Elements chapterboxs = courseitems.getElementsByClass("chapterbox");
+                    int idx = 1;
+                    String id = "";
+                    for (Element chapterbox : chapterboxs) {
+
+                        //模块名
+                        Elements rel_chapterpr_50s = chapterbox.getElementsByClass("rel chapter pr50");
+                        if (!rel_chapterpr_50s.isEmpty()) {
+                            Element rel_chapterpr_50 = rel_chapterpr_50s.get(0);
+                            Elements chapterprspans = rel_chapterpr_50.getElementsByTag("span");
+                            for (Element chapterprspan : chapterprspans) {
+                                if (chapterprspan.hasText()) {
+                                    String name = chapterprspan.text();
+                                    System.out.println("-" + name);
+                                    break;
+                                }
+                            }
+                        }
+
+                        id = "chapter" + idx + "_con";
+                        Element chapter_con = chapterbox.getElementById(id);
+
+                        if (chapter_con != null) {
+
+                            Elements sectionboxs = chapter_con.getElementsByClass("sectionbox");
+
+                            for (Element sectionbox : sectionboxs) {
+                                //节名
+                                Elements p0_30_bg_eb = sectionbox.getElementsByClass("section p0_30 bg_eb");
+                                if (!p0_30_bg_eb.isEmpty()) {
+                                    String name = p0_30_bg_eb.get(0).getElementsByTag("span").text();
+                                    System.out.println("--" + name);
+                                }
+
+                                //节
+                                Elements pointboxs = sectionbox.getElementsByClass("pointbox");
+
+
+                                if (!pointboxs.isEmpty()) {
+
+                                    for (Element pointboxsl : pointboxs) {
+
+                                        // Elements spointboxs = pointboxs.get(0).getAllElements();
+                                        Elements spointboxs = pointboxsl.children();
+
+
+                                        //节下所有小节或资源
+                                        for (Element pointbox : spointboxs) {
+
+                                            if (pointbox.hasAttr("waretype")) {
+
+                                                String waretype = pointbox.attr("waretype");
+
+                                                //小节名
+                                                if (waretype.contains("section")) {
+                                                    String name = pointbox.getElementsByTag("span").get(0).text();
+                                                    System.out.println("---" + name + " * " + waretype);
+
+                                                } else {
+                                                    //资源解析
+
+                                                    CellItemIList.add(paresCell(pointbox, ""));
+                                                }
+
+                                            } else {
+                                                //小节所有资源
+                                                String courseware_children_b = pointbox.attr("class");
+                                                if (courseware_children_b.contains("courseware_children_b")) {
+                                                    String pid = pointbox.id();
+                                                    Elements ul = pointbox.getElementsByTag("ul");
+                                                    if (!ul.isEmpty()) {
+                                                        for (Element ulss : ul) {
+                                                            for (Element uls : ulss.children()) {
+                                                                if (uls.hasAttr("waretype")) {
+                                                                    //System.out.println(uls);
+                                                                    // System.out.println(uls.html());
+
+                                                                    CellItemIList.add(paresCell(uls, pid));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                        }
+
+                                    }
+                                }
+
+                            }
+                        }
+                        idx++;
+                    }
+                }
+            }
+            // System.out.println(course_item);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -281,7 +383,39 @@ public class newZjyMain {
         return CellItemIList;
     }
 
+    private static CellItemI paresCell(Element uls, String pid) {
+        String waretype = uls.attr("waretype");
+        String etype = uls.attr("etype");
+        String ItemID = uls.id().replace("grandChildItem_", "");
+        String videotime = uls.attr("videotime");
+        String isok = uls.attr("class");
 
+        CellItemI vCellItemI = new CellItemI();
+        if (isok.contains("point_done")) {
+            vCellItemI.setOver(1);
+
+        } else {
+            vCellItemI.setOver(0);
+        }
+        vCellItemI.seteType(etype);
+        vCellItemI.setWaretype(waretype);
+        vCellItemI.setItemId(ItemID);
+        vCellItemI.setVideotime(videotime);
+        vCellItemI.setParentid(pid);
+        vCellItemI.setResID("resourceName_" + ItemID);
+        Element spans = uls.getElementsByTag("span").get(0);
+        String name = spans.text();
+        vCellItemI.setName(name);
+
+        return vCellItemI;
+    }
+
+    public static CellItemInfo getItemInfo(String CourseId) {
+        String resp = newZjyApi.getQueryLearningItem(CourseId);
+        if (resp == null || !resp.contains("data")) return null;
+        CellItemInfo vOverCellItems = Tool.parseJsonS(resp, "data", CellItemInfo.class);
+        return vOverCellItems;
+    }
 
     public static void doMain() {
         //aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA==
@@ -289,15 +423,28 @@ public class newZjyMain {
         //MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=
         //22befd2145494c4cb15b772c0d66ab07
 
-        String token = "22befd2145494c4cb15b772c0d66ab07";
+        //String token = "22befd2145494c4cb15b772c0d66ab07";
+        String token = "7d4322bbfaee4cef83fd76cd96e27131";
+        //xnzy2113418
+        //20030517lei@
         //newZjyUser vUser =MobileLogin("venomms","Poor2579988653");
+        //newZjyUser vUser =MobileLogin("xnzy2113418","20030517lei@");
+        //ljq1ab-oz7hbmaardmy-2q
+        //402883e682d05a190182d3edda901971
+        //7d4322bbfaee4cef83fd76cd96e27131
+        String uid="ljq1ab-oz7hbmaardmy-2q";
         newZjyUser vUser = new newZjyUser();
         vUser.setToken(token);
-        vUser.setLoginId("venomms");
+        vUser.setLoginId("xnzy2113418");
+
         System.out.println(vUser.getToken());
+        System.out.println(vUser.getLoginId());
 
         //测试api
         // System.out.println(testApi.getSaveClassroom());
+        System.out.println(newZjyApi.getPaperStructureForPreview());
+
+        System.exit(0);
 
         String CheckUser = newZjyApi.getCheckUser(vUser.getToken());
         if (!CheckUser.contains("200")) {
@@ -307,58 +454,175 @@ public class newZjyMain {
 
         //newZjyTestApi.getAuth();
 
+
         List<newZjyCourse> CoursesList = getMyClassList(vUser);
         for (newZjyCourse vCourse : CoursesList) {
-            String ClassId =vCourse.getClassId();
-            String CourseId =vCourse.getCourseId();
-            System.out.println(vCourse.getClassName() + " * " + ClassId + " * " + CourseId);
-
-            if (!upUNTYXLCOOKIE(vUser,CourseId)){
-                System.out.println("获取失效");
-                return;
-            }
-            newZjyApi.addCookie(vUser.getUNTYXLCOOKIE());
-            String resp;
-           // resp=newZjyApi.getSaveLearningTime(CourseId,"300");
-            //System.out.println(resp);
-           // resp= newZjyApi.getQueryLearningTime(CourseId);
-            //System.out.println(resp);
-           String itid="95d9b6bab14b477191587f17a39759d2";
-            //resp=newZjyApi.getQueryCourseItemInfo(itid);
-            //System.out.println(resp);
-           // resp= newZjyApi.getSaveCourseItem(CourseId,"999",itid);
-           // System.out.println(resp);
-
-           /* itid="c02d78d9ec6d4ce59c430033e4afcc8a";
-            resp= newZjyApi.getUpdateLearningItem(itid);
-            System.out.println(resp);
-            resp= newZjyApi.getQueryVideo(itid);
-            System.out.println(resp);
-            resp= newZjyApi.getSaveLearningItem("999",CourseId,itid);
-            System.out.println(resp);*/
-
-            //System.out.println(newZjyApi.getLearnspace(CourseId));
+            String ClassId = vCourse.getClassId();
+            String CourseId = vCourse.getCourseId();
+            String  CourseName=vCourse.getCourseName();
+            System.out.println(vCourse.getClassName() + " * " + ClassId + " * " +
+                    CourseName + " * " + CourseId);
 
             //System.out.println(newZjyApi.getModifyClassAuditStatus(ClassId,"1","0"));
             //System.out.println(newZjyTestApi.getSaveAssessment(CourseId,ClassId));
             //System.out.println(newZjyTestApi.getCreateStuAssess(CourseId,ClassId));
 
-            System.exit(0);
-            if (!upAuthorization(vUser)) {
-                System.out.println("upAuthorization erro");
-                break;
-                //
+
+            if (!CourseName.contains("三维软件基础"))continue;
+
+            if (!upUNTYXLCOOKIE(vUser, CourseId)) {
+                System.out.println("获取失效");
+                return;
             }
 
+            newZjyApi.addCookie(vUser.getUNTYXLCOOKIE());
+
+          //  System.out.println(newZjyApi.getStuLearnRecord(CourseId,uid));
+            System.out.println(newZjyApi.getLearnRecord(CourseId));
+           // sk(vUser, CourseId);
+
+
+           // String resp;
+            //grandChildItem_dd9433f5384f40ab9e77e9f08436ed19
+            //grandChildItem_2ac3ca7f6bd7477b9ac43e84d6fa86dc
+            //String itid = "dd9433f5384f40ab9e77e9f08436ed19";
+
+
+            // System.exit(0);
 
 
             //
+            if (!upAuthorization(vUser)) {
+                System.out.println("upAuthorization erro");
+               // break;
+                //
+            }
             newZjyApi.spocHeader();
 
-            break;
+          //  break;
+        }
+
+
+    }
+
+    private static void sk(newZjyUser vUser, String CourseId) {
+
+
+        String resp;
+
+        resp = newZjyApi.getLearnspace(CourseId);//
+
+        List<CellItemI> CellItemIs = parseCellItem(resp);
+
+
+        //  newZjyHttp.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+
+        for (CellItemI vCellItemI : CellItemIs) {
+
+
+            String itid = vCellItemI.getItemId();
+
+            System.out.println("----*" + vCellItemI.getName() + " * " + vCellItemI.getWaretype()
+                    + " * " + itid);
+
+            CourseSaveLearningTime(CourseId);
+
+
+            if (vCellItemI.getOver() == 1) {
+                System.out.println("已刷跳过");
+                continue;
+            }
+
+            resp = newZjyApi.getUpdateLearningItem(itid);
+            System.out.println(resp);
+
+
+
+            if (vCellItemI.getWaretype().contains("video")) {
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                resp = newZjyApi.getSaveVideoForBatch(itid, CourseId);
+                System.out.println(resp);
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                resp = newZjyApi.getSaveLearningItem("999", CourseId, itid);
+                System.out.println(resp);
+
+                postlearn(itid,CourseId);
+            } else {
+
+                postlearn(itid,CourseId);
+                // resp = newZjyApi.getQueryCourseItemInfo(itid);
+                //System.out.println(resp);
+
+                //resp = newZjyApi.getSaveCourseItem(CourseId, "999", itid);
+                //System.out.println(resp);
+            }
         }
 
     }
+
+    public static void postlearn(String itid, String CourseId) {
+
+
+        String resp;
+        CellItemInfo info = getItemInfo(CourseId);
+
+        //resp = newZjyApi.getQueryVideo(itid);
+        //System.out.println(resp);
+
+        //resp = newZjyApi.getQueryCourseItemInfo(itid);
+        //System.out.println(resp);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        resp = newZjyApi.getSaveCourseItem(CourseId, "9999", itid);
+        System.out.println(resp);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        resp = newZjyApi.getSaveCourseItem(CourseId, "66", info.getParentId());
+        System.out.println(resp);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        resp = newZjyApi.getSaveCourseItem(CourseId, "66", info.getSecId());
+        System.out.println(resp);
+
+
+        //CourseSaveLearningTime(CourseId);
+
+    }
+
+
+    public static void CourseSaveLearningTime(String CourseId) {
+        String resp;
+        resp = newZjyApi.getQueryLearningTime(CourseId);
+        System.out.println(resp);
+
+        resp = newZjyApi.getSaveLearningTime(CourseId, "300");
+        System.out.println(resp);
+    }
+
 
     public static void testAct(newZjyCourse vCourse) {
 

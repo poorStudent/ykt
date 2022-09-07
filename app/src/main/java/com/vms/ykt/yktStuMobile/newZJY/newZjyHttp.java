@@ -105,6 +105,7 @@ public class newZjyHttp {
             header.put("Cookie", getUserCookie());
         }
 
+
         ret = Http.post(requestUrl, header, body, referer, userAgent, null);
 
         return ret;
