@@ -423,8 +423,8 @@ public class newZjyMain {
         //MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=
         //22befd2145494c4cb15b772c0d66ab07
 
-        //String token = "22befd2145494c4cb15b772c0d66ab07";
-        String token = "7d4322bbfaee4cef83fd76cd96e27131";
+        String token = "22befd2145494c4cb15b772c0d66ab07";
+        //String token = "7d4322bbfaee4cef83fd76cd96e27131";
         //xnzy2113418
         //20030517lei@
         //newZjyUser vUser =MobileLogin("venomms","Poor2579988653");
@@ -432,19 +432,19 @@ public class newZjyMain {
         //ljq1ab-oz7hbmaardmy-2q
         //402883e682d05a190182d3edda901971
         //7d4322bbfaee4cef83fd76cd96e27131
-        String uid="ljq1ab-oz7hbmaardmy-2q";
+        String uid = "ljq1ab-oz7hbmaardmy-2q";
         newZjyUser vUser = new newZjyUser();
         vUser.setToken(token);
-        vUser.setLoginId("xnzy2113418");
+        vUser.setLoginId("venomms");
 
         System.out.println(vUser.getToken());
         System.out.println(vUser.getLoginId());
 
         //测试api
         // System.out.println(testApi.getSaveClassroom());
-        System.out.println(newZjyApi.getPaperStructureForPreview());
+        //System.out.println(newZjyApi.getPaperStructureForPreview());
 
-        System.exit(0);
+
 
         String CheckUser = newZjyApi.getCheckUser(vUser.getToken());
         if (!CheckUser.contains("200")) {
@@ -453,22 +453,18 @@ public class newZjyMain {
         }
 
         //newZjyTestApi.getAuth();
+       // newZjyApi.webLogin();
+        System.exit(0);
 
-
+        String resp;
         List<newZjyCourse> CoursesList = getMyClassList(vUser);
         for (newZjyCourse vCourse : CoursesList) {
             String ClassId = vCourse.getClassId();
             String CourseId = vCourse.getCourseId();
-            String  CourseName=vCourse.getCourseName();
+            String CourseName = vCourse.getCourseName();
             System.out.println(vCourse.getClassName() + " * " + ClassId + " * " +
                     CourseName + " * " + CourseId);
 
-            //System.out.println(newZjyApi.getModifyClassAuditStatus(ClassId,"1","0"));
-            //System.out.println(newZjyTestApi.getSaveAssessment(CourseId,ClassId));
-            //System.out.println(newZjyTestApi.getCreateStuAssess(CourseId,ClassId));
-
-
-            if (!CourseName.contains("三维软件基础"))continue;
 
             if (!upUNTYXLCOOKIE(vUser, CourseId)) {
                 System.out.println("获取失效");
@@ -477,29 +473,43 @@ public class newZjyMain {
 
             newZjyApi.addCookie(vUser.getUNTYXLCOOKIE());
 
-          //  System.out.println(newZjyApi.getStuLearnRecord(CourseId,uid));
-            System.out.println(newZjyApi.getLearnRecord(CourseId));
-           // sk(vUser, CourseId);
+            //
+            if (!upAuthorization(vUser)) {
+                System.out.println("upAuthorization erro");
+                // break;
+
+            }
+
+            newZjyApi.spocHeader();
+
+            //resp=newZjyApi.getScormCourseItemByName(CourseId);
 
 
-           // String resp;
+            //newZjyApi.print(resp);
+
+
+
+
+            //System.out.println(newZjyApi.getModifyClassAuditStatus(ClassId,"1","0"));
+            //System.out.println(newZjyTestApi.getSaveAssessment(CourseId,ClassId));
+            //System.out.println(newZjyTestApi.getCreateStuAssess(CourseId,ClassId));
+
+
+            // if (!CourseName.contains("三维软件基础"))continue;
+
+            //  System.out.println(newZjyApi.getStuLearnRecord(CourseId,uid));
+            //System.out.println(newZjyApi.getLearnRecord(CourseId));
+            // sk(vUser, CourseId);
+
+
+            // String resp;
             //grandChildItem_dd9433f5384f40ab9e77e9f08436ed19
             //grandChildItem_2ac3ca7f6bd7477b9ac43e84d6fa86dc
             //String itid = "dd9433f5384f40ab9e77e9f08436ed19";
 
 
-            // System.exit(0);
 
-
-            //
-            if (!upAuthorization(vUser)) {
-                System.out.println("upAuthorization erro");
-               // break;
-                //
-            }
-            newZjyApi.spocHeader();
-
-          //  break;
+            //  break;
         }
 
 
@@ -537,7 +547,6 @@ public class newZjyMain {
             System.out.println(resp);
 
 
-
             if (vCellItemI.getWaretype().contains("video")) {
 
                 try {
@@ -558,10 +567,10 @@ public class newZjyMain {
                 resp = newZjyApi.getSaveLearningItem("999", CourseId, itid);
                 System.out.println(resp);
 
-                postlearn(itid,CourseId);
+                postlearn(itid, CourseId);
             } else {
 
-                postlearn(itid,CourseId);
+                postlearn(itid, CourseId);
                 // resp = newZjyApi.getQueryCourseItemInfo(itid);
                 //System.out.println(resp);
 
