@@ -322,6 +322,19 @@ public class newZjyApi {
         return resp;
     }
 
+
+      //删除课堂
+    static String delClassroom = "https://user.icve.com.cn/zhzj/zhzjTeacher_delClassroom.action";
+
+    public static String getDelClassroom(String activityId) {
+        String data = "id=402883e4831d725301831d95de04006c&loginId=Debug" +
+                "&token=aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA%3D%3D";
+        String resp = newZjyHttp.post(delClassroom, data);
+        return resp;
+    }
+
+
+
     //获取ucokie
     static String signLearn = "https://course.icve.com.cn/learnspace/sign/signLearn.action";
 
@@ -605,6 +618,38 @@ public class newZjyApi {
         return resp;
     }
 
+    //答案
+    static String PaperStructure = "https://spoc-exam.icve.com.cn/exam/statistics/examPaperContentStatistics_getPaperStructure.actionn";
+
+    public static String getPaperStructure() {
+        String data = "paperId=3960ed80fd384bf9a1ace9f7e23ddbd9";
+        String ck ="USERSESSIONID=402883e682f4d8ea0182f7123f521677#interface#batchCode#attachData;";
+
+        //newZjyApi.addCookie(ck);
+        newZjyHttp.addHeader("Host", "spoc-exam.icve.com.cn");
+        //printHeader();
+        String resp = newZjyHttp.post(PaperStructure, data);
+        return resp;
+    }
+
+//答案
+    static String ExamPaperStatisticsDetail = "https://spoc-exam.icve.com.cn/exam/statistics/examPaperContentStatistics_getExamPaperStatisticsDetail.action";
+
+    public static String getExamPaperStatisticsDetail() {
+        String data = "examId=4028824d82feea2d018303f382b2217f&" +
+                "paperId=3960ed80fd384bf9a1ace9f7e23ddbd9";
+        String ck ="USERSESSIONID=402883e682f4d8ea0182f7123f521677#interface#batchCode#attachData;";
+
+        //newZjyApi.addCookie(ck);
+        newZjyHttp.addHeader("Host", "spoc-exam.icve.com.cn");
+        //printHeader();
+        String resp = newZjyHttp.post(ExamPaperStatisticsDetail, data);
+        return resp;
+    }
+
+
+
+
     //test api 老师相关
     static String ClassTraineeList = "https://user.icve.com.cn/m/zhzjMobile_getClassTraineeList.action";
 
@@ -678,5 +723,38 @@ public class newZjyApi {
         return "";
     }
 
+    //token转换
+    static String generateEnterCloudUrl= "https://user.icve.com.cn/zhzj/zhzjTeacher_generateEnterCloudUrl.action";
+    public static String getGenerateEnterCloudUrl(String token){
+        String data = "token=aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA%3D%3D"+token;
+        String resp = newZjyHttp.post(generateEnterCloudUrl, data);
+        return resp;
+    }
+
+
+    //老师api 考试等
+    static String courseExamList= "https://user.icve.com.cn/zhzj/zhzjTeacher_courseExamList.action";
+    public static String getCourseExamList(String token){
+        String data = "token=aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA%3D%3D" +
+                "&searchName=&pageNum=1&type=随堂测验" +
+                "&examConfigTypeId=3&pageSize=100";
+        //在线作业
+        //token=aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA%3D%3D&searchName=&pageNum=1&type=在线作业&examConfigTypeId=2&pageSize=5
+       //课程考试
+        //token=aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA%3D%3D&searchName=&pageNum=1&type=课程考试&examConfigTypeId=1&pageSize=5
+        String resp = newZjyHttp.post(courseExamList, data);
+        return resp;
+    }
+
+    //疑似 USERSESSIONID
+
+    static String enterMain="https://spoc-exam.icve.com.cn/platformwebapi/testpaper/bankcontent_enterMain.action";
+    public static String getEnterMain(){
+        String data = "Signature=MC0CFQCUBcyPDTwxJYuYcyB83%2Fj8HBCyEAIUdY1WmRJq%2FK9%2Bef46NEFTeD0RE0w%3D&params.sourceDomain=spoc&_loginId=Debug&params.bankCode=Debug&apiKey=zhzj_platform&_name=%E5%90%B4%E4%BA%A6&params.bankName=%E6%88%91%E7%9A%84%E7%A9%BA%E9%97%B4&params.roleBusinessId=a603905470e2a5b8c13e96b579ef0dba&params.businessType=init&params.parentBankCode=persional_space&_roleCode=teacher&timestamp=1662690451047&";
+        String resp=newZjyHttp.get(enterMain,data);
+        return resp;
+    }
+
 
 }
+
