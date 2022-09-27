@@ -1,4 +1,4 @@
-package com.vms.ykt.RuiKey.networkverification;
+ package com.vms.ykt.RuiKey.networkverification;
 
 
 import androidx.appcompat.app.AppCompatActivity;
