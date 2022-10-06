@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.tabs.TabLayout;
 import com.vms.ykt.R;
-import com.vms.ykt.UI.Fragment.zjy_coursehd_Fragment;
+import com.vms.ykt.UI.Fragment.zjy.zjy_coursehd_Fragment;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
 import com.vms.ykt.yktStuMobile.zjy.zjyTeachInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
@@ -125,7 +125,6 @@ public class zjy_courseHdActivity extends AppCompatActivity {
         bundle.putString(ARG_PARAM, p1);
         fragment.setArguments(bundle);
     }
-
 
     private void onTabItemSelected(int position) {
 

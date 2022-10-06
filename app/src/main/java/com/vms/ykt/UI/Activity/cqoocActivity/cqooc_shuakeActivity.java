@@ -182,6 +182,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
         //作业考试
         if (cqooc_shuke_zdzy.isChecked()){
 
+
         }
         if (cqooc_shuke_zdks.isChecked()){
 
@@ -399,6 +400,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
                             Tool.toast(mContext, "登录失败");
                         } else {
                             Tool.toast(mContext, "登录成功");
+                            mUserInfo.setOtherXsid("player=1; xsid=" + xsid);
                         }
                     });
                 }).start();
@@ -422,7 +424,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
                 cqooc_shuke_rz.setText(stringBuffer.toString());
                 Tool.tvShowBottom(cqooc_shuke_rz);
             }
-            if (msg.what==1){
+            if (msg.what==1 && mThread!=null){
                 mThread.interrupt();
             }
         }

@@ -11,6 +11,15 @@ public class ClassRoom {
     private String title;
     private String courseId;
     private String startDate;
+    private String activityNum;
+
+    public String getActivityNum() {
+        return activityNum;
+    }
+
+    public void setActivityNum(String activityNum) {
+        this.activityNum = activityNum;
+    }
 
     public String getCourseName() {
         return courseName;

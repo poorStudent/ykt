@@ -33,6 +33,7 @@ public class CqApi {
         String resp =mCqoocHttp.post(Url, vBuilder.toString(), null);
         return resp;
     }
+
     public String getUserSession(String xsid){
         String path ="path=/user/session";
         StringBuilder vBuilder = new StringBuilder();

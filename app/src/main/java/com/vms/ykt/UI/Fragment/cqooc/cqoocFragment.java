@@ -1,4 +1,4 @@
-package com.vms.ykt.UI.Fragment;
+package com.vms.ykt.UI.Fragment.cqooc;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -34,12 +34,12 @@ import com.vms.ykt.UI.Activity.cqoocActivity.cqooc_moreUserSkActivity;
 import com.vms.ykt.UI.Adapter.cqoocAdapter.cqoocRecyclerAdapter;
 
 
-
+import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.UI.yktMainActivity;
 import com.vms.ykt.Util.CacheUs;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.viewModel.ViewModelUtils;
-import com.vms.ykt.viewModel.userVModel;
+import com.vms.ykt.viewModel.yktUserVM;
 import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocCourseInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocHttp;
@@ -75,11 +75,12 @@ public class cqoocFragment extends baseFragment {
     private cqoocHttp mCqoocHttp;
     private cqoocMain mCqoocMain;
     private cqApi mCqApi;
-    private static userVModel mUserVModel;
+    private static yktUserVM mUserVModel;
 
     public static Fragment newInstance(int icve) {
         cqoocFragment vIcveFragment = new cqoocFragment();
-        mUserVModel=((yktMainActivity)vIcveFragment.requireActivity()).mUserVModel;
+        //mUserVModel=((yktMainActivity)vIcveFragment.requireActivity()).mUserVModel;
+       // mUserVModel=ViewModelUtils.getPublicViewModel(vIcveFragment.requireActivity(), userVModel.class,vIcveFragment.requireActivity());
 
         goCqooc=icve;
         return vIcveFragment;
@@ -89,6 +90,7 @@ public class cqoocFragment extends baseFragment {
     public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         mActivity = (yktMainActivity) context;
+        mUserVModel= ViewModelUtils.getViewModel(mActivity.getApplication(), yktUserVM.class);
         mParam = getArguments() != null ? getArguments().getString(ARG_PARAM) : "";
     }
 
@@ -160,7 +162,7 @@ public class cqoocFragment extends baseFragment {
 
     private void loadData() {
 
-        mUserInfo=mUserVModel.SGcqoocUser(null);
+        //mUserInfo=mUserVModel.getCqoocUser();
         if (mUserInfo == null || mUserInfo.getUsername() == null) {
             mSwipeRefreshLayout.setRefreshing(false);
             mProgressBar.setVisibility(View.GONE);
@@ -201,7 +203,6 @@ public class cqoocFragment extends baseFragment {
 
 
     }
-
 
     private void loginDialog() {
 
@@ -368,7 +369,7 @@ public class cqoocFragment extends baseFragment {
                                 return;
                             }
 
-                            mUserVModel.SGcqoocUser(mUserInfo);
+                            mUserVModel.setCqoocUser(mUserInfo);
 
                             vCacheUs.writeCacheUs(mEditor, "cq", "null", ck);
                             mUserInfo.setCookie("player=1; xsid=" + ck);

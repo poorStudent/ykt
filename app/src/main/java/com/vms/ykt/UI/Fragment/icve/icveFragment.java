@@ -1,4 +1,4 @@
-package com.vms.ykt.UI.Fragment;
+package com.vms.ykt.UI.Fragment.icve;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Activity.icveActivity.icve_moreUserSkActivity;
 import com.vms.ykt.UI.Adapter.icveAdapter.icveRecyclerAdapter;
+import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.UI.yktMainActivity;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.icve.icveApiW;
@@ -35,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class icveFragment extends baseFragment{
+public class icveFragment extends baseFragment {
 
 
     private static String ARG_PARAM = "param_key";

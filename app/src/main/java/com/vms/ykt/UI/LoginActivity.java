@@ -9,7 +9,9 @@ import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -18,10 +20,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.alibaba.fastjson.JSONObject;
 
 import com.vms.ykt.R;
 import com.vms.ykt.TestActivity.BlankFragment;
+import com.vms.ykt.UI.Activity.newZjyActivity.newZjy_mainActivity;
 import com.vms.ykt.Util.AppStatus;
 import com.vms.ykt.Util.CacheUs;
 
@@ -33,6 +38,8 @@ import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktUtil.zjyLogin.zjyMobileLogin;
 import com.vms.ykt.yktUtil.zjyLogin.zjyOtherLogin;
 import com.vms.ykt.yktUtil.zjyLogin.zjyWebLogin;
+
+import java.util.Objects;
 
 
 public class LoginActivity extends Activity {
@@ -49,7 +56,7 @@ public class LoginActivity extends Activity {
     private String cookI = "";
     private boolean isRembPass;
 
-    private boolean isLoging=true;
+    private boolean isLoging = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +65,7 @@ public class LoginActivity extends Activity {
         initId();
         initData();
         initListener();
-        new BlankFragment();
+       // new BlankFragment();
         Log.d(TAG, "onCreate: " + Tool.getDEVICEModle());
 
     }
@@ -103,11 +110,7 @@ public class LoginActivity extends Activity {
     private void initListener() {
 
         cqooc.setOnClickListener((view) -> {
-
-            Intent intent = new Intent(LoginActivity.this, yktMainActivity.class);
-            intent.putExtra("goCqooc", 3);
-            startActivity(intent);
-            finish();
+            SwitchPt();
 
         });
         cqooc.setOnLongClickListener((view) -> {
@@ -120,7 +123,7 @@ public class LoginActivity extends Activity {
         goLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isLoging){
+                if (isLoging) {
                     Login();
                 }
             }
@@ -185,6 +188,42 @@ public class LoginActivity extends Activity {
 
     }
 
+    private void SwitchPt() {
+
+        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(this);
+
+        //获取界面
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.ykt_switchpt_dialog, null);
+        //将界面填充到AlertDiaLog容器并去除边框
+        setDeBugDialog.setView(dialogView);
+        //初始化控件
+        Button ykt_bt_cqooc = dialogView.findViewById(R.id.ykt_bt_cqooc);
+        Button ykt_bt_newzjy = dialogView.findViewById(R.id.ykt_bt_newzjy);
+        //取消点击外部消失弹窗
+        setDeBugDialog.setCancelable(true);
+        //创建AlertDiaLog
+        setDeBugDialog.create();
+        //AlertDiaLog显示
+        final AlertDialog customAlert = setDeBugDialog.show();
+        //设置AlertDiaLog宽高属性
+        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
+        params.width = 900;
+        params.height = 1000;
+        customAlert.getWindow().setAttributes(params);
+        ykt_bt_cqooc.setOnClickListener((v) -> {
+            Intent intent = new Intent(LoginActivity.this, yktMainActivity.class);
+            intent.putExtra("goCqooc", 3);
+            startActivity(intent);
+            finish();
+        });
+        ykt_bt_newzjy.setOnClickListener((v) -> {
+            Intent intent = new Intent(LoginActivity.this, newZjy_mainActivity.class);
+            //intent.putExtra("goCqooc", 3);
+            startActivity(intent);
+            //finish();
+        });
+    }
+
     TextWatcher afterTextChangedListener = new TextWatcher() {
 
         @Override
@@ -236,7 +275,7 @@ public class LoginActivity extends Activity {
 
         final CacheUs vCacheUs = new CacheUs(username, password);
 
-        isLoging=false;
+        isLoging = false;
         new Thread(new Runnable() {
 
             @Override
@@ -245,7 +284,7 @@ public class LoginActivity extends Activity {
 
                 String[] ret = null;
                 final String resp;
-                final String appv  = "2.8.43";;
+                final String appv = "2.8.43";
                 final String ck;
 
                 if (webLoginSwitch.isChecked()) {
@@ -261,7 +300,7 @@ public class LoginActivity extends Activity {
                     zjyMobileLogin.appv = appv;
                     String[] cache = vCacheUs.readCacheUs(mPreferences, "ykt");
 
-                    if (cache!=null&&!cache[0].equals("null")) {
+                    if (cache != null && !cache[0].equals("null")) {
                         zjyUser vZjyUser = JSONObject.parseObject(cache[0], zjyUser.class);
                         vZjyUser.setAppv(appv);
                         Log.d(TAG, "run: " + cache[0]);
@@ -284,10 +323,10 @@ public class LoginActivity extends Activity {
                     @Override
                     public void run() {
 
-                        isLoging=true;
+                        isLoging = true;
                         loadingProgressBar.setVisibility(View.GONE);
 
-                        if (resp == null||resp.isEmpty()) return;
+                        if (resp == null || resp.isEmpty()) return;
                         if (!JSONObject.parseObject(resp).getString("code").equals("1")) {
                             Tool.toast(LoginActivity.this, resp);
                             return;
@@ -340,7 +379,7 @@ public class LoginActivity extends Activity {
         if (hasPermissionDismiss) {
             //如果有没有被允许的权限
             //假如存在有没被允许的权限,可提示用户手动设置 或者不让用户继续操作
-            mPermissionRequest.showPermissionDialog(this,permissions);
+            mPermissionRequest.showPermissionDialog(this, permissions);
 
         } else {
             Log.e(TAG, "onRequestPermissionsResult >>>已全部授权");
@@ -350,7 +389,7 @@ public class LoginActivity extends Activity {
 
     @Override
     public void onActivityReenter(int resultCode, Intent data) {
-        switch (resultCode){
+        switch (resultCode) {
             case 1001:
                 break;
             case 1002:

@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.vms.ykt">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
-    <uses-permission android:name="android.permission.READ_CONTACTS"/><!-- 读取手机联系人权限 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" /><!-- 读取手机联系人权限 -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
 
     <application
+        android:name="com.vms.ykt.XuanRan.Exception.Handing.XuanRanApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_foreground"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/networkconf"
+        android:resizeableActivity="false"
         android:roundIcon="@drawable/ic_launcher_foreground"
         android:supportsRtl="true"
-        android:resizeableActivity="false"
-        android:networkSecurityConfig="@xml/networkconf"
-        android:usesCleartextTraffic="true"
-        android:name="com.vms.ykt.XuanRan.Exception.Handing.XuanRanApplication"
-        android:theme="@style/Theme.VmsZjy">
+        android:theme="@style/Theme.VmsZjy"
+        android:usesCleartextTraffic="true">
 
         <meta-data
             android:name="design_width_in_dp"
-            android:value="350"/>
+            android:value="350" />
         <meta-data
             android:name="design_height_in_dp"
-            android:value="700"/>
+            android:value="700" />
 
         <meta-data
             android:name="xposedmodule"
@@ -49,12 +50,12 @@
 
         <meta-data
             android:name="android.max_aspect"
-            android:value="4.0"/>
+            android:value="4.0" />
 
 
         <activity
-            android:theme="@style/Theme.VmsZjy"
-            android:name="com.vms.ykt.UI.LoginActivity">
+            android:name="com.vms.ykt.UI.LoginActivity"
+            android:theme="@style/Theme.VmsZjy">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -62,174 +63,168 @@
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/Theme.VmsZjy"
+            android:name="com.vms.ykt.XuanRan.Exception.Handing.ExceptionActivity"
             android:launchMode="singleTop"
-            android:name="com.vms.ykt.XuanRan.Exception.Handing.ExceptionActivity">
-        </activity>
+            android:theme="@style/Theme.VmsZjy"></activity>
         <activity
-            android:theme="@style/Theme.VmsZjy"
+            android:name="com.vms.ykt.UI.yktMainActivity"
             android:launchMode="singleTop"
-            android:name="com.vms.ykt.UI.yktMainActivity">
-        </activity>
+            android:theme="@style/Theme.VmsZjy"></activity>
         <activity
-            android:theme="@style/Theme.VmsZjy"
-            android:launchMode="singleTop"
+            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_shukeActivity"
             android:label="zjy"
-            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_shukeActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_DayTeachActivity"
             android:label="zjy"
-            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_DayTeachActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_keHouActivity"
             android:label="zjy"
-            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_keHouActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_workActivity"
             android:label="zjy"
-            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_workActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_workAnswActivity"
             android:label="zjy"
-            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_workAnswActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_examActivity"
             android:label="zjy"
-            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_examActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_examAnswActivity"
             android:label="zjy"
-            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_examAnswActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_examDoActivity"
             android:label="zjy"
-            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_examDoActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_courseHdActivity"
             android:label="zjy"
-            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_courseHdActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_testAnswActivity"
             android:label="zjy"
-            android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_testAnswActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_shuakeActivity"
             android:label="mooc"
-            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_shuakeActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
-            android:label="mooc"
-            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_moreUserSkActivity">
-        </activity>
+            android:theme="@style/Theme.VmsZjy"></activity>
         <activity
-            android:theme="@style/Theme.VmsZjy"
-            android:launchMode="singleTop"
+            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_moreUserSkActivity"
             android:label="mooc"
-            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_testActivity">
-        </activity>
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
         <activity
-            android:theme="@style/Theme.VmsZjy"
-            android:launchMode="singleTop"
+            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_testActivity"
             android:label="mooc"
-            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_workActivity">
-        </activity>
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_workActivity"
+            android:label="mooc"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
 
         <activity
-            android:theme="@style/Theme.VmsZjy"
-            android:launchMode="singleTop"
+            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_examActivity"
             android:label="mooc"
-            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_examActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_AnswActivity"
             android:label="mooc"
-            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_AnswActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_DoAnswActivity"
             android:label="mooc"
-            android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_DoAnswActivity">
-        </activity>
-        <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.icveActivity.icve_shukeActivity"
             android:label="icve"
-            android:name="com.vms.ykt.UI.Activity.icveActivity.icve_shukeActivity">
-        </activity>
-
-     <activity
-            android:theme="@style/Theme.VmsZjy"
             android:launchMode="singleTop"
-            android:label="icve"
-            android:name="com.vms.ykt.UI.Activity.icveActivity.icve_moreUserSkActivity">
-        </activity>
+            android:theme="@style/Theme.VmsZjy"></activity>
 
         <activity
-            android:theme="@style/Theme.VmsZjy"
-            android:launchMode="singleTop"
+            android:name="com.vms.ykt.UI.Activity.icveActivity.icve_moreUserSkActivity"
             android:label="icve"
-            android:name="com.vms.ykt.UI.Activity.icveActivity.icve_workExamActivity">
-        </activity>
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
+
+        <activity
+            android:name="com.vms.ykt.UI.Activity.icveActivity.icve_workExamActivity"
+            android:label="icve"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
 
 
         <activity
-            android:theme="@style/Theme.VmsZjy"
-            android:launchMode="singleTop"
+            android:name="com.vms.ykt.UI.Activity.icveActivity.icve_AnswActivity"
             android:label="icve"
-            android:name="com.vms.ykt.UI.Activity.icveActivity.icve_AnswActivity">
-        </activity>
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
 
 
         <activity
-            android:theme="@style/Theme.VmsZjy"
-            android:launchMode="singleTop"
+            android:name="com.vms.ykt.UI.Activity.icveActivity.icve_DoAnswActivity"
             android:label="icve"
-            android:name="com.vms.ykt.UI.Activity.icveActivity.icve_DoAnswActivity">
-        </activity>
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"></activity>
 
         <activity
-            android:theme="@style/Theme.VmsZjy"
+            android:name="com.vms.ykt.UI.Activity.cqoocActivity.cqooc_shuakeActivity"
             android:label="cqooc"
             android:launchMode="singleTop"
-            android:name="com.vms.ykt.UI.Activity.cqoocActivity.cqooc_shuakeActivity">
-        </activity>
+            android:theme="@style/Theme.VmsZjy"></activity>
 
-    <activity
-            android:theme="@style/Theme.VmsZjy"
+        <activity
+            android:name="com.vms.ykt.UI.Activity.cqoocActivity.cqooc_moreUserSkActivity"
             android:label="cqooc"
             android:launchMode="singleTop"
-            android:name="com.vms.ykt.UI.Activity.cqoocActivity.cqooc_moreUserSkActivity">
+            android:theme="@style/Theme.VmsZjy">
+
         </activity>
 
-    <activity
-            android:theme="@style/Theme.VmsZjy"
+        <activity
+            android:name="com.vms.ykt.TestActivity.testActivity"
             android:label="cqooc"
             android:launchMode="singleTop"
-            android:name="com.vms.ykt.TestActivity.testActivity">
+            android:theme="@style/Theme.VmsZjy">
+
+        </activity>
+
+
+        <activity
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.newZjy_mainActivity"
+            android:label="newZjy"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy">
+
+        </activity>
+
+        <activity
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.ClassRoomActivity"
+            android:label="newZjy"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy">
+
         </activity>
 
 

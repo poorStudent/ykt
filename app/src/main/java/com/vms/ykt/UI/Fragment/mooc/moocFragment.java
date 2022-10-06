@@ -1,4 +1,4 @@
-package com.vms.ykt.UI.Fragment;
+package com.vms.ykt.UI.Fragment.mooc;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Activity.moocActivity.mooc_moreUserSkActivity;
 import com.vms.ykt.UI.Adapter.moocAdapter.moocRecyclerAdapter;
+import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.UI.yktMainActivity;
 import com.vms.ykt.yktStuMobile.mooc.*;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;

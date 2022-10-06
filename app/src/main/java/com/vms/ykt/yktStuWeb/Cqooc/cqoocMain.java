@@ -252,53 +252,56 @@ public class cqoocMain implements Serializable {
 
     public List<TaskPreview> getOpenTasks(String courseId, String taskId) {
         //他人 作业已做详情 答案
-        String resp =mCqApi.getOpenTasks(courseId, taskId);
+        String resp = mCqApi.getOpenTasks(courseId, taskId);
         return parseTaskPreview(resp);
     }
 
-    public List<TaskPreview> parseTaskPreview(String resp){
+    public List<TaskPreview> parseTaskPreview(String resp) {
         //答案和题目共用解析
-        List<TaskPreview> vTaskPreviewList =new ArrayList<>();
+        List<TaskPreview> vTaskPreviewList = new ArrayList<>();
         if (resp == null || !resp.contains("data")) {
             return vTaskPreviewList;
         }
-        JSONArray vJSONArray = Tool.parseJsonA(resp,"data");
+        JSONArray vJSONArray = Tool.parseJsonA(resp, "data");
         for (int i = 0; i < vJSONArray.size(); i++) {
-            String js=vJSONArray.getString(i);
-            TaskPreview vTaskPreview = JSONObject.parseObject(js,TaskPreview.class);
+            String js = vJSONArray.getString(i);
+            TaskPreview vTaskPreview = JSONObject.parseObject(js, TaskPreview.class);
             vTaskPreviewList.add(vTaskPreview);
         }
         return vTaskPreviewList;
     }
+
     //提交作业
-    public String getTaskAdd(List<TaskPreview> previewList,userInfo UserInfo, cqoocCourseInfo varCourseInfo,examTask examTask){
+    public String getTaskAdd(List<TaskPreview> previewList, userInfo UserInfo, cqoocCourseInfo varCourseInfo, examTask examTask) {
         StringBuilder vStringBuilder = new StringBuilder();
-        for (TaskPreview vPreview :previewList){
-           String resp=mCqApi.getTaskAdd(UserInfo,vPreview.getContent()+"",varCourseInfo,examTask);
+        for (TaskPreview vPreview : previewList) {
+            String resp = mCqApi.getTaskAdd(UserInfo, vPreview.getContent() + "", varCourseInfo, examTask);
             vStringBuilder.append(resp);
             vStringBuilder.append("\n");
         }
         return vStringBuilder.toString();
     }
-  //做作业
-    public void DoTask(String otherXsid,examTask examTask,cqoocCourseInfo varCourseInfo){
 
-        cqoocHttp vCqoocHttp=new cqoocHttp();
-        cqApi vCqApi=new cqApi();
-        cqoocMain vCqoocMain=new cqoocMain();
-        vCqoocHttp.setUserCookie("player=2; xsid="+otherXsid);
+    //做作业
+    public void DoTask(String otherXsid, examTask examTask, cqoocCourseInfo varCourseInfo) {
+
+        cqoocHttp vCqoocHttp = new cqoocHttp();
+        cqApi vCqApi = new cqApi();
+        cqoocMain vCqoocMain = new cqoocMain();
+        vCqoocHttp.setUserCookie("player=2; xsid=" + otherXsid);
         vCqApi.setCqoocHttp(vCqoocHttp);
         vCqoocMain.setCqApi(vCqApi);
-        userInfo otherUserInfo =vCqoocMain.getUsreInfo(otherXsid);
-        List<TaskPreview> vPreviewList=vCqoocMain.getOpenTasks(varCourseInfo.getCourseId(),examTask.getId());
-        if (vPreviewList.size()==0){
+        userInfo otherUserInfo = vCqoocMain.getUsreInfo(otherXsid);
+        List<TaskPreview> vPreviewList = vCqoocMain.getOpenTasks(varCourseInfo.getCourseId(), examTask.getId());
+        if (vPreviewList.size() == 0) {
             //获取答案失败 随机吧
-            vPreviewList= getTasksInfo(varCourseInfo.getCourseId(),examTask.getId());
+            vPreviewList = getTasksInfo(varCourseInfo.getCourseId(), examTask.getId());
         }
-        userInfo UserInfo=null;
-       String resp= getTaskAdd(vPreviewList,UserInfo,varCourseInfo,examTask);
+        userInfo UserInfo = null;
+        String resp = getTaskAdd(vPreviewList, UserInfo, varCourseInfo, examTask);
 
     }
+
     //考试相关
     public List<examTask> getAllExam(String courseId) {
         List<examTask> vExamTaskList;
@@ -307,42 +310,42 @@ public class cqoocMain implements Serializable {
     }
 
     //是否生成试卷并获取
-    public String getIfExamGen(userInfo userInfo,String courseId, String examId){
-        String resp = mCqApi.getExamPreview(courseId,examId);
-        if (resp==null||!resp.contains("body"))return null;
-        if (!resp.contains("questions")){
-            resp = mCqApi.getExamGen(userInfo,courseId,examId);
-            if (resp==null)return null;
-            resp = mCqApi.getExamPreview(courseId,examId);
+    public String getIfExamGen(userInfo userInfo, String courseId, String examId) {
+        String resp = mCqApi.getExamPreview(courseId, examId);
+        if (resp == null || !resp.contains("body")) return null;
+        if (!resp.contains("questions")) {
+            resp = mCqApi.getExamGen(userInfo, courseId, examId);
+            if (resp == null) return null;
+            resp = mCqApi.getExamPreview(courseId, examId);
         }
-        return  resp;
+        return resp;
     }
 
-    public Object parseExamAswn(String resps){
+    public Object parseExamAswn(String resps) {
         //他人已做试卷解析答案
         JSONObject vJSONObject;
-        if (resps==null||!resps.contains("answer"))return null;
+        if (resps == null || !resps.contains("answer")) return null;
         JSONArray vJSONArray = Tool.parseJsonA(resps, "data");
-         String js = vJSONArray.getString(0);
-         vJSONObject = Tool.parseJsonO(js, "answer");
+        String js = vJSONArray.getString(0);
+        vJSONObject = Tool.parseJsonO(js, "answer");
         return vJSONObject;
     }
 
-    public List<ExamPreview> parseExamPreview(String resp){
+    public List<ExamPreview> parseExamPreview(String resp) {
         //试卷解析题目
-        List<ExamPreview> vExamPreviewList=new ArrayList<>();
-        if (resp==null||!resp.contains("body"))return null;
+        List<ExamPreview> vExamPreviewList = new ArrayList<>();
+        if (resp == null || !resp.contains("body")) return null;
         JSONArray vJSONArray = Tool.parseJsonA(resp, "data");
         String js = vJSONArray.getString(0);
-        JSONArray vBody=Tool.parseJsonA(js,"body");
-        for (int i = 0; i <vBody.size() ; i++) {
-            List<ExamPreview> vList=new ArrayList<>();
-            js=vBody.getString(i);
-            JSONArray vQuestions=Tool.parseJsonA(js, "questions");
-            if (vQuestions.size()!=0){
-                for (int j = 0; j <vQuestions.size(); j++) {
-                    String js1=vQuestions.getString(j);
-                    ExamPreview vExamPreview = JSONObject.parseObject(js1,ExamPreview.class);
+        JSONArray vBody = Tool.parseJsonA(js, "body");
+        for (int i = 0; i < vBody.size(); i++) {
+            List<ExamPreview> vList = new ArrayList<>();
+            js = vBody.getString(i);
+            JSONArray vQuestions = Tool.parseJsonA(js, "questions");
+            if (vQuestions.size() != 0) {
+                for (int j = 0; j < vQuestions.size(); j++) {
+                    String js1 = vQuestions.getString(j);
+                    ExamPreview vExamPreview = JSONObject.parseObject(js1, ExamPreview.class);
                     vList.add(vExamPreview);
                 }
                 vExamPreviewList.addAll(vList);
@@ -351,41 +354,45 @@ public class cqoocMain implements Serializable {
         return vExamPreviewList;
     }
 
-    public void DoExam(String otherXsid,examTask examTask){
-        cqoocCourseInfo varCourseInfo=null;
-        cqoocHttp vCqoocHttp=new cqoocHttp();
-        cqApi vCqApi=new cqApi();
-        cqoocMain vCqoocMain=new cqoocMain();
-        vCqoocHttp.setUserCookie("player=2; xsid="+otherXsid);
+    //做试卷
+    public void DoExam(userInfo userInfo, examTask examTask,String courseId) {
+        cqoocCourseInfo varCourseInfo = null;
+        cqoocHttp vCqoocHttp = new cqoocHttp();
+        cqApi vCqApi = new cqApi();
+        cqoocMain vCqoocMain = new cqoocMain();
+        vCqoocHttp.setUserCookie("player=2; xsid=" + userInfo.getOtherXsid());
         vCqApi.setCqoocHttp(vCqoocHttp);
         vCqoocMain.setCqApi(vCqApi);
-        userInfo otherUserInfo =vCqoocMain.getUsreInfo(otherXsid);
+        userInfo otherUserInfo = vCqoocMain.getUsreInfo(userInfo.getOtherXsid());
 
-        String resp=getIfExamGen(null,"","");
-        if (resp==null||!resp.contains("id"))return;
+        String resp = getIfExamGen(null, "", "");
+        if (resp == null || !resp.contains("id")) return;
 
         JSONArray vJSONArray = Tool.parseJsonA(resp, "data");
         String js = vJSONArray.getString(0);
-        String id =Tool.parseJsonS(js,"id");//提交用的id
-        if (id==null || id.equals("")){
+        String id = Tool.parseJsonS(js, "id");//提交用的id
+        if (id == null || id.equals("")) {
             return;
         }
-        String answs=vCqApi.getExamPreview(varCourseInfo.getCourseId(), examTask.getId());
+        String answs = vCqApi.getExamPreview(varCourseInfo.getCourseId(), examTask.getId());
 
-        Object answ=parseExamAswn(answs);
+        Object answ = parseExamAswn(answs);
         List<ExamPreview> vExamPreviewList;
-        if (answ==null||String.valueOf(answ).isEmpty()){
+        if (answ == null || String.valueOf(answ).isEmpty()) {
             //答案获取失败 随机答案吧
-            vExamPreviewList=parseExamPreview(resp);
-            return;
+            vExamPreviewList = parseExamPreview(resp);
+            answ="";
         }
-        vExamPreviewList=parseExamPreview((String) answ);
-        //examSubmit();
+        else {
+
+            //vExamPreviewList = parseExamPreview((String) answ);
+        }
+        examSubmit(userInfo,courseId, examTask.getId(),id,answs);
 
     }
 
-    public void examSubmit(userInfo userInfo,String courseId, String examId,String id,Object answers){
-        mCqApi.getExamSubmit(userInfo,courseId,examId,id,answers);
+    public void examSubmit(userInfo userInfo, String courseId, String examId, String id, Object answers) {
+        mCqApi.getExamSubmit(userInfo, courseId, examId, id, answers);
     }
 
     private List<examTask> getExamTask(String courseId, int type) {
@@ -427,6 +434,7 @@ public class cqoocMain implements Serializable {
         }
         return vExamTaskList;
     }
+
 
     public String getOtherFourmCt(String courseId, String forumId) {
         String OtherFourmCt = "";

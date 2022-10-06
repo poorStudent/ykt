@@ -17,6 +17,16 @@ import java.io.Serializable;
  **/
 public class userInfo implements Serializable {
 
+    public String getOtherXsid() {
+        return otherXsid;
+    }
+
+    public void setOtherXsid(String otherXsid) {
+        this.otherXsid = otherXsid;
+    }
+
+    private String otherXsid;
+
     private String id;
 
     public String getStaytime() {

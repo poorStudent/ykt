@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class newZjyMain {
+    private final static String TAG = newZjyMain.class.getSimpleName();
 
     public static newZjyUser MobileLogin(String mobile, String passwd) {
         String resp = newZjyApi.getMobileLogin(mobile, passwd);
+        System.out.println(resp);
+        //Log.d(TAG, resp);
         if (resp == null || !resp.contains("token")) return null;
         newZjyUser vUser = JSONObject.parseObject(resp, newZjyUser.class);
         resp = newZjyApi.getUserInfo(vUser.getToken());
@@ -26,6 +29,25 @@ public class newZjyMain {
             System.out.println(userid);
         }
         return vUser;
+    }
+
+    //
+    public static void getSsoUser() {
+        //{"success":true,"data":{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbklkIjoiRGVidWciLCJzaXRlQ29kZSI6InpoemoiLCJ1c2VyX25hbWUiOiJEZWJ1ZyIsInBob3RvIjpudWxsLCJzdUlkIjoiYTYwMzkwNTQ3MGUyYTViOGMxM2U5NmI1NzllZjBkYmEiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImNsaWVudF9pZCI6InNwb2MtY2xhc3Nyb29tLmljdmUuY29tLmNuIiwidHJ1ZU5hbWUiOiLlkLTkuqYiLCJyb2xlQ29kZSI6IjEiLCJzY29wZSI6WyJhbGwiXSwicm9sZU5hbWUiOiLmlZnluIgiLCJleHAiOjE2NjYyNzYwNjAsImp0aSI6IjkyZWQxZmM4LWJhNTItNGI1Ny05NjdhLWIxOTVjZWVjODMzOCJ9.TcPY0SU5AsJ2iPjrZDFFj3tWuPe5JHYv1GCsK9-QAbjQRORzkSk803RJcJZF30Kst0zohnB9lgZHP5N6rc9_LR7BE_LKhQsoxRs8wHu-7mexebz9P7rHfGHCtSKm1bLQZtDp9jTdKzzOU6jDPQMUUkVrPRFAW-stG0DgNtCERsUcUX55ocJmZ2WQ142ZAN4egDNO45Ank8vX2bJiVw06u4_EzJl_fgHnmut0rb6QWYwQv0o-5LAzNdaAcKz1g0lzX1bmeAvZ7QZcbkU9ANDBq0KboPQZhaUzMGipKd8o1U4DH5X8EbHoKs7YKZ1-1JUJJlCH089JueICWAynws0g0A","token_type":"bearer","refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbklkIjoiRGVidWciLCJzaXRlQ29kZSI6InpoemoiLCJ1c2VyX25hbWUiOiJEZWJ1ZyIsInBob3RvIjpudWxsLCJzdUlkIjoiYTYwMzkwNTQ3MGUyYTViOGMxM2U5NmI1NzllZjBkYmEiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImNsaWVudF9pZCI6InNwb2MtY2xhc3Nyb29tLmljdmUuY29tLmNuIiwidHJ1ZU5hbWUiOiLlkLTkuqYiLCJyb2xlQ29kZSI6IjEiLCJzY29wZSI6WyJhbGwiXSwiYXRpIjoiOTJlZDFmYzgtYmE1Mi00YjU3LTk2N2EtYjE5NWNlZWM4MzM4Iiwicm9sZU5hbWUiOiLmlZnluIgiLCJleHAiOjE2Njc2NTg0NjAsImp0aSI6IjEyMDJkYzM3LWJmZTQtNGUyOS04MWZiLWNlYTg1NzZhZjBjZiJ9.Czns77esNGX77TsO5APtRFymoLPPkSBh1VdKfrfvfsDgueCz7gcBp0_ElCkc5fajKjSVbWUdoJimWpRNg1jBY2M24GUi9U3-ohD63NIZJ0ya0BSppRC8gzzwFbxj2D4WAYcJI1hgW0ZhNZmgUyN9ydQ1E6njZYGXMxNlLaWokb3WG5CGykxsF6eIA9miEjwB7xHTGVUaPscpspjrqb2AY07ib3HsY5OxY-FCeh0qGEASO6v4hkavdv7aPWIZdNe-j58rF24fqkrjveQ3_iOT71ozv8UZqdScuPscRE9n6aukg_R-LLHUhiHTley9JCMH8PzreqgLJUxx-oDTeM4fRg","expires_in":1209597,"scope":"all","jti":"92ed1fc8-ba52-4b57-967a-b195ceec8338"},"code":"200","message":null}
+        String resp = newZjyApi.getSsoUser();
+        System.out.println(resp);
+    }
+    public static boolean isLogin(newZjyUser vUser) {
+        String CheckUser = newZjyApi.getCheckUser(vUser.getToken());
+        System.out.println(CheckUser);
+        if (!CheckUser.contains("200")) {
+            return false;
+        }
+        return true;
+    }
+
+    public static newZjyUser getUserInfoBytToken() {
+        return null;
     }
 
     public static List<newZjyCourse> getMyClassList(newZjyUser user) {
@@ -65,6 +87,7 @@ public class newZjyMain {
         ,"pageToken":"e11abf3f-0588-4850-8d49-431096ae8091"},"errorCode":"200","errorMsg":""}
         * */
         String resp = newZjyApi.getRestSsoToken(user.getToken());
+        //System.out.println(resp);
         if (resp == null || !resp.contains("userAccessToken")) return false;
         JSONObject js1 = Tool.parseJsonO(resp, "data");
         String userAccessToken = js1.getString("userAccessToken");
@@ -72,6 +95,12 @@ public class newZjyMain {
         String pageToken = js1.getString("pageToken");
         user.setUserAccessToken(userAccessToken);
         user.setPageToken(pageToken);
+        return true;
+    }
+    private static boolean getTokenByPageToken(newZjyUser user){
+        String resp = newZjyApi.getTokenByPageToken(user.getPageToken());
+        System.out.println(resp);
+        if (resp == null || !resp.contains("userAccessToken")) return false;
         return true;
     }
 
@@ -82,6 +111,7 @@ public class newZjyMain {
         }
         return false;
     }
+
 
     //UNTYXLCOOKIE
     public static boolean upUNTYXLCOOKIE(newZjyUser user, String courseid) {
@@ -97,7 +127,6 @@ public class newZjyMain {
         }
         return false;
     }
-
 
     public static List<classActivity> getClassActivityQ(ClassRoom vClassRoom) {
         String resp = newZjyApi.getClassActivityQ(vClassRoom.getId());
@@ -171,11 +200,11 @@ public class newZjyMain {
     }
 
     //签到
-    public static int Sign(classActivity Activitys, String RecordId) {
+    public static String Sign(classActivity Activitys, String RecordId) {
         String resp = newZjyApi.getSignResult(RecordId);
         System.out.println(resp);
         if (resp != null) {
-            if (resp.contains("已签")) return 1;
+            if (resp.contains("已签")) return resp;
         }
         String detailTypeCode = Activitys.getDetailTypeCode();
         if (detailTypeCode.equals("1")) {
@@ -184,18 +213,18 @@ public class newZjyMain {
         } else {
             resp = newZjyApi.getActivityById(Activitys.getId());
             resp = parseSignCode(resp);
-            if (resp == null || resp.equals("")) return 2;
+            if (resp == null || resp.equals("")) return resp;
             resp = newZjyApi.getStudentSignStatusC(RecordId, Activitys.getId(), resp);
 
         }
-        System.out.println(resp);
-        if (resp == null || !resp.contains("签到成功")) {
-            System.out.println("签到sb");
-            return 2;
-        }
-        ;
 
-        return 1;
+        if (resp == null || !resp.contains("签到成功")) {
+            resp=patchSign(RecordId,1);
+            System.out.println(resp);
+            return resp;
+        }
+       // System.out.println(resp);
+        return resp;
     }
 
     public static String parseSignCode(String resp) {
@@ -445,6 +474,10 @@ public class newZjyMain {
         //System.out.println(newZjyApi.getPaperStructureForPreview());
 
 
+        // System.out.println(newZjyApi.getPaperStructureForPreview());
+        //System.out.println(newZjyApi.getExamPaperStatisticsDetail());
+        //System.out.println(newZjyApi.getQuestionManage(""));
+
 
         String CheckUser = newZjyApi.getCheckUser(vUser.getToken());
         if (!CheckUser.contains("200")) {
@@ -452,9 +485,12 @@ public class newZjyMain {
             return;
         }
 
-        //newZjyTestApi.getAuth();
-       // newZjyApi.webLogin();
+        System.out.println(Tool.parseDataTime("1662134400000"));
         System.exit(0);
+
+        //newZjyTestApi.getAuth();
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++newZjyApi.webLogin();
+
 
         String resp;
         List<newZjyCourse> CoursesList = getMyClassList(vUser);
@@ -471,7 +507,7 @@ public class newZjyMain {
                 return;
             }
 
-            newZjyApi.addCookie(vUser.getUNTYXLCOOKIE());
+            newZjyHttp.addCookie(vUser.getUNTYXLCOOKIE());
 
             //
             if (!upAuthorization(vUser)) {
@@ -480,14 +516,12 @@ public class newZjyMain {
 
             }
 
-            newZjyApi.spocHeader();
+            newZjyApi.upHeader1();
 
             //resp=newZjyApi.getScormCourseItemByName(CourseId);
 
 
             //newZjyApi.print(resp);
-
-
 
 
             //System.out.println(newZjyApi.getModifyClassAuditStatus(ClassId,"1","0"));
@@ -506,7 +540,6 @@ public class newZjyMain {
             //grandChildItem_dd9433f5384f40ab9e77e9f08436ed19
             //grandChildItem_2ac3ca7f6bd7477b9ac43e84d6fa86dc
             //String itid = "dd9433f5384f40ab9e77e9f08436ed19";
-
 
 
             //  break;
@@ -657,7 +690,7 @@ public class newZjyMain {
                     for (SignStudent vSignStudent : getAllSignStudent(id)) {
                         System.out.println("---" + vSignStudent.getStuName() + " * " + vSignStudent.getSignStatus());
                     }
-                    break;
+                    //break;
                     //System.out.println(patchSign(RecordId,3));
                     //Sign(vActivity,RecordId);
                     //System.out.println(overActivity(vActivity));

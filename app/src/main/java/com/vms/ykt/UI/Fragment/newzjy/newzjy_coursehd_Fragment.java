@@ -1,6 +1,7 @@
-package com.vms.ykt.UI.Fragment;
+package com.vms.ykt.UI.Fragment.newzjy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,20 +10,29 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.vms.ykt.R;
+import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_courseHdActivity;
 import com.vms.ykt.UI.Activity.zjyActivity.zjy_courseHdActivity;
+import com.vms.ykt.UI.Adapter.newzjyAdapter.newzjy_courseHd_Adapter;
 import com.vms.ykt.UI.Adapter.zjyAdapter.zjy_courseHDAdapter;
+import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.newZjy.newZjyUserDao;
+import com.vms.ykt.yktStuMobile.newZJY.ClassRoom;
+import com.vms.ykt.yktStuMobile.newZJY.classActivity;
+import com.vms.ykt.yktStuMobile.newZJY.newZjyMain;
 import com.vms.ykt.yktStuMobile.zjy.zjyCouresActivitInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyMain;
 import com.vms.ykt.yktStuMobile.zjy.zjyTeachInfo;
@@ -33,8 +43,9 @@ import com.vms.ykt.yktStuWeb.zjy.zjyMainW;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class zjy_coursehd_Fragment extends baseFragment {
+public class newzjy_coursehd_Fragment extends baseFragment {
 
 
     private String mParam;
@@ -42,46 +53,27 @@ public class zjy_coursehd_Fragment extends baseFragment {
     private String TAG = this.getClass().getSimpleName();
 
 
-
-
-
-    private zjyUser mZjyUser;
-
-    private List<zjyCouresActivitInfo> mZjyCouresActivitInfos = new ArrayList<>();
-
-
-    private zjy_courseHdActivity mActivity;
+    private newzjy_courseHdActivity mActivity;
 
     private View root = null;
     private TextView mButton2;
     private Button mButton;
     private RecyclerView mRecyclerView;
-    private zjy_courseHDAdapter mRecyclerAdapter = null;
+    private newzjy_courseHd_Adapter mRecyclerAdapter = null;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ProgressBar mProgressBar;
 
-    private zjyTeachInfo mZjyTeachInfo;
+    private ClassRoom mClassRoom;
 
-    private zjyHttpW mZjyHttpW;
-    private zjyApiW mZjyApiW;
-    private zjyMainW mZjyMainW;
 
     private int flag;
 
-    public zjy_coursehd_Fragment(int flag) {
+    public newzjy_coursehd_Fragment(int flag) {
         this.flag = flag;
     }
 
-    public void setData(zjyUser zjyUser, zjyTeachInfo zjyTeachInfo) {
-        if (zjyUser == null) return;
-        this.mZjyTeachInfo = zjyTeachInfo;
-        this.mZjyUser = zjyUser;
-        this.mZjyHttpW = new zjyHttpW();
-        this.mZjyApiW = new zjyApiW();
-        this.mZjyMainW = new zjyMainW();
-        mZjyHttpW.setUserCookie(mZjyUser.getCookie());
-        mZjyApiW.setZjyHttpW(mZjyHttpW);
-        mZjyMainW.setZjyApiW(mZjyApiW);
+    public void setData() {
+
     }
 
     private static String ARG_PARAM = "param_key";
@@ -89,7 +81,7 @@ public class zjy_coursehd_Fragment extends baseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mActivity = (zjy_courseHdActivity) context;
+        mActivity = (newzjy_courseHdActivity) context;
       //  mParam = getArguments().getString(ARG_PARAM);
     }
 
@@ -97,7 +89,7 @@ public class zjy_coursehd_Fragment extends baseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         if (root == null) {
-            root = inflater.inflate(R.layout.zjy_coursehd_fragmt_view, container, false);
+            root = inflater.inflate(R.layout.newzjy_coursehd_fragmt_view, container, false);
 
         }
 
@@ -109,8 +101,16 @@ public class zjy_coursehd_Fragment extends baseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated: ");
+
+        initData();
         initView(view);
         initListener();
+
+    }
+
+    private void initData(){
+        mClassRoom=newZjyUserDao.sClassRoom;
+
     }
 
     private void initView(View view) {
@@ -143,11 +143,15 @@ public class zjy_coursehd_Fragment extends baseFragment {
             mProgressBar.setVisibility(View.VISIBLE);
             loadData();
         });
+        mButton2.setOnClickListener((View v) -> {
+        });
+
+        mButton.performClick();
 
     }
 
     public void loadData() {
-        if (mZjyUser == null) {
+        if (mClassRoom == null) {
             mProgressBar.setVisibility(View.GONE);
             Tool.toast(mActivity, "登录失效");
             return;
@@ -156,17 +160,17 @@ public class zjy_coursehd_Fragment extends baseFragment {
             @Override
             public void run() {
 
-                getCourseHD();
+                List<classActivity> mClassActivityList=getCourseHD();
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        if (mZjyCouresActivitInfos.size() != 0) {
+                        if (mClassActivityList.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new zjy_courseHDAdapter(mZjyCouresActivitInfos, mZjyUser,mZjyTeachInfo);
+                                mRecyclerAdapter = new newzjy_courseHd_Adapter(mClassActivityList);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
-                                mRecyclerAdapter.updateData(mZjyCouresActivitInfos);
+                                mRecyclerAdapter.updateData(mClassActivityList);
                                 Log.d(TAG, "run: updateData(mZjyCourseIfnos)");
                             }
                             mButton.setVisibility(View.GONE);
@@ -182,36 +186,32 @@ public class zjy_coursehd_Fragment extends baseFragment {
         }).start();
     }
 
-    private void getCourseHD() {
+    private List<classActivity> getCourseHD() {
 
+        List<classActivity>  mClassActivityList= new  ArrayList();  ;
         switch (flag) {
             case 1:
-                mZjyCouresActivitInfos = zjyMain.getCourseActivityList1(mZjyUser, mZjyTeachInfo);
-                if (mZjyCouresActivitInfos.size() == 0) {
+                mClassActivityList = newZjyMain.getClassActivityQ(mClassRoom);
+                if (mClassActivityList.size() == 0) {
                 }
                 break;
             case 2:
-                mZjyCouresActivitInfos = zjyMain.getCourseActivityList2(mZjyUser, mZjyTeachInfo);
-                if (mZjyCouresActivitInfos.size() == 0) {
+                mClassActivityList = newZjyMain.getClassActivityZ(mClassRoom);
+                if (mClassActivityList.size() == 0) {
                 }
                 break;
             case 3:
-                mZjyCouresActivitInfos = zjyMain.getCourseActivityList3(mZjyUser, mZjyTeachInfo);
-                if (mZjyCouresActivitInfos.size() == 0) {
+                mClassActivityList = newZjyMain.getClassActivityH(mClassRoom);
+                if (mClassActivityList.size() == 0) {
                 }
                 break;
+            default:
+                return mClassActivityList;
         }
+        return mClassActivityList;
     }
 
-    private Handler mHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0:
-            }
-        }
-    };
+
 
 
 }

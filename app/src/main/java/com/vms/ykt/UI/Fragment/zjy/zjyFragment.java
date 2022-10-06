@@ -1,4 +1,4 @@
-package com.vms.ykt.UI.Fragment;
+package com.vms.ykt.UI.Fragment.zjy;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +26,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Activity.zjyActivity.zjy_DayTeachActivity;
 import com.vms.ykt.UI.Adapter.zjyAdapter.zjyRecyclerAdapter;
+import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.UI.yktMainActivity;
 import com.vms.ykt.yktStuMobile.zjy.*;
 import com.vms.ykt.Util.Tool;

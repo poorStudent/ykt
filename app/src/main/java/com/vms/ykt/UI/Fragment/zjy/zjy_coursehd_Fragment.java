@@ -1,4 +1,4 @@
-package com.vms.ykt.UI.Fragment;
+package com.vms.ykt.UI.Fragment.zjy;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -20,20 +20,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.vms.ykt.R;
-import com.vms.ykt.UI.Activity.icveActivity.icve_workExamActivity;
-import com.vms.ykt.UI.Adapter.icveAdapter.icve_workExamAdapter;
+import com.vms.ykt.UI.Activity.zjyActivity.zjy_courseHdActivity;
+import com.vms.ykt.UI.Adapter.zjyAdapter.zjy_courseHDAdapter;
+import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktStuMobile.zjy.zjyCouresActivitInfo;
+import com.vms.ykt.yktStuMobile.zjy.zjyMain;
+import com.vms.ykt.yktStuMobile.zjy.zjyTeachInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
-import com.vms.ykt.yktStuWeb.icve.icveApiW;
-import com.vms.ykt.yktStuWeb.icve.icveCourseInfo;
-import com.vms.ykt.yktStuWeb.icve.icveHttpW;
-import com.vms.ykt.yktStuWeb.icve.icveMainW;
-import com.vms.ykt.yktStuWeb.icve.workExamListInfo;
+import com.vms.ykt.yktStuWeb.zjy.zjyApiW;
+import com.vms.ykt.yktStuWeb.zjy.zjyHttpW;
+import com.vms.ykt.yktStuWeb.zjy.zjyMainW;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class icve_workExam_Fragment extends baseFragment {
+public class zjy_coursehd_Fragment extends baseFragment {
 
 
     private String mParam;
@@ -41,43 +43,46 @@ public class icve_workExam_Fragment extends baseFragment {
     private String TAG = this.getClass().getSimpleName();
 
 
+
+
+
     private zjyUser mZjyUser;
 
-    private List<workExamListInfo> mWorkExamListInfos = new ArrayList<>();
+    private List<zjyCouresActivitInfo> mZjyCouresActivitInfos = new ArrayList<>();
 
 
-    private icve_workExamActivity mActivity;
+    private zjy_courseHdActivity mActivity;
 
     private View root = null;
     private TextView mButton2;
     private Button mButton;
     private RecyclerView mRecyclerView;
-    private icve_workExamAdapter mRecyclerAdapter = null;
+    private zjy_courseHDAdapter mRecyclerAdapter = null;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ProgressBar mProgressBar;
 
-    private icveCourseInfo mCourseIfno;
+    private zjyTeachInfo mZjyTeachInfo;
 
-
-    private icveMainW mIcveMainW;
-    private icveApiW mIcveApiW;
+    private zjyHttpW mZjyHttpW;
+    private zjyApiW mZjyApiW;
+    private zjyMainW mZjyMainW;
 
     private int flag;
 
-    public icve_workExam_Fragment(int flag) {
+    public zjy_coursehd_Fragment(int flag) {
         this.flag = flag;
     }
 
-    public void setData(zjyUser zjyUser, icveCourseInfo CourseIfno) {
+    public void setData(zjyUser zjyUser, zjyTeachInfo zjyTeachInfo) {
         if (zjyUser == null) return;
-        this.mCourseIfno=CourseIfno;
+        this.mZjyTeachInfo = zjyTeachInfo;
         this.mZjyUser = zjyUser;
-        icveHttpW mIcveHttpW = new icveHttpW();
-        mIcveHttpW.setUserCookie(mZjyUser.getCookie());
-        this.mIcveApiW = new icveApiW();
-        mIcveApiW.setIcveHttpW(mIcveHttpW);
-        this.mIcveMainW = new icveMainW();
-        mIcveMainW.setIcveApiW(mIcveApiW);
+        this.mZjyHttpW = new zjyHttpW();
+        this.mZjyApiW = new zjyApiW();
+        this.mZjyMainW = new zjyMainW();
+        mZjyHttpW.setUserCookie(mZjyUser.getCookie());
+        mZjyApiW.setZjyHttpW(mZjyHttpW);
+        mZjyMainW.setZjyApiW(mZjyApiW);
     }
 
     private static String ARG_PARAM = "param_key";
@@ -85,15 +90,15 @@ public class icve_workExam_Fragment extends baseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mActivity = (icve_workExamActivity) context;
-      // mParam = getArguments().getString(ARG_PARAM);
+        mActivity = (zjy_courseHdActivity) context;
+      //  mParam = getArguments().getString(ARG_PARAM);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         if (root == null) {
-            root = inflater.inflate(R.layout.icve_work_fragmt_view, container, false);
+            root = inflater.inflate(R.layout.zjy_coursehd_fragmt_view, container, false);
 
         }
 
@@ -152,17 +157,17 @@ public class icve_workExam_Fragment extends baseFragment {
             @Override
             public void run() {
 
-                getWorkExam();
+                getCourseHD();
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        if (mWorkExamListInfos.size() != 0) {
+                        if (mZjyCouresActivitInfos.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new icve_workExamAdapter(mWorkExamListInfos, mZjyUser,mCourseIfno);
+                                mRecyclerAdapter = new zjy_courseHDAdapter(mZjyCouresActivitInfos, mZjyUser,mZjyTeachInfo);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
-                                mRecyclerAdapter.updateData(mWorkExamListInfos);
+                                mRecyclerAdapter.updateData(mZjyCouresActivitInfos);
                                 Log.d(TAG, "run: updateData(mZjyCourseIfnos)");
                             }
                             mButton.setVisibility(View.GONE);
@@ -178,17 +183,22 @@ public class icve_workExam_Fragment extends baseFragment {
         }).start();
     }
 
-    private void getWorkExam() {
+    private void getCourseHD() {
 
         switch (flag) {
             case 1:
-                mWorkExamListInfos = mIcveMainW.getWorksList(mCourseIfno.getId());
-                if (mWorkExamListInfos.size() == 0) {
+                mZjyCouresActivitInfos = zjyMain.getCourseActivityList1(mZjyUser, mZjyTeachInfo);
+                if (mZjyCouresActivitInfos.size() == 0) {
                 }
                 break;
             case 2:
-                mWorkExamListInfos = mIcveMainW.getExamList(mCourseIfno.getId());
-                if (mWorkExamListInfos.size() == 0) {
+                mZjyCouresActivitInfos = zjyMain.getCourseActivityList2(mZjyUser, mZjyTeachInfo);
+                if (mZjyCouresActivitInfos.size() == 0) {
+                }
+                break;
+            case 3:
+                mZjyCouresActivitInfos = zjyMain.getCourseActivityList3(mZjyUser, mZjyTeachInfo);
+                if (mZjyCouresActivitInfos.size() == 0) {
                 }
                 break;
         }

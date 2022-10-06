@@ -5,8 +5,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.SavedStateViewModelFactory;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -22,8 +20,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.android.material.tabs.TabLayout;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Fragment.*;
+import com.vms.ykt.UI.Fragment.cqooc.cqoocFragment;
+import com.vms.ykt.UI.Fragment.icve.icveFragment;
+import com.vms.ykt.UI.Fragment.mooc.moocFragment;
+import com.vms.ykt.UI.Fragment.zjy.zjyFragment;
 import com.vms.ykt.viewModel.ViewModelUtils;
-import com.vms.ykt.viewModel.userVModel;
+import com.vms.ykt.viewModel.yktUserVM;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 
 
@@ -44,7 +46,7 @@ public class yktMainActivity extends AppCompatActivity {
     private FragmentManager mSupportFragmentManager;
     private FragmentTransaction mTransaction;
     private String ARG_PARAM = "param_key";
-    public userVModel mUserVModel;
+    private yktUserVM mUserVModel;
     Bundle bundle;
     private int goCqooc;
 
@@ -52,7 +54,7 @@ public class yktMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mUserVModel=ViewModelUtils.getPrivateViewModel(getApplication(), userVModel.class,this);
+        mUserVModel= ViewModelUtils.getViewModel(getApplication(), yktUserVM.class);
         initData();
         initId();
         initView();
@@ -73,7 +75,7 @@ public class yktMainActivity extends AppCompatActivity {
         this.mZjyUser =  JSONObject.parseObject(userInfo, zjyUser.class);
         mZjyUser.setAppv(appv);
         mZjyUser.setCookie(cookie);
-        mUserVModel.SGzjyUser(mZjyUser);
+        mUserVModel.setZjyUser(mZjyUser);
 
     }
 
@@ -179,7 +181,7 @@ public class yktMainActivity extends AppCompatActivity {
 
     private Fragment onTabItemSelected(int position) {
         Fragment fragment = mFragmensts.get(position);
-        mZjyUser=mUserVModel.SGzjyUser(mZjyUser);
+        //mZjyUser=mUserVModel.getZjyUser();
         if (fragment == null) {
             switch (position) {
                 case 0:
