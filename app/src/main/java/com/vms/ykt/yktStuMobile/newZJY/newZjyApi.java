@@ -658,6 +658,47 @@ public class newZjyApi {
     }
 
 
+    //web api
+    //获取 考试 作业 测试 详情
+    private static String studentExam_getPaperStructure="https://spoc-exam.icve.com.cn/student/exam/studentExam_getPaperStructure.action";
+
+    public static String getExamPaperStructure() {
+        //{"retCode":"0","data":{"402883ab82fee62c0183204009171f77":{"isTemplatePaper":"0","courseNameAlias":"课程","courseName":"789456","examId":"402883ab82fee62c0183204009171f77","examScore":100,"structure":[{"id":"6d39be8eb4e447759ec62e8cf75d9389","name":"单选题","count":2,"total":100}],"paperId":"3960ed80fd384bf9a1ace9f7e23ddbd9"}}}
+        String data = "examIds=402883ab82fee62c0183204009171f77";
+        String resp = newZjyHttp.post(studentExam_getPaperStructure, data);
+        return resp;
+    }
+    //进度详情
+    /*
+    get 请求
+    https://course.icve.com.cn/learnspace/course/study/learnRecord_stuLearnRecord.action
+    courseId=39e272199dab487ba6f8f76115cbfd2c___&userId=2w7jafiswazbrev468vb5q&isShowHistory=1&templateType=8
+    * */
+    //获取 Signature
+    //<input type='hidden' name='_loginId' value='venomms' />
+    //        <input type='hidden' name='apiKey' value='zhzj_platform' />
+    //        <input type='hidden' name='_name' value='魏海旭' />
+    //        <input type='hidden' name='Signature' value='MCwCFFPxxgHGhly8mrUZEnP/Tm0kTqS4AhQZeJCKF394bKzePcKVgeybaBRu7Q==' />
+    //
+    /* get 请求
+    * https://course.icve.com.cn/learnspace/course/exam/courseExamAction_intoCourseExamList.action
+    * params.courseId=39e272199dab487ba6f8f76115cbfd2c___&params.columnTypeId=6049aaaac97845d1a8a790f397962b0a&params.examConfigTypeId=2
+    *
+    * */
+    //疑似 USERSESSIONID
+
+    static String enterMain = "https://spoc-exam.icve.com.cn/platformwebapi/testpaper/bankcontent_enterMain.action";
+
+    public static String getEnterMain() {
+        String data = "Signature=MC0CFQCUBcyPDTwxJYuYcyB83%2Fj8HBCyEAIUdY1WmRJq%2FK9%2Bef46NEFTeD0RE0w%3D&params.sourceDomain=spoc&_loginId=Debug&params.bankCode=Debug&apiKey=zhzj_platform&_name=%E5%90%B4%E4%BA%A6&params.bankName=%E6%88%91%E7%9A%84%E7%A9%BA%E9%97%B4&params.roleBusinessId=a603905470e2a5b8c13e96b579ef0dba&params.businessType=init&params.parentBankCode=persional_space&_roleCode=teacher&timestamp=1662690451047&";
+        String resp = newZjyHttp.get(enterMain, data);
+        return resp;
+        /*
+         * params.kckjToExamFlag=kckjToExamFlag&params.examConfigTypeId=2&params.examCodes=20220903232323367559%2C2022100116441943245&_loginId=venomms&apiKey=zhzj_platform&_name=%E9%AD%8F%E6%B5%B7%E6%97%AD&Signature=MCwCFFPxxgHGhly8mrUZEnP%2FTm0kTqS4AhQZeJCKF394bKzePcKVgeybaBRu7Q%3D%3D&params.configTypeId=6049aaaac97845d1a8a790f397962b0a&params.courseId=39e272199dab487ba6f8f76115cbfd2c&_roleCode=student&timestamp=1665067551683
+         * https://spoc-exam.icve.com.cn/platformwebapi/student/exam/studentExam_studentExamInfoThird.action
+         * */
+    }
+
     //移动 api 老师相关
 
     //学生信息列表
@@ -888,15 +929,7 @@ public class newZjyApi {
         return resp;
     }
 
-    //疑似 USERSESSIONID
 
-    static String enterMain = "https://spoc-exam.icve.com.cn/platformwebapi/testpaper/bankcontent_enterMain.action";
-
-    public static String getEnterMain() {
-        String data = "Signature=MC0CFQCUBcyPDTwxJYuYcyB83%2Fj8HBCyEAIUdY1WmRJq%2FK9%2Bef46NEFTeD0RE0w%3D&params.sourceDomain=spoc&_loginId=Debug&params.bankCode=Debug&apiKey=zhzj_platform&_name=%E5%90%B4%E4%BA%A6&params.bankName=%E6%88%91%E7%9A%84%E7%A9%BA%E9%97%B4&params.roleBusinessId=a603905470e2a5b8c13e96b579ef0dba&params.businessType=init&params.parentBankCode=persional_space&_roleCode=teacher&timestamp=1662690451047&";
-        String resp = newZjyHttp.get(enterMain, data);
-        return resp;
-    }
 
     //未阅的作业 考试 测验
     static String UnCheckPaperList = "https://spoc-exam.icve.com.cn/teacher/exampaper/papercheck_queryUnCheckPaperList.action?pager.pageSize=100&pager.curPage=1&pager.searchTotalSize=true";
