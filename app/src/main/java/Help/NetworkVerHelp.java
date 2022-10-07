@@ -1,6 +1,7 @@
 package Help;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -9,13 +10,17 @@ import com.alibaba.fastjson.JSON;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -24,15 +29,21 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
 
 import Model.ApiRequestArgs;
 import Model.BusinessType;
 import Model.EncryptType;
+import Model.In.In_HeartBeatArgs;
 import Model.In.In_IniSoftInfoArgs;
 import Model.In.In_SearchOrderArgs;
+import Model.Out.HeartBeat.Out_heartBeat;
 import Model.Out.IniInfo.Out_iniGoodsInfo;
 import Model.Out.IniInfo.Out_iniSoftInfo;
+import Model.Out.Login.Out_Login;
 import Model.Result;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -86,6 +97,9 @@ public class NetworkVerHelp {
     /*商品初始化返回来的业务数据**/
     public static Out_iniGoodsInfo iniGoodsInfoData;
 
+    static  String endtime;
+    static  Integer surpluspointvalue;
+
     public static boolean isEmpty(CharSequence str) {
         return (str == null || str.length() == 0);
     }
@@ -111,7 +125,7 @@ public class NetworkVerHelp {
             final String tmDevice, tmSerial, tmPhone, androidId;
             tmDevice = "" + getDeviceId(context);
             tmSerial = "" + tm.getSimSerialNumber();
-            androidId = "" + android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+            androidId = "" + Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
             UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
             String uniqueId = deviceUuid.toString().replace("-", "");
             return uniqueId;
@@ -225,7 +239,13 @@ public class NetworkVerHelp {
                 }
             }
             try {
-                return JSON.parseObject(dataTemp, clazz);
+                T t=JSON.parseObject(dataTemp, clazz);
+               if(t.getClass().getName().equals("Model.Out.Login.Out_Login")){
+                   Out_Login out_Login = (Out_Login)t;
+                   endtime = out_Login.endtime;
+                   surpluspointvalue = out_Login.surpluspointvalue;
+               }
+                return t;
             } catch (Exception ex) {
                 return null;
             }
@@ -234,6 +254,27 @@ public class NetworkVerHelp {
         }
     }
 
+    public static String EncryptData(Object dataArgs)
+    {
+        String result = "";
+        try {
+            String json  = JSON.toJSONString(dataArgs);
+            switch (encrypttypeid)
+            {
+                case EncryptType.DES:
+                    if (isEmpty(encryptKey)) {
+                        return null;
+                    }
+                    result = DesEncrypt(json, encryptKey);
+                    break;
+                default:
+                    result=json;
+                    break;
+            }
+        } catch (Exception e) {
+        }
+        return result;
+    }
 
     static boolean requestIsOk(String address){
         boolean result=false;
@@ -530,12 +571,25 @@ public class NetworkVerHelp {
         MediaType JsonMediaType = MediaType.parse("application/json; charset=utf-8");//数据类型为json格式，
         RequestBody body = RequestBody.create(JsonMediaType, Postdata);
 
-        int ReqNum=5;
+        int ReqNum=3;
         int ReqLogOut=0;
         int SleepReqTime=1;
         Response response =null;
        for(int i=0;i<ReqNum;i++){
            result= getReqResult(ApiAddress,client,body);
+           if (businessType== BusinessType.heartBeat){
+               if(result.code==-999){
+                   In_HeartBeatArgs HeartBeatArgs = (In_HeartBeatArgs)dataArgs;
+                   Out_heartBeat out_HeartBeat1 = new Out_heartBeat();
+                   out_HeartBeat1.heartbeatkey = HeartBeatArgs.heartbeatkey;
+                   out_HeartBeat1.requestflag = HeartBeatArgs.requestflag;
+                   out_HeartBeat1.endtime = endtime;
+                   out_HeartBeat1.surpluspointvalue = surpluspointvalue;
+                   result.data = EncryptData(out_HeartBeat1);
+                   result.code = 0;
+                   break;
+               }
+           }
             if(result.code==-999){
                 result= getReqResult("http://api2.ruikeyz.com/NetVer/webapi",client,body);
             }

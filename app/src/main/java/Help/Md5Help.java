@@ -3,6 +3,7 @@ package Help;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Md5Help {
     private static final char HEX_DIGITS[] = {'0', '1', '2', '3', '4', '5',
