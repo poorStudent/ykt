@@ -31,7 +31,15 @@ private String recordId;
 private String recordSignCode;
 private String resourceUrl;
 private String resourceType;
-private String name;
+private String classroomName;
+
+    public String getClassroomName() {
+        return classroomName;
+    }
+
+    public void setClassroomName(String classroomName) {
+        this.classroomName = classroomName;
+    }
 
     public String getStartDate() {
         return startDate;

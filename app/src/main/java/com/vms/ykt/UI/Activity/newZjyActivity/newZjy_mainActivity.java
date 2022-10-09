@@ -29,7 +29,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.alibaba.fastjson.JSONObject;
 import com.vms.ykt.R;
-import com.vms.ykt.UI.Adapter.newzjyAdapter.newZjyMainRecAdapter;
+import com.vms.ykt.UI.Adapter.newzjyAdapter.newzjy_main_Adapter;
 import com.vms.ykt.Util.CacheUs;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktDao.newZjy.newZjyUserDao;
@@ -46,7 +46,7 @@ public class newZjy_mainActivity extends AppCompatActivity {
     private TextView mButton2;
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
-    private newZjyMainRecAdapter mRecyclerAdapter;
+    private newzjy_main_Adapter mRecyclerAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private final String TAG = this.getClass().getSimpleName();
     private Activity mActivity;
@@ -137,7 +137,7 @@ public class newZjy_mainActivity extends AppCompatActivity {
                     public void run() {
                         if (mNewZjyCourseList.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new newZjyMainRecAdapter(mNewZjyCourseList, mNewZjyUser);
+                                mRecyclerAdapter = new newzjy_main_Adapter(mNewZjyCourseList, mNewZjyUser);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
 
                             } else {
@@ -343,7 +343,7 @@ public class newZjy_mainActivity extends AppCompatActivity {
             return ;
         };
 
-        Intent intent = new Intent(this, ClassRoomActivity.class);
+        Intent intent = new Intent(this, newzjy_classRoomActivity.class);
         intent.putExtra("type", type);
         startActivity(intent);
     }

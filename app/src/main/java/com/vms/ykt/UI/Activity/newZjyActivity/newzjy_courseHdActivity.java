@@ -122,17 +122,17 @@ public class newzjy_courseHdActivity extends AppCompatActivity {
         if (fragment == null) {
             switch (position) {
                 case 0:
-                    fragment = new zjy_coursehd_Fragment(1);
+                    fragment = new newzjy_coursehd_Fragment(1);
                     //((newzjy_coursehd_Fragment) fragment).setData();
                     hideOthersFragment(fragment, true, FragmentTag[position]);
                     break;
                 case 1:
-                    fragment = new zjy_coursehd_Fragment(2);
+                    fragment = new newzjy_coursehd_Fragment(2);
 
                     hideOthersFragment(fragment, true, FragmentTag[position]);
                     break;
                 case 2:
-                    fragment = new zjy_coursehd_Fragment(3);
+                    fragment = new newzjy_coursehd_Fragment(3);
 
                     hideOthersFragment(fragment, true, FragmentTag[position]);
                     break;

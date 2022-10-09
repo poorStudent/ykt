@@ -14,7 +14,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.vms.ykt.R;
+import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_DiscussActivity;
+import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_QuestionActivity;
 import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_courseHdActivity;
+import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_signStudentActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktDao.newZjy.newZjyUserDao;
@@ -100,8 +103,12 @@ public class newzjy_courseHd_Adapter extends baseRecyclerAdapter<newzjy_courseHd
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                showSetDialog(vClassActivity);
-
+                if (vClassActivity.getId() != null) {
+                    newZjyUserDao.sClassActivity = vClassActivity;
+                    showSetDialog(vClassActivity);
+                } else {
+                    Tool.toast(mActivity, "请重新加载");
+                }
             }
 
         });
@@ -125,8 +132,15 @@ public class newzjy_courseHd_Adapter extends baseRecyclerAdapter<newzjy_courseHd
         setDeBugDialog.setView(dialogView);
         //初始化控件
         Button newzjy_bt_qd = dialogView.findViewById(R.id.newzjy_bt_qd);
-        Button newzjy_bt_sckt = dialogView.findViewById(R.id.newzjy_bt_sckt);
-        Button newzjy_bt_jrkt = dialogView.findViewById(R.id.newzjy_bt_jrkt);
+        Button newzjy_bt_kqhd = dialogView.findViewById(R.id.newzjy_bt_kqhd);
+        Button newzjy_bt_jshd = dialogView.findViewById(R.id.newzjy_bt_jshd);
+        Button newzjy_bt_schd = dialogView.findViewById(R.id.newzjy_bt_schd);
+
+        Button newzjy_bt_qdxq = dialogView.findViewById(R.id.newzjy_bt_qdxq);
+        Button newzjy_bt_twxq = dialogView.findViewById(R.id.newzjy_bt_twxq);
+        Button newzjy_bt_tlxq = dialogView.findViewById(R.id.newzjy_bt_tlxq);
+        Button newzjy_bt_pkxq = dialogView.findViewById(R.id.newzjy_bt_pkxq);
+
 
         //取消点击外部消失弹窗
         setDeBugDialog.setCancelable(true);
@@ -142,9 +156,9 @@ public class newzjy_courseHd_Adapter extends baseRecyclerAdapter<newzjy_courseHd
         // 移除dialog的decorview背景色
         // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
         //设置自定义界面的点击事件逻辑
-        newzjy_bt_qd.setEnabled(false);
+
         if (vClassActivity.getTypeName().contains("签到")) {
-            newzjy_bt_qd.setEnabled(true);
+
             newzjy_bt_qd.setOnClickListener((View view) -> {
                 new Thread(() -> {
                     sign(vClassActivity);
@@ -152,43 +166,116 @@ public class newzjy_courseHd_Adapter extends baseRecyclerAdapter<newzjy_courseHd
 
             });
         }
-        newzjy_bt_sckt.setOnClickListener((View view) -> {
+
+
+        newzjy_bt_kqhd.setOnClickListener((View view) -> {
             new Thread(() -> {
-
+                startActivity(vClassActivity);
             }).start();
+
         });
 
 
-        newzjy_bt_jrkt.setOnClickListener((View view) -> {
-            if (vClassActivity.getId() != null) {
+        newzjy_bt_jshd.setOnClickListener((View view) -> {
+            new Thread(() -> {
+                overActivity(vClassActivity);
+            }).start();
+
+        });
 
 
-                Intent i = new Intent(mActivity, newzjy_courseHdActivity.class);
+        newzjy_bt_schd.setOnClickListener((View view) -> {
+            new Thread(() -> {
+                DelActivity(vClassActivity);
+            }).start();
 
+        });
+
+
+        if (vClassActivity.getTypeName().contains("签到")) {
+
+            newzjy_bt_qd.setOnClickListener((View view) -> {
+                new Thread(() -> {
+                    sign(vClassActivity);
+                }).start();
+
+            });
+
+            newzjy_bt_qdxq.setOnClickListener((View view) -> {
+                Intent i = new Intent(mActivity, newzjy_signStudentActivity.class);
                 //i.putExtra("vClassRoom", vClassRoom);
-
                 mActivity.startActivity(i);
-            }
-        });
+            });
+        }
+
+        if (vClassActivity.getTypeName().contains("讨论")) {
+            newzjy_bt_tlxq.setOnClickListener((View view) -> {
+                Intent i = new Intent(mActivity, newzjy_DiscussActivity.class);
+                //i.putExtra("vClassRoom", vClassRoom);
+                mActivity.startActivity(i);
+            });
+        }
+        if (vClassActivity.getTypeName().contains("提问")) {
+            newzjy_bt_twxq.setOnClickListener((View view) -> {
+                Intent i = new Intent(mActivity, newzjy_QuestionActivity.class);
+                //i.putExtra("vClassRoom", vClassRoom);
+                mActivity.startActivity(i);
+            });
+        }
+
+        if (vClassActivity.getTypeName().contains("小组PK")) {
+            newzjy_bt_pkxq.setOnClickListener((View view) -> {
+                Intent i = new Intent(mActivity, newzjy_signStudentActivity.class);
+                //i.putExtra("vClassRoom", vClassRoom);
+                //mActivity.startActivity(i);
+            });
+        }
+
+        if (vClassActivity.getTypeName().contains("作业")) {
+
+        }
+
+
+        if (vClassActivity.getTypeName().contains("考试")) {
+
+        }
+
+
+        if (vClassActivity.getTypeName().contains("测验")) {
+
+        }
+
 
     }
 
 
     private void sign(classActivity vActivity) {
+        newZjyMain.Sign(mActivity, vActivity);
+    }
 
-        String name = vActivity.getTypeName();
-        String RecordId = vActivity.getRecordId();
-        String id = vActivity.getId();
-        if (name.contains("签到")) {
-            System.out.println("---" + id + " * name " + name + " * getStatus " +
-                    vActivity.getStatus() + " * RecordId " + RecordId + " * DetailTypeCode " + vActivity.getDetailTypeCode());
-            String resp = vActivity.getTypeName() + "\n"
-                    + newZjyMain.Sign(vActivity, RecordId);
-            mActivity.runOnUiThread(() -> {
-                Tool.toast(mContext, resp);
-            });
-        }
 
+    private void startActivity(classActivity vActivity) {
+        String resp = newZjyMain.startActivity(vActivity);
+        mActivity.runOnUiThread(() -> {
+            Tool.toast(mActivity, vActivity.getTypeName() + "\n" + resp);
+        });
+    }
+
+    private void overActivity(classActivity vActivity) {
+
+        String resp = newZjyMain.overActivity(vActivity);
+        mActivity.runOnUiThread(() -> {
+            Tool.toast(mActivity, vActivity.getTypeName() + "\n" + resp);
+        });
+
+    }
+
+    private void DelActivity(classActivity vActivity) {
+
+        String resp = newZjyMain.getDelActivity(vActivity.getClassroomId(), vActivity.getId());
+        mActivity.runOnUiThread(() -> {
+            Tool.toast(mActivity, vActivity.getTypeName() + "\n" + resp);
+        });
 
     }
 

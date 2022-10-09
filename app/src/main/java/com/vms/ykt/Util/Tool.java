@@ -181,6 +181,7 @@ public class Tool {
         }
     }
 
+
     public static String getDevice(String appVersion, String time) {
         String device = md5(getDEVICEModle());
         device = md5(device + "9");
@@ -199,8 +200,6 @@ public class Tool {
         str = stringBuilder.toString();
         return md5(str).toUpperCase();
     }
-
-
 
     public static String[] getEmitDevice()  {
 
@@ -333,6 +332,7 @@ public class Tool {
     public native static String sk(String id,String t, String cd);
 
     public native static String sm(String str,String t);
+
 
     public static byte[] compressByte(String param) throws IOException {
         if (param == null || param.length() == 0) {

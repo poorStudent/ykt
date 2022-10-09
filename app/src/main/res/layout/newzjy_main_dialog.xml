@@ -11,7 +11,7 @@
         android:background="@color/teal_200"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:text="-----功能-----"
+        android:text="-----功能不稳定勿依赖-----"
         android:maxLines="1"/>
 
     <ScrollView
@@ -129,6 +129,19 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="3dp"
                 android:text="学生管理"  />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_marginTop="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <Button
+                android:id="@+id/zjy_bt_kcgl"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:text="课程管理"  />
 
             <View
                 android:layout_width="match_parent"

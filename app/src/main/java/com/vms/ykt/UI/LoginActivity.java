@@ -25,7 +25,6 @@ import androidx.appcompat.app.AlertDialog;
 import com.alibaba.fastjson.JSONObject;
 
 import com.vms.ykt.R;
-import com.vms.ykt.TestActivity.BlankFragment;
 import com.vms.ykt.UI.Activity.newZjyActivity.newZjy_mainActivity;
 import com.vms.ykt.Util.AppStatus;
 import com.vms.ykt.Util.CacheUs;
@@ -35,9 +34,9 @@ import com.vms.ykt.TestActivity.testActivity;
 import com.vms.ykt.yktStuMobile.zjy.zjyApi;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.Util.Tool;
-import com.vms.ykt.yktUtil.zjyLogin.zjyMobileLogin;
-import com.vms.ykt.yktUtil.zjyLogin.zjyOtherLogin;
-import com.vms.ykt.yktUtil.zjyLogin.zjyWebLogin;
+import com.vms.ykt.yktUtil.zjy.zjyMobileLogin;
+import com.vms.ykt.yktUtil.zjy.zjyOtherLogin;
+import com.vms.ykt.yktUtil.zjy.zjyWebLogin;
 
 import java.util.Objects;
 

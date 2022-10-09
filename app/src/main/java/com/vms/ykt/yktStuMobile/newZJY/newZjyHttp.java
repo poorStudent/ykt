@@ -66,7 +66,7 @@ public class newZjyHttp {
             upCookie = upCookie + ";" + ock;
         }
        addHeader("Cookie", upCookie);
-
+        System.out.println(JSONObject.toJSONString(Header));
     }
 
 
@@ -102,7 +102,7 @@ public class newZjyHttp {
 
         httpRespnose ret = null;
 
-        System.out.println(JSONObject.toJSONString(header));
+        //System.out.println(JSONObject.toJSONString(header));
 
         ret = Http.post(requestUrl, header, body, referer, userAgent, null);
 

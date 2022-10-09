@@ -220,7 +220,36 @@
         </activity>
 
         <activity
-            android:name="com.vms.ykt.UI.Activity.newZjyActivity.ClassRoomActivity"
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_classRoomActivity"
+            android:label="newZjy"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy">
+
+        </activity>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_courseHdActivity"
+            android:label="newZjy"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy">
+
+        </activity>
+
+   <activity
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_signStudentActivity"
+            android:label="newZjy"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy">
+
+        </activity>
+   <activity
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_DiscussActivity"
+            android:label="newZjy"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy">
+
+        </activity>
+<activity
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_QuestionActivity"
             android:label="newZjy"
             android:launchMode="singleTop"
             android:theme="@style/Theme.VmsZjy">

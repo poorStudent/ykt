@@ -83,6 +83,19 @@
                 android:background="@android:color/darker_gray" />
 
             <Button
+                android:id="@+id/newzjy_bt_pkxq"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:text="pk详情" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_marginTop="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <Button
                 android:id="@+id/newzjy_bt_kqhd"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

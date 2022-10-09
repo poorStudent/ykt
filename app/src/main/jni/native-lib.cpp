@@ -18,7 +18,7 @@ using namespace std;
 
 JavaVM *vm = nullptr;
 
-static int debugger_present = -1;
+
 //加解密
 
 
@@ -155,8 +155,12 @@ void callstackDump(std::string &dump) {
 
 void callstackLogcat(int prio, const char* tag) {
     std::string dump;
+    std::string info;
     callstackDump(dump);
-    LOGD("%s", dump.c_str());
+    info.append(tag);
+    info.append("-");
+    info.append(dump);
+    LOGD("%s", info.c_str());
 }
 
 
@@ -165,6 +169,8 @@ void callstackLogcat(int prio, const char* tag) {
 
 
 //反调试
+static int debugger_present = -1;
+
 static void ki(int num) {
     int status;
     status = kill(num, SIGKILL);
@@ -235,13 +241,13 @@ void *threadTask(void* args){
 
     while (1) {
         usleep(2);
-        has_debugger2();
-        if (has_debugger3() || debugger_present) {
+
+        if (has_debugger3() || has_debugger2() ||   has_debugger()) {
             //ki(getpid());
             LOGD("%s","debugger attached!\n");
             break;
         }
-        has_debugger();
+
     }
     // ...
 
@@ -251,8 +257,8 @@ void *threadTask(void* args){
 
 extern "C"
 JNIEXPORT jstring JNICALL gothread(JNIEnv *jniEnv, jobject thiz) {
-    has_debugger2();
-    if (has_debugger3() || debugger_present) {
+    has_debugger();
+    if (has_debugger3() ||  has_debugger2()||   has_debugger()) {
         LOGD("%s","debugger attached!\n");
     }
 
@@ -264,12 +270,12 @@ extern "C"
 JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject cls, jobject thiz) {
     std::string pk ="com.vms.zjy"; //base64d(base64e("com.vms.zjy",sizeof("com.vms.zjy")));
     std::string si = "pk";//base64d(base64e("pk",sizeof("pk")));
-
     jclass jclass1 = jniEnv->GetObjectClass(thiz);
     jmethodID jmethodId = jniEnv->GetMethodID(jclass1, "getPackageName", "()Ljava/lang/String;");
     jobject jobject1 = jniEnv->CallObjectMethod(thiz, jmethodId);
     if (jobject1 == NULL) return jniEnv->NewStringUTF("0");
     jstring jstring1 = (jstring) jobject1;
+
 
 
     jmethodID jmethodId1 = jniEnv->GetMethodID(jclass1, "getPackageManager",

@@ -35,7 +35,7 @@ import com.vms.ykt.yktStuWeb.icve.icveHttpW;
 import com.vms.ykt.yktStuWeb.icve.icveMainW;
 import com.vms.ykt.yktStuWeb.icve.knowlegeInfo;
 import com.vms.ykt.yktStuWeb.icve.workExamListInfo;
-import com.vms.ykt.yktUtil.zjyLogin.zjyMobileLogin;
+import com.vms.ykt.yktUtil.zjy.zjyMobileLogin;
 
 import java.io.File;
 import java.util.ArrayList;

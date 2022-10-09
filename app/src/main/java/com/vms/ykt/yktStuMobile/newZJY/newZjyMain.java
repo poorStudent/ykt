@@ -1,8 +1,11 @@
 package com.vms.ykt.yktStuMobile.newZJY;
 
+import android.app.Activity;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.newZjy.newZjyUserDao;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,42 +16,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class newZjyMain {
+
     private final static String TAG = newZjyMain.class.getSimpleName();
 
     public static newZjyUser MobileLogin(String mobile, String passwd) {
         String resp = newZjyApi.getMobileLogin(mobile, passwd);
-        System.out.println(resp);
+        //System.out.println(resp);
         //Log.d(TAG, resp);
         if (resp == null || !resp.contains("token")) return null;
         newZjyUser vUser = JSONObject.parseObject(resp, newZjyUser.class);
-        resp = newZjyApi.getUserInfo(vUser.getToken());
-        System.out.println(resp);
-        if (resp != null && resp.contains("userInfo")) {
-            JSONArray vJsonA = Tool.parseJsonA(resp, "userInfo");
-            String userid = vJsonA.getString(0);
-            System.out.println(userid);
-        }
+        getSsoUser(vUser);
         return vUser;
     }
 
-    //
-    public static void getSsoUser() {
-        //{"success":true,"data":{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbklkIjoiRGVidWciLCJzaXRlQ29kZSI6InpoemoiLCJ1c2VyX25hbWUiOiJEZWJ1ZyIsInBob3RvIjpudWxsLCJzdUlkIjoiYTYwMzkwNTQ3MGUyYTViOGMxM2U5NmI1NzllZjBkYmEiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImNsaWVudF9pZCI6InNwb2MtY2xhc3Nyb29tLmljdmUuY29tLmNuIiwidHJ1ZU5hbWUiOiLlkLTkuqYiLCJyb2xlQ29kZSI6IjEiLCJzY29wZSI6WyJhbGwiXSwicm9sZU5hbWUiOiLmlZnluIgiLCJleHAiOjE2NjYyNzYwNjAsImp0aSI6IjkyZWQxZmM4LWJhNTItNGI1Ny05NjdhLWIxOTVjZWVjODMzOCJ9.TcPY0SU5AsJ2iPjrZDFFj3tWuPe5JHYv1GCsK9-QAbjQRORzkSk803RJcJZF30Kst0zohnB9lgZHP5N6rc9_LR7BE_LKhQsoxRs8wHu-7mexebz9P7rHfGHCtSKm1bLQZtDp9jTdKzzOU6jDPQMUUkVrPRFAW-stG0DgNtCERsUcUX55ocJmZ2WQ142ZAN4egDNO45Ank8vX2bJiVw06u4_EzJl_fgHnmut0rb6QWYwQv0o-5LAzNdaAcKz1g0lzX1bmeAvZ7QZcbkU9ANDBq0KboPQZhaUzMGipKd8o1U4DH5X8EbHoKs7YKZ1-1JUJJlCH089JueICWAynws0g0A","token_type":"bearer","refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbklkIjoiRGVidWciLCJzaXRlQ29kZSI6InpoemoiLCJ1c2VyX25hbWUiOiJEZWJ1ZyIsInBob3RvIjpudWxsLCJzdUlkIjoiYTYwMzkwNTQ3MGUyYTViOGMxM2U5NmI1NzllZjBkYmEiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImNsaWVudF9pZCI6InNwb2MtY2xhc3Nyb29tLmljdmUuY29tLmNuIiwidHJ1ZU5hbWUiOiLlkLTkuqYiLCJyb2xlQ29kZSI6IjEiLCJzY29wZSI6WyJhbGwiXSwiYXRpIjoiOTJlZDFmYzgtYmE1Mi00YjU3LTk2N2EtYjE5NWNlZWM4MzM4Iiwicm9sZU5hbWUiOiLmlZnluIgiLCJleHAiOjE2Njc2NTg0NjAsImp0aSI6IjEyMDJkYzM3LWJmZTQtNGUyOS04MWZiLWNlYTg1NzZhZjBjZiJ9.Czns77esNGX77TsO5APtRFymoLPPkSBh1VdKfrfvfsDgueCz7gcBp0_ElCkc5fajKjSVbWUdoJimWpRNg1jBY2M24GUi9U3-ohD63NIZJ0ya0BSppRC8gzzwFbxj2D4WAYcJI1hgW0ZhNZmgUyN9ydQ1E6njZYGXMxNlLaWokb3WG5CGykxsF6eIA9miEjwB7xHTGVUaPscpspjrqb2AY07ib3HsY5OxY-FCeh0qGEASO6v4hkavdv7aPWIZdNe-j58rF24fqkrjveQ3_iOT71ozv8UZqdScuPscRE9n6aukg_R-LLHUhiHTley9JCMH8PzreqgLJUxx-oDTeM4fRg","expires_in":1209597,"scope":"all","jti":"92ed1fc8-ba52-4b57-967a-b195ceec8338"},"code":"200","message":null}
+    public static void getSsoUser(newZjyUser vUser) {
+        //{"success":true,"data":{"sessionId":"797853DA7974764B62A87BC516C2B8DD",
+        // "user":{"id":"2w7jafiswazbrev468vb5q","loginId":"venomms","trueName":"魏海旭","password":null,"photoLink":null,"siteCode":"zhzj","roleCode":"0","roleName":"学生","isDelete":null,"alias":null}},"code":"200","message":null}
         String resp = newZjyApi.getSsoUser();
-        System.out.println(resp);
+        if (resp == null || !resp.contains("id")) return;
+        JSONObject js1 = Tool.parseJsonO(resp, "data");
+        if (js1 == null) return;
+        String sessionId = js1.getString("sessionId");
+        vUser.setSessionId(sessionId);
+        JSONObject vJSONObject = js1.getJSONObject("user");
+        if (vJSONObject == null) return;
+        String id = vJSONObject.getString("id");
+        vUser.setId(id);
+
     }
+
     public static boolean isLogin(newZjyUser vUser) {
-        String CheckUser = newZjyApi.getCheckUser(vUser.getToken());
-        System.out.println(CheckUser);
-        if (!CheckUser.contains("200")) {
+        String CheckUser = newZjyApi.getUserInfo(vUser.getToken());
+        if (CheckUser==null || CheckUser.contains("token已过期")) {
             return false;
         }
         return true;
     }
 
-    public static newZjyUser getUserInfoBytToken() {
-        return null;
-    }
 
     public static List<newZjyCourse> getMyClassList(newZjyUser user) {
         List<newZjyCourse> CoursesList = new ArrayList<>();
@@ -57,6 +61,7 @@ public class newZjyMain {
         CoursesList = Tool.parseJsonA(resp, "data", newZjyCourse.class);
         return CoursesList;
     }
+
 
     public static List<ClassRoom> getClassroomByStudent(newZjyCourse vCourse) {
         String resp = newZjyApi.getClassroomByStudent(vCourse.getCourseId());
@@ -82,6 +87,7 @@ public class newZjyMain {
         return classRoom;
     }
 
+
     public static boolean getRestSsoToken(newZjyUser user) {
          /*{"data":{"userAccessToken":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbklkIjoidmVub21tcyIsInNpdGVDb2RlIjoiemh6aiIsInVzZXJfbmFtZSI6InZlbm9tbXMiLCJwaG90byI6bnVsbCwic3VJZCI6IjJ3N2phZmlzd2F6YnJldjQ2OHZiNXEiLCJhdXRob3JpdGllcyI6WyJTVFVERU5UIl0sImNsaWVudF9pZCI6InNwb2MtY2xhc3Nyb29tLmljdmUuY29tLmNuIiwidHJ1ZU5hbWUiOiLprY_mtbfml60iLCJyb2xlQ29kZSI6IjAiLCJzY29wZSI6WyJhbGwiXSwicm9sZU5hbWUiOiLlrabnlJ8iLCJleHAiOjE2NjM0MDY3ODgsImp0aSI6ImUxMWFiZjNmLTA1ODgtNDg1MC04ZDQ5LTQzMTA5NmFlODA5MSJ9.APf2pwYL3E3MBAQ0UtsDyzyaDTb4CFHjr2klcyDC_RlkjuNKSbUAK-olAoxtmrLDnbg-KsHdCpjIQ8El5o6Lc3kx82vlYZAWKVwEYnUoh5HyArYXBvlw8oicLGmKltGzGAGicAnLwMCZth45ng_H-drc_qpBWfttnTWrJ4OFv-AonwCXgAz8RXkO1qXNGDqTwjwNlmYM8W-PGW7d3zRRgnTDFtHB1XGOdiPGwV86LbY-CfuxGqzf1HkXXYDI3whmL1v-NwODGu3RjrE1v4aXGCOMwPWE_Xt2woFU_3YMejH8o4zx_G5ujfEuNIqYfOmDCw13MpRDU-yqtLzDc1sRjQ"
         ,"pageToken":"e11abf3f-0588-4850-8d49-431096ae8091"},"errorCode":"200","errorMsg":""}
@@ -97,12 +103,6 @@ public class newZjyMain {
         user.setPageToken(pageToken);
         return true;
     }
-    private static boolean getTokenByPageToken(newZjyUser user){
-        String resp = newZjyApi.getTokenByPageToken(user.getPageToken());
-        System.out.println(resp);
-        if (resp == null || !resp.contains("userAccessToken")) return false;
-        return true;
-    }
 
     public static boolean upAuthorization(newZjyUser user) {
         if (getRestSsoToken(user)) {
@@ -112,9 +112,28 @@ public class newZjyMain {
         return false;
     }
 
+    private static boolean getTokenByPageToken(newZjyUser user) {
+        String resp = newZjyApi.getTokenByPageToken(user.getPageToken());
+        if (resp == null || !resp.contains("refresh_token")) return false;
+        JSONObject js1 = Tool.parseJsonO(resp, "data");
+        String userAccessToken = js1.getString("refresh_token");
+        if (userAccessToken == null || userAccessToken.equals("")) return false;
+        String pageToken = js1.getString("jti");
+        user.setUserAccessToken(userAccessToken);
+        user.setPageToken(pageToken);
+        return true;
+    }
+
+    public static boolean refreshAuthorization(newZjyUser user) {
+        if (getTokenByPageToken(user)) {
+            newZjyApi.upAuthorization(user.getUserAccessToken());
+            return true;
+        }
+        return false;
+    }
 
     //UNTYXLCOOKIE
-    public static boolean upUNTYXLCOOKIE(newZjyUser user, String courseid) {
+    public static boolean getUNTYXLCOOKIE(newZjyUser user, String courseid) {
         String resp = newZjyApi.getSignLearn(courseid, user.getLoginId());
         if (resp == null || !resp.contains("UNTYXLCOOKIE")) return false;
         JSONArray jsona = Tool.parseJsonA(resp, "Set-Cookie");
@@ -127,6 +146,15 @@ public class newZjyMain {
         }
         return false;
     }
+
+    public static boolean upUNTYXLCOOKIE(newZjyUser user, String courseid) {
+        if (getUNTYXLCOOKIE(user, courseid)) {
+            newZjyApi.upUNTYXLCOOKIE(user.getUNTYXLCOOKIE());
+            return true;
+        }
+        return false;
+    }
+
 
     public static List<classActivity> getClassActivityQ(ClassRoom vClassRoom) {
         String resp = newZjyApi.getClassActivityQ(vClassRoom.getId());
@@ -151,15 +179,6 @@ public class newZjyMain {
         return classActivitys;
     }
 
-    public static List<QuestionStu> getQuestionStu(classActivity activity) {
-        List<QuestionStu> QuestionStus = new ArrayList<>();
-        String resp = newZjyApi.getQuestionStuListB(activity.getId());
-        if (resp == null || !resp.contains("items")) return QuestionStus;
-        String js = Tool.parseJsonO(resp, "data").toJSONString();
-        QuestionStus = Tool.parseJsonA(js, "items", QuestionStu.class);
-        return QuestionStus;
-    }
-
     //开启活动
     public static String startActivity(classActivity vActivity) {
         return newZjyApi.getUpdateSignStatus(vActivity.getId(), "1");
@@ -168,6 +187,11 @@ public class newZjyMain {
     //结束活动
     public static String overActivity(classActivity vActivity) {
         return newZjyApi.getUpdateSignStatus(vActivity.getId(), "2");
+    }
+
+    //删除活动
+    public static String getDelActivity(String classroomId, String activityId) {
+        return newZjyApi.getUpdateSignStatus(classroomId, activityId);
     }
 
     //补签
@@ -199,10 +223,18 @@ public class newZjyMain {
 
     }
 
+    public static void patchSign(Activity mContext, SignAndQuestionStu vSignAndQuestionStu, int type) {
+        String resp = patchSign(vSignAndQuestionStu.getId(), type);
+        String name = vSignAndQuestionStu.getStuName();
+        mContext.runOnUiThread(() -> {
+            Tool.toast(mContext, name + "\n" + resp);
+        });
+    }
+
     //签到
     public static String Sign(classActivity Activitys, String RecordId) {
         String resp = newZjyApi.getSignResult(RecordId);
-        System.out.println(resp);
+        //System.out.println(resp);
         if (resp != null) {
             if (resp.contains("已签")) return resp;
         }
@@ -211,20 +243,53 @@ public class newZjyMain {
             resp = newZjyApi.getStudentSignStatus(RecordId, Activitys.getId());
 
         } else {
-            resp = newZjyApi.getActivityById(Activitys.getId());
-            resp = parseSignCode(resp);
+            if (newZjyUserDao.signCode == null || newZjyUserDao.signCode.isEmpty()) {
+                resp = newZjyApi.getActivityById(Activitys.getId());
+                resp = parseSignCode(resp);
+            } else {
+                resp = newZjyUserDao.signCode;
+            }
             if (resp == null || resp.equals("")) return resp;
+
             resp = newZjyApi.getStudentSignStatusC(RecordId, Activitys.getId(), resp);
 
         }
 
         if (resp == null || !resp.contains("签到成功")) {
-            resp=patchSign(RecordId,1);
+            resp = patchSign(RecordId, 1);
             System.out.println(resp);
             return resp;
         }
-       // System.out.println(resp);
+        // System.out.println(resp);
         return resp;
+    }
+
+    public static void Sign(Activity mContext, classActivity vActivity) {
+        String name = vActivity.getTypeName();
+        String RecordId = vActivity.getRecordId();
+        String id = vActivity.getId();
+        if (name.contains("签到")) {
+            System.out.println("---" + id + " * name " + name + " * getStatus " +
+                    vActivity.getStatus() + " * RecordId " + RecordId + " * DetailTypeCode " + vActivity.getDetailTypeCode());
+            String resp = vActivity.getClassroomName() + "-" + vActivity.getTypeName() + "\n"
+                    + newZjyMain.Sign(vActivity, RecordId);
+            mContext.runOnUiThread(() -> {
+                Tool.toast(mContext, resp);
+            });
+        }
+    }
+
+    public static void Sign(Activity mContext, classActivity vActivity, SignAndQuestionStu vSignAndQuestionStu) {
+        String name = vSignAndQuestionStu.getStuName();
+        String RecordId = vSignAndQuestionStu.getId();
+        System.out.println("---" + " * name " + name + " * getStatus " +
+                vSignAndQuestionStu.getSignStatus() + " * RecordId " + RecordId + " * DetailTypeCode " + vActivity.getDetailTypeCode());
+        String resp = name + "-" + RecordId + "\n"
+                + newZjyMain.Sign(vActivity, RecordId);
+        mContext.runOnUiThread(() -> {
+            Tool.toast(mContext, resp);
+        });
+
     }
 
     public static String parseSignCode(String resp) {
@@ -247,46 +312,112 @@ public class newZjyMain {
         return codes;
     }
 
-    public static List<SignStudent> getUnSignStudent(String Activityid) {
+    public static void setSignCode() {
+        new Thread(() -> {
+            String resp = newZjyApi.getActivityById(newZjyUserDao.sClassActivity.getId());
+            newZjyUserDao.signCode = parseSignCode(resp);
+        }).start();
+
+    }
+
+    public static List<SignAndQuestionStu> getUnSignStudent(String Activityid) {
         String resp = newZjyApi.getUnSignStudent(Activityid);
         return parseSignStudent(resp);
     }
 
-    public static List<SignStudent> getSignStudent(String Activityid) {
+    public static List<SignAndQuestionStu> getSignStudent(String Activityid) {
         String resp = newZjyApi.getSignStudent(Activityid);
         return parseSignStudent(resp);
     }
 
-    public static List<SignStudent> getAllSignStudent(String Activityid) {
-        List<SignStudent> SignStudents = new ArrayList<>();
+    public static List<SignAndQuestionStu> getAllSignStudent(String Activityid) {
+        List<SignAndQuestionStu> SignStudents = new ArrayList<>();
         SignStudents.addAll(getSignStudent(Activityid));
         SignStudents.addAll(getUnSignStudent(Activityid));
         return SignStudents;
     }
 
-    public static List<SignStudent> parseSignStudent(String resp) {
-        List<SignStudent> SignStudents = new ArrayList<>();
+    public static List<SignAndQuestionStu> parseSignStudent(String resp) {
+        List<SignAndQuestionStu> SignStudents = new ArrayList<>();
         if (resp == null || !resp.contains("items")) return SignStudents;
         String js1 = Tool.parseJsonS(resp, "data");
-        SignStudents = Tool.parseJsonA(js1, "items", SignStudent.class);
+        SignStudents = Tool.parseJsonA(js1, "items", SignAndQuestionStu.class);
         return SignStudents;
     }
 
+
+    public static List<NameCode> getFlagClassroomType() {
+        String resp = newZjyApi.getFlagClassroomType();
+        return parseNameCode(resp);
+    }
+
+    public static List<NameCode> getFlagActivityType() {
+        String resp = newZjyApi.getFlagActivityType();
+        return parseNameCode(resp);
+    }
+
+    public static List<NameCode> getFlagQuestionType() {
+        String resp = newZjyApi.getFlagQuestionType();
+        return parseNameCode(resp);
+    }
+
+    public static List<NameCode> getFlagDiscussType() {
+        String resp = newZjyApi.getFlagDiscussType();
+        return parseNameCode(resp);
+    }
+
+    public static List<NameCode> parseNameCode(String resp) {
+        List<NameCode> vNameCodeList = new ArrayList<>();
+        if (resp == null || !resp.contains("data")) return vNameCodeList;
+        vNameCodeList = Tool.parseJsonA(resp, "data", NameCode.class);
+        return vNameCodeList;
+    }
+
+
     //提问列表
-    public static List<SignStudent> getQuestionStuListB(String Activityid) {
+    public static List<SignAndQuestionStu> getQuestionStuListB(String Activityid) {
         String resp = newZjyApi.getQuestionStuListB(Activityid);
         return parseSignStudent(resp);
     }
 
     //讨论列表
-    public static List<SignStudent> getPrStuActivityRecord(String Activityid) {
+    public static List<SignAndQuestionStu> getPrStuActivityRecord(String Activityid) {
         String resp = newZjyApi.getPrStuActivityRecord(Activityid);
         return parseSignStudent(resp);
     }
 
+    //分组list
+    public static List<SignAndQuestionStu> getAllGroups(String activityId) {
+        String resp = newZjyApi.getAllGroups(activityId);
+        return parseAllGroups(resp);
+    }
 
-    public static List<CellItemI> parseCellItem(String resp) {
-        List<CellItemI> CellItemIList = new ArrayList<>();
+    public static List<SignAndQuestionStu> parseAllGroups(String resp) {
+        List<SignAndQuestionStu> SignStudents = new ArrayList<>();
+        if (resp == null || !resp.contains("data")) return SignStudents;
+        JSONArray js1 = Tool.parseJsonA(resp, "data");
+        for (int i = 0; i < js1.size(); i++) {
+            SignAndQuestionStu vSignAndQuestionStu=  new SignAndQuestionStu();
+
+            JSONObject vJSONObject = js1.getJSONObject(i);
+            String id = vJSONObject.getString("id");
+            String title = vJSONObject.getString("title");
+            String status = vJSONObject.getString("status");
+            String groupMembers = vJSONObject.getString("groupMembers");
+
+            vSignAndQuestionStu.setId(id);
+            vSignAndQuestionStu.setTitle(title);
+            vSignAndQuestionStu.setStatus(status);
+            vSignAndQuestionStu.setGroupMembers(groupMembers);
+            SignStudents.add(vSignAndQuestionStu);
+
+        }
+        return SignStudents;
+    }
+
+
+    public static List<CellInfo> parseCellItem(String resp) {
+        List<CellInfo> CellItemIList = new ArrayList<>();
         if (resp == null || !resp.contains("chapterbox")) return CellItemIList;
 
         try {
@@ -412,14 +543,14 @@ public class newZjyMain {
         return CellItemIList;
     }
 
-    private static CellItemI paresCell(Element uls, String pid) {
+    private static CellInfo paresCell(Element uls, String pid) {
         String waretype = uls.attr("waretype");
         String etype = uls.attr("etype");
         String ItemID = uls.id().replace("grandChildItem_", "");
         String videotime = uls.attr("videotime");
         String isok = uls.attr("class");
 
-        CellItemI vCellItemI = new CellItemI();
+        CellInfo vCellItemI = new CellInfo();
         if (isok.contains("point_done")) {
             vCellItemI.setOver(1);
 
@@ -446,13 +577,32 @@ public class newZjyMain {
         return vOverCellItems;
     }
 
+
+    //添加课堂
+    public static String SaveClassroom(String courseId, String title, String tk) {
+        return newZjyApi.getSaveClassroom(courseId, title, tk);
+    }
+
+
+    public static List<SignAndQuestionStu> getStudentsQuestioned(String classroomId) {
+        String resp = newZjyApi.getStudentsQuestioned(classroomId);
+        return StudentsQuestioned(resp);
+    }
+
+    public static List<SignAndQuestionStu> StudentsQuestioned(String resp) {
+        List<SignAndQuestionStu> Students = new ArrayList<>();
+        if (resp == null || !resp.contains("data")) return Students;
+        Students = Tool.parseJsonA(resp, "data", SignAndQuestionStu.class);
+        return Students;
+    }
+
     public static void doMain() {
         //aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA==
         //9b933b5e625e459ba9df0ea29e9e50ed
         //MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=
         //22befd2145494c4cb15b772c0d66ab07
 
-        String token = "22befd2145494c4cb15b772c0d66ab07";
+        String token = "fedb9ae7687947e187a549ddf01d94ff";
         //String token = "7d4322bbfaee4cef83fd76cd96e27131";
         //xnzy2113418
         //20030517lei@
@@ -461,7 +611,7 @@ public class newZjyMain {
         //ljq1ab-oz7hbmaardmy-2q
         //402883e682d05a190182d3edda901971
         //7d4322bbfaee4cef83fd76cd96e27131
-        String uid = "ljq1ab-oz7hbmaardmy-2q";
+        //String uid = "ljq1ab-oz7hbmaardmy-2q";
         newZjyUser vUser = new newZjyUser();
         vUser.setToken(token);
         vUser.setLoginId("venomms");
@@ -470,26 +620,27 @@ public class newZjyMain {
         System.out.println(vUser.getLoginId());
 
         //测试api
-        // System.out.println(testApi.getSaveClassroom());
+        //System.out.println(testApi.getSaveClassroom());
         //System.out.println(newZjyApi.getPaperStructureForPreview());
-
-
-        // System.out.println(newZjyApi.getPaperStructureForPreview());
         //System.out.println(newZjyApi.getExamPaperStatisticsDetail());
         //System.out.println(newZjyApi.getQuestionManage(""));
 
 
-        String CheckUser = newZjyApi.getCheckUser(vUser.getToken());
-        if (!CheckUser.contains("200")) {
+        if (!isLogin(vUser)) {
             System.out.println("登陆失效");
             return;
         }
 
-        System.out.println(Tool.parseDataTime("1662134400000"));
-        System.exit(0);
+        //
 
+        if (!upAuthorization(vUser)) {
+            System.out.println("upAuthorization erro");
+        }
+
+
+        //System.out.println(Tool.parseDataTime("1662134400000"));
         //newZjyTestApi.getAuth();
-        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++newZjyApi.webLogin();
+        //newZjyApi.webLogin();
 
 
         String resp;
@@ -503,21 +654,50 @@ public class newZjyMain {
 
 
             if (!upUNTYXLCOOKIE(vUser, CourseId)) {
-                System.out.println("获取失效");
-                return;
+                System.out.println("upUNTYXLCOOKIE erro");
             }
 
-            newZjyHttp.addCookie(vUser.getUNTYXLCOOKIE());
-
-            //
-            if (!upAuthorization(vUser)) {
-                System.out.println("upAuthorization erro");
-                // break;
-
-            }
 
             newZjyApi.upHeader1();
 
+            List<ClassRoom> ClassRooms = getClassroomByStudent(vCourse);
+
+            for (ClassRoom vClassRoom : ClassRooms) {
+
+
+                System.out.println("--" + vClassRoom.getTitle() + " * " + vClassRoom.getId());
+
+                String cid = vClassRoom.getId();
+
+                //System.out.println(newZjyApi.getSaveActivityTw1(cid, CourseId, "111111", "1"));
+
+                // getStudentsQuestioned(cid);
+
+
+                List<classActivity> ClassActivities = getClassActivityZ(vClassRoom);
+
+
+                for (classActivity vActivity : ClassActivities) {
+                    String name = vActivity.getTypeName();
+                    String RecordId = vActivity.getRecordId();
+                    String id = vActivity.getId();
+                    //System.out.println(newZjyApi.getDelActivity(cid, id));
+                    if (vActivity.getTypeName().contains("小组")) {
+                        getAllGroups(id);
+                        //newZjyApi.getUpdateStudentSignStatus();
+                        System.exit(0);
+                    }
+                }
+
+                //System.out.println(newZjyApi.getSaveActivityTw1(cid, CourseId, "1111", "1"));
+                // System.out.println(newZjyApi.getSaveActivityTw2(cid, CourseId, "1111", "1"));
+                // System.out.println(newZjyApi.getSaveActivityTl(cid, CourseId, "1111"));
+                // System.out.println(newZjyApi.getCreateGroupActivity(cid, CourseId, ""));
+
+                return;
+            }
+
+            return;
             //resp=newZjyApi.getScormCourseItemByName(CourseId);
 
 
@@ -541,8 +721,6 @@ public class newZjyMain {
             //grandChildItem_2ac3ca7f6bd7477b9ac43e84d6fa86dc
             //String itid = "dd9433f5384f40ab9e77e9f08436ed19";
 
-
-            //  break;
         }
 
 
@@ -555,12 +733,12 @@ public class newZjyMain {
 
         resp = newZjyApi.getLearnspace(CourseId);//
 
-        List<CellItemI> CellItemIs = parseCellItem(resp);
+        List<CellInfo> CellItemIs = parseCellItem(resp);
 
 
         //  newZjyHttp.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
-        for (CellItemI vCellItemI : CellItemIs) {
+        for (CellInfo vCellItemI : CellItemIs) {
 
 
             String itid = vCellItemI.getItemId();
@@ -687,7 +865,7 @@ public class newZjyMain {
                 if (name.contains("签到")) {
                     System.out.println("---" + id + " * name " + name + " * getStatus " +
                             vActivity.getStatus() + " * RecordId " + RecordId + " * DetailTypeCode " + vActivity.getDetailTypeCode());
-                    for (SignStudent vSignStudent : getAllSignStudent(id)) {
+                    for (SignAndQuestionStu vSignStudent : getAllSignStudent(id)) {
                         System.out.println("---" + vSignStudent.getStuName() + " * " + vSignStudent.getSignStatus());
                     }
                     //break;
@@ -700,7 +878,7 @@ public class newZjyMain {
                     System.out.println("---" + id + " * name " + name + " * getStatus " +
                             vActivity.getStatus() + " * RecordId " + RecordId + " * DetailTypeCode " + vActivity.getDetailTypeCode());
                     System.out.println(newZjyApi.getUpdateStudentSignStatus("50", RecordId));
-                    for (SignStudent vSignStudent : getQuestionStuListB(id)) {
+                    for (SignAndQuestionStu vSignStudent : getQuestionStuListB(id)) {
                         System.out.println("---" + vSignStudent.getStuName() + " * " + vSignStudent.getSignStatus() + " * " + vSignStudent.getScore());
                     }
                     break;

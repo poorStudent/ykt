@@ -4,10 +4,6 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.vms.ykt.UI.Adapter.cqoocAdapter.cqoocRecyclerAdapter;
-import com.vms.ykt.UI.Adapter.icveAdapter.icveRecyclerAdapter;
-import com.vms.ykt.UI.Adapter.newzjyAdapter.newZjyMainRecAdapter;
-
 public abstract class  baseRecyclerAdapter <T extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<T>{
 
     /**

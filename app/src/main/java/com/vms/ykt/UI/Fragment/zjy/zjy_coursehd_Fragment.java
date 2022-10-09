@@ -42,14 +42,9 @@ public class zjy_coursehd_Fragment extends baseFragment {
 
     private String TAG = this.getClass().getSimpleName();
 
-
-
-
-
     private zjyUser mZjyUser;
 
     private List<zjyCouresActivitInfo> mZjyCouresActivitInfos = new ArrayList<>();
-
 
     private zjy_courseHdActivity mActivity;
 
@@ -91,7 +86,7 @@ public class zjy_coursehd_Fragment extends baseFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mActivity = (zjy_courseHdActivity) context;
-      //  mParam = getArguments().getString(ARG_PARAM);
+        //  mParam = getArguments().getString(ARG_PARAM);
     }
 
     @Override
@@ -117,6 +112,7 @@ public class zjy_coursehd_Fragment extends baseFragment {
     private void initView(View view) {
         mButton = view.findViewById(R.id.zjy_bt_djjz);
         mButton2 = view.findViewById(R.id.zjy_bt_jrkt);
+        //mButton2.setHeight(Tool.dp2px(mActivity,50));
         mProgressBar = view.findViewById(R.id.zjy_load_Bar);
         mRecyclerView = view.findViewById(R.id.zjy_RecyclerView);
         mSwipeRefreshLayout = view.findViewById(R.id.zjy_swiperefresh);
@@ -164,7 +160,7 @@ public class zjy_coursehd_Fragment extends baseFragment {
 
                         if (mZjyCouresActivitInfos.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new zjy_courseHDAdapter(mZjyCouresActivitInfos, mZjyUser,mZjyTeachInfo);
+                                mRecyclerAdapter = new zjy_courseHDAdapter(mZjyCouresActivitInfos, mZjyUser, mZjyTeachInfo);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mZjyCouresActivitInfos);

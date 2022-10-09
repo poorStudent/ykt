@@ -34,7 +34,7 @@ import com.vms.ykt.yktStuWeb.mooc.WorkExamList;
 import com.vms.ykt.yktStuWeb.mooc.moocApiW;
 import com.vms.ykt.yktStuWeb.mooc.moocHttpW;
 import com.vms.ykt.yktStuWeb.mooc.moocMianW;
-import com.vms.ykt.yktUtil.zjyLogin.zjyMobileLogin;
+import com.vms.ykt.yktUtil.zjy.zjyMobileLogin;
 
 import java.io.File;
 import java.util.ArrayList;

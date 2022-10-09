@@ -7,12 +7,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:gravity="center"
         android:background="@color/teal_200"
-        android:textColor="@color/white"
-        android:textSize="20sp"
+        android:gravity="center"
+        android:maxLines="2"
         android:text="---功能不稳定 不要依赖---\n---支持手势以及补签---"
-        android:maxLines="2"/>
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
     <ScrollView
 
@@ -30,6 +30,7 @@
                 android:layout_height="0.8dp"
                 android:layout_marginTop="20dp"
                 android:background="@android:color/darker_gray" />
+
             <Button
                 android:id="@+id/newzjy_bt_qd"
                 android:layout_width="match_parent"
@@ -49,6 +50,21 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="3dp"
                 android:text="课堂删除" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_marginTop="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <Button
+                android:id="@+id/newzjy_bt_cjkt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:text="课堂创建" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.8dp"
