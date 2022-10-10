@@ -14,6 +14,8 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class newZjyMain {
 
@@ -191,7 +193,7 @@ public class newZjyMain {
 
     //删除活动
     public static String getDelActivity(String classroomId, String activityId) {
-        return newZjyApi.getUpdateSignStatus(classroomId, activityId);
+        return newZjyApi.getDelActivity(classroomId, activityId);
     }
 
     //补签
@@ -403,9 +405,11 @@ public class newZjyMain {
             String id = vJSONObject.getString("id");
             String title = vJSONObject.getString("title");
             String status = vJSONObject.getString("status");
+            String starRating = vJSONObject.getString("starRating");
             String groupMembers = vJSONObject.getString("groupMembers");
 
             vSignAndQuestionStu.setId(id);
+            vSignAndQuestionStu.setStarRating(starRating);
             vSignAndQuestionStu.setTitle(title);
             vSignAndQuestionStu.setStatus(status);
             vSignAndQuestionStu.setGroupMembers(groupMembers);
@@ -625,6 +629,19 @@ public class newZjyMain {
         //System.out.println(newZjyApi.getExamPaperStatisticsDetail());
         //System.out.println(newZjyApi.getQuestionManage(""));
 
+        String line ="abc=\"cccccddddddd\";\"ddsd\"=1111111;sdsds=2";
+        String pattern = "(.*?)=(.*?);?";
+
+        // 创建 Pattern 对象
+        Pattern r = Pattern.compile(pattern);
+
+        // 现在创建 matcher 对象
+        Matcher m = r.matcher(line);
+        while (m.find( )) {
+            System.out.println("Found value: " + m.group(1));
+            System.out.println("Found value: " + m.group(2));
+        }
+        System.exit(0);
 
         if (!isLogin(vUser)) {
             System.out.println("登陆失效");
@@ -658,7 +675,7 @@ public class newZjyMain {
             }
 
 
-            newZjyApi.upHeader1();
+            newZjyApi.upHeader2();
 
             List<ClassRoom> ClassRooms = getClassroomByStudent(vCourse);
 
@@ -685,7 +702,7 @@ public class newZjyMain {
                     if (vActivity.getTypeName().contains("小组")) {
                         getAllGroups(id);
                         //newZjyApi.getUpdateStudentSignStatus();
-                        System.exit(0);
+
                     }
                 }
 

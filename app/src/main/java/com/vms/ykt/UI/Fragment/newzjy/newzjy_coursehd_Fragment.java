@@ -1,13 +1,16 @@
 package com.vms.ykt.UI.Fragment.newzjy;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -121,7 +124,7 @@ public class newzjy_coursehd_Fragment extends baseFragment {
     private void initView(View view) {
         mButton = view.findViewById(R.id.zjy_bt_djjz);
         mButton2 = view.findViewById(R.id.zjy_bt_jrkt);
-        mButton2.setHeight(Tool.dp2px(mActivity, 50));
+        mButton2.setHeight(Tool.dp2px(mActivity, 60));
         mButton2.setTextColor(mActivity.getColor(R.color.white));
         mButton2.setText("一键操作");
         mProgressBar = view.findViewById(R.id.zjy_load_Bar);
@@ -308,7 +311,7 @@ public class newzjy_coursehd_Fragment extends baseFragment {
     private void SaveActivityTw1() {
         AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mActivity);
         //获取界面
-        View dialogView = LayoutInflater.from(mActivity).inflate(R.layout.newzjy_coursehd_fragment_fztl_dialog, null);
+        View dialogView = LayoutInflater.from(mActivity).inflate(R.layout.newzjy_coursehd_fragment_qdtw_dialog, null);
         //将界面填充到AlertDiaLog容器并去除边框
         setDeBugDialog.setView(dialogView);
         //初始化控件
@@ -352,8 +355,10 @@ public class newzjy_coursehd_Fragment extends baseFragment {
         List<SignAndQuestionStu> vSignAndQuestionStus=newZjyMain.getStudentsQuestioned(classroomId);
         for (SignAndQuestionStu vStu:vSignAndQuestionStus){
             vStringBuilder.append(vStu.getStuName());
-            vStringBuilder.append("- id : ");
+            vStringBuilder.append("  - id -");
+            vStringBuilder.append("\n");
             vStringBuilder.append(vStu.getStuId());
+            vStringBuilder.append("\n");
         }
         data=vStringBuilder.toString();
         return data;
@@ -363,7 +368,7 @@ public class newzjy_coursehd_Fragment extends baseFragment {
 
         AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mActivity);
         //获取界面
-        View dialogView = LayoutInflater.from(mActivity).inflate(R.layout.newzjy_coursehd_fragment_fztl_dialog, null);
+        View dialogView = LayoutInflater.from(mActivity).inflate(R.layout.newzjy_coursehd_fragment_crtw_dialog, null);
         //将界面填充到AlertDiaLog容器并去除边框
         setDeBugDialog.setView(dialogView);
         //初始化控件
@@ -388,6 +393,14 @@ public class newzjy_coursehd_Fragment extends baseFragment {
         // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
         //设置自定义界面的点击事件逻辑
         crwb.setText("加载中.....");
+
+       // crwb.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+        crwb.setOnTouchListener((View v, MotionEvent event)->{
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return v.onTouchEvent(event);
+        });
+
         new Thread(() -> {
             String ids=getStudentsQuestioned(mClassRoom.getId());
               mActivity.runOnUiThread(() -> {
@@ -414,7 +427,7 @@ public class newzjy_coursehd_Fragment extends baseFragment {
     private void SaveActivityTl() {
         AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mActivity);
         //获取界面
-        View dialogView = LayoutInflater.from(mActivity).inflate(R.layout.newzjy_coursehd_fragment_fztl_dialog, null);
+        View dialogView = LayoutInflater.from(mActivity).inflate(R.layout.newzjy_coursehd_fragment_tl_dialog, null);
         //将界面填充到AlertDiaLog容器并去除边框
         setDeBugDialog.setView(dialogView);
         //初始化控件

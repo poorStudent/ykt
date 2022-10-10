@@ -37,11 +37,19 @@ public class newZjyApi {
 
 
     //更新请求头
-    public static void upHeader1() {
+    public static void upHeader2() {
 
         newZjyHttp.addHeader("Content-Type", "application/json;charset=UTF-8");
         newZjyHttp.addHeader("Host", "spoc-classroom.icve.com.cn");
+        //System.out.println(JSONObject.toJSON(newZjyHttp.getHeader()));
+    }
+    //更新请求头
+    public static void upHeader1() {
+
+        newZjyHttp.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        newZjyHttp.addHeader("Host", "user.icve.com.cn");
         printHeader();
+
         //System.out.println(JSONObject.toJSON(newZjyHttp.getHeader()));
     }
 
@@ -418,6 +426,15 @@ public class newZjyApi {
         String data = "{\"params\":{\"id\":\"" + activityId + "\"," +
                 "\"content\":\"" + content + "\",\"imgPathList\":[]}}";
         String resp = newZjyHttp.post(saveStuDiscussAnswer, data);
+        return resp;
+    }
+    //
+    private static String renewStuTopicInfo="https://spoc-classroom.icve.com.cn/classroom-teaching-api/discuss/renewStuTopicInfo";
+    public static String getRenewStuTopicInfo(String activityId,String recordId, String content) {
+        String data = "{\"params\":{\"id\":\"" + activityId + "\",\"recordId\":\""+recordId+"\"," +
+                "\"content\":\"" + content + "\",\"imgPathList\":[]}}";
+        //{"params":{"activityId":"9d6e868a292611ed94150c42a164ae44","content":"1111111","imgPathList":[]}}
+        String resp = newZjyHttp.post(renewStuTopicInfo, data);
         return resp;
     }
 

@@ -66,14 +66,14 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
     private void initData() {
         // mUserVModel= ViewModelUtils.getViewModel(getApplication(), yktUserVM.class);
         mNewZjyUser = newZjyUserDao.sNewZjyUser;
+        mNewZjyCourse = newZjyUserDao.sNewZjyCourse;
         mContext = newzjy_classRoomActivity.this;
         Intent i = getIntent();
         type = i.getIntExtra("type", 0);
         //mNewZjyCourse=(newZjyCourse)i.getSerializableExtra("newZjyCourse");
-        newZjyApi.upHeader1();
         mClassRoomList = new ArrayList<>();
          Log.d(TAG, "mNewZjyCourse: "+mNewZjyCourse.getCourseId());
-         Log.d(TAG, "type: "+type);
+
     }
 
     private void initView() {
@@ -113,7 +113,7 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-
+        newZjyApi.upHeader2();
         if (mNewZjyUser == null || mNewZjyUser.getUserAccessToken() == null) {
             mSwipeRefreshLayout.setRefreshing(false);
             mProgressBar.setVisibility(View.GONE);
@@ -123,7 +123,7 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
+                Log.d(TAG, "type: "+type);
                 switch (type) {
                     case 0:
                         break;

@@ -99,7 +99,7 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
             public void onClick(final View v) {
                 if (vNewZjyCourse.getCourseId() != null) {
                     showSetDialog(vNewZjyCourse);
-                }else {
+                } else {
                     Tool.toast(mActivity, "请重新加载");
                 }
             }
@@ -126,6 +126,8 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
         //初始化控件
         Button but_kt = dialogView.findViewById(R.id.zjy_bt_kt);
         Button zjy_bt_cjzb = dialogView.findViewById(R.id.zjy_bt_cjzb);
+        Button zjy_bt_xggg = dialogView.findViewById(R.id.zjy_bt_xggg);
+        Button zjy_bt_jkxq = dialogView.findViewById(R.id.zjy_bt_jkxq);
 
         setDeBugDialog.setCancelable(true);
         //创建AlertDiaLog
@@ -141,14 +143,26 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
         // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
         //设置自定义界面的点击事件逻辑
 
+
+
         but_kt.setOnClickListener((View view) -> {
-                Intent i = new Intent(mActivity, newzjy_classRoomActivity.class);
-                newZjyUserDao.sNewZjyCourse = vNewZjyCourse;
-                mActivity.startActivity(i);
+            Intent i = new Intent(mActivity, newzjy_classRoomActivity.class);
+            newZjyUserDao.sNewZjyCourse = vNewZjyCourse;
+            i.putExtra("type", 3);
+            mActivity.startActivity(i);
 
         });
 
         zjy_bt_cjzb.setOnClickListener((View view) -> {
+
+        });
+
+        zjy_bt_xggg.setOnClickListener((View view) -> {
+
+        });
+
+
+        zjy_bt_jkxq.setOnClickListener((View view) -> {
 
         });
 

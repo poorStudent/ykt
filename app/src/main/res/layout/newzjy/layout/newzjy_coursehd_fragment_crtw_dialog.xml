@@ -76,14 +76,10 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <ScrollView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <TextView
@@ -94,7 +90,7 @@
                         android:maxLines="1"
                         android:text="-----id-----"
                         android:textColor="@color/white"
-                        android:textSize="19sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/crwb"
@@ -109,7 +105,6 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-            </ScrollView>
 
             <View
                 android:layout_width="match_parent"

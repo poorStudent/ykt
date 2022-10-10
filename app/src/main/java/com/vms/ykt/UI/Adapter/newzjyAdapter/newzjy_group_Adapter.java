@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.vms.ykt.R;
+import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_GroupActivity;
 import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_signStudentActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
 import com.vms.ykt.Util.Tool;
@@ -27,7 +28,7 @@ import java.util.Objects;
 
 public class newzjy_group_Adapter extends baseRecyclerAdapter<newzjy_group_Adapter.ViewHolder1> {
 
-    private newzjy_signStudentActivity mActivity;
+    private newzjy_GroupActivity mActivity;
     private Context mContext;
 
     private String TAG = this.getClass().getSimpleName();
@@ -60,7 +61,7 @@ public class newzjy_group_Adapter extends baseRecyclerAdapter<newzjy_group_Adapt
 
         if (mContext == null) {
             mContext = parent.getContext();
-            mActivity = (newzjy_signStudentActivity) mContext;
+            mActivity = (newzjy_GroupActivity) mContext;
         }
         // 实例化viewholder
         newzjy_group_Adapter.ViewHolder1 viewHolder = new newzjy_group_Adapter.ViewHolder1(v);
@@ -76,14 +77,14 @@ public class newzjy_group_Adapter extends baseRecyclerAdapter<newzjy_group_Adapt
 
         String Title = vSignAndQuestionStu.getTitle();
         String Id = vSignAndQuestionStu.getId();
-        String score = vSignAndQuestionStu.getScore();
+        String StarRating = vSignAndQuestionStu.getStarRating();
         String GroupMembers = vSignAndQuestionStu.getGroupMembers();
 
 
         holder.mTextView0.setText("小组");
         holder.mTextView1.setText("name: " + Title);
         holder.mTextView2.setText("Id: " + Id);
-        holder.mTextView3.setText("score: " + score);
+        holder.mTextView3.setText("StarRating: " + StarRating);
 
         if (mNewZjyUser != null) {
             if (GroupMembers.contains(mNewZjyUser.getTrueName())) {
@@ -112,12 +113,15 @@ public class newzjy_group_Adapter extends baseRecyclerAdapter<newzjy_group_Adapt
     private void showSetDialog(SignAndQuestionStu vSignAndQuestionStu) {
         AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mActivity);
         //获取界面
-        View dialogView = LayoutInflater.from(mActivity).inflate(R.layout.newzjy_signstu_fragment_dialog, null);
+        View dialogView = LayoutInflater.from(mActivity).inflate(R.layout.newzjy_discuss_too_dialog, null);
         //将界面填充到AlertDiaLog容器并去除边框
         setDeBugDialog.setView(dialogView);
         //初始化控件
         Button newzjy_bt_qd = dialogView.findViewById(R.id.newzjy_bt_qd);
+        Button newzjy_bt_sckt = dialogView.findViewById(R.id.newzjy_bt_sckt);
 
+        newzjy_bt_qd.setText("修改分数");
+        newzjy_bt_sckt.setVisibility(View.INVISIBLE);
         //取消点击外部消失弹窗
         setDeBugDialog.setCancelable(true);
         //创建AlertDiaLog
@@ -178,7 +182,7 @@ public class newzjy_group_Adapter extends baseRecyclerAdapter<newzjy_group_Adapt
 
                     String resp = newZjyApi.getRateTheGroup(vSignAndQuestionStu.getId(), fs);
                     mActivity.runOnUiThread(() -> {
-                        Tool.toast(mContext, vSignAndQuestionStu.getStuName() + "\n" + resp);
+                        Tool.toast(mContext, vSignAndQuestionStu.getTitle() + "\n" + resp);
 
                     });
 

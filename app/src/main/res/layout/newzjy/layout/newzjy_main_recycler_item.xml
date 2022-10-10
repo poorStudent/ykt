@@ -30,7 +30,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -38,8 +38,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:maxLines="1"
+                android:lines="1"
                 android:text="2222222222222222"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
@@ -51,6 +52,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="6dp"
                 android:maxLines="1"
+                android:lines="1"
                 android:text="班级名：444444444"
                 android:textColor="@color/cardview_dark_background"
                 android:textSize="13sp" />
@@ -70,6 +72,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:textColor="@color/cardview_dark_background"
+                    android:maxLines="1"
+                    android:lines="1"
                     android:text="课堂: " />
 
                 <TextView
@@ -77,6 +81,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:maxLines="1"
+                    android:lines="1"
                     android:text="活动: "
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="13sp" />

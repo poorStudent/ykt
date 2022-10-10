@@ -23,7 +23,7 @@ public class newZjyHttp {
     }
 
     public static void setUserCookie(String userCookies) {
-        if (userCookies==null || userCookies.isEmpty()) return;
+        if (userCookies == null || userCookies.isEmpty()) return;
         header.put("Cookie", userCookies);
     }
 
@@ -62,13 +62,13 @@ public class newZjyHttp {
     public static void addCookie(String upCookie) {
         HashMap<String, Object> Header = getHeader();
         if (Header != null && Header.containsKey("Cookie")) {
-           String ock = (String) Header.get("Cookie");
+            String ock = (String) Header.get("Cookie");
+            String[] ocks = ock.split("");
             upCookie = upCookie + ";" + ock;
         }
-       addHeader("Cookie", upCookie);
+        addHeader("Cookie", upCookie);
         System.out.println(JSONObject.toJSONString(Header));
     }
-
 
 
     public static String get(String requestUrl) {

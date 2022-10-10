@@ -33,6 +33,7 @@ import com.vms.ykt.UI.Adapter.newzjyAdapter.newzjy_main_Adapter;
 import com.vms.ykt.Util.CacheUs;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktDao.newZjy.newZjyUserDao;
+import com.vms.ykt.yktStuMobile.newZJY.newZjyApi;
 import com.vms.ykt.yktStuMobile.newZJY.newZjyCourse;
 import com.vms.ykt.yktStuMobile.newZJY.newZjyMain;
 import com.vms.ykt.yktStuMobile.newZJY.newZjyUser;
@@ -119,6 +120,7 @@ public class newZjy_mainActivity extends AppCompatActivity {
 
     private void loadData() {
 
+        newZjyApi.upHeader1();
         //mUserInfo=mUserVModel.getCqoocUser();
         if (mNewZjyUser == null || mNewZjyUser.getToken() == null) {
             mSwipeRefreshLayout.setRefreshing(false);
@@ -132,6 +134,11 @@ public class newZjy_mainActivity extends AppCompatActivity {
 
                 mNewZjyCourseList = newZjyMain.getMyClassList(mNewZjyUser);
 
+                if (mNewZjyCourseList.size() !=0){
+                    new Thread(()->{
+                        newZjyMain.upUNTYXLCOOKIE(mNewZjyUser,mNewZjyCourseList.get(0).getCourseId());
+                    }).start();
+                }
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

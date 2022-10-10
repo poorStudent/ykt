@@ -256,6 +256,14 @@
 
         </activity>
 
+<activity
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_GroupActivity"
+            android:label="newZjy"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy">
+
+        </activity>
+
 
     </application>
 

@@ -196,7 +196,10 @@ public class newzjy_signStu_Adapter extends baseRecyclerAdapter<newzjy_signStu_A
     }
 
     private void patchSign(SignAndQuestionStu vSignAndQuestionStu,int type){
-        newZjyMain.patchSign(mActivity,vSignAndQuestionStu,type);
+        new Thread(()->{
+            newZjyMain.patchSign(mActivity,vSignAndQuestionStu,type);
+        }).start();
+
     }
 
     @Override

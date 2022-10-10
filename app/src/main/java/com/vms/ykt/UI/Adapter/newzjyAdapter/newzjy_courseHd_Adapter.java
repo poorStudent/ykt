@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_DiscussActivity;
+import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_GroupActivity;
 import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_QuestionActivity;
 import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_courseHdActivity;
 import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_signStudentActivity;
@@ -225,9 +226,9 @@ public class newzjy_courseHd_Adapter extends baseRecyclerAdapter<newzjy_courseHd
 
         if (vClassActivity.getTypeName().contains("小组PK")) {
             newzjy_bt_pkxq.setOnClickListener((View view) -> {
-                Intent i = new Intent(mActivity, newzjy_signStudentActivity.class);
+                Intent i = new Intent(mActivity, newzjy_GroupActivity.class);
                 //i.putExtra("vClassRoom", vClassRoom);
-                //mActivity.startActivity(i);
+                mActivity.startActivity(i);
             });
         }
 

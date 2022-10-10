@@ -38,7 +38,16 @@ public class SignAndQuestionStu {
     private String content;
     private String title;
     private String status;
+    private String starRating;
     private String groupMembers;
+
+    public String getStarRating() {
+        return starRating;
+    }
+
+    public void setStarRating(String starRating) {
+        this.starRating = starRating;
+    }
 
     public String getTitle() {
         return title;
