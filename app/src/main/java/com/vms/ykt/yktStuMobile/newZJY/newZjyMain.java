@@ -13,6 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,7 +50,7 @@ public class newZjyMain {
 
     public static boolean isLogin(newZjyUser vUser) {
         String CheckUser = newZjyApi.getUserInfo(vUser.getToken());
-        if (CheckUser==null || CheckUser.contains("token已过期")) {
+        if (CheckUser == null || CheckUser.contains("token已过期")) {
             return false;
         }
         return true;
@@ -141,8 +142,9 @@ public class newZjyMain {
         JSONArray jsona = Tool.parseJsonA(resp, "Set-Cookie");
         for (int i = 0; i < jsona.size(); i++) {
             String js = jsona.getString(i);
+            System.out.println(js);
             if (js.contains("UNTYXLCOOKIE")) {
-                user.setUNTYXLCOOKIE(js);
+                user.setUNTYXLCOOKIE(js.replaceAll("\"", ""));
                 return true;
             }
         }
@@ -399,7 +401,7 @@ public class newZjyMain {
         if (resp == null || !resp.contains("data")) return SignStudents;
         JSONArray js1 = Tool.parseJsonA(resp, "data");
         for (int i = 0; i < js1.size(); i++) {
-            SignAndQuestionStu vSignAndQuestionStu=  new SignAndQuestionStu();
+            SignAndQuestionStu vSignAndQuestionStu = new SignAndQuestionStu();
 
             JSONObject vJSONObject = js1.getJSONObject(i);
             String id = vJSONObject.getString("id");
@@ -600,6 +602,8 @@ public class newZjyMain {
         return Students;
     }
 
+
+
     public static void doMain() {
         //aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA==
         //9b933b5e625e459ba9df0ea29e9e50ed
@@ -629,18 +633,7 @@ public class newZjyMain {
         //System.out.println(newZjyApi.getExamPaperStatisticsDetail());
         //System.out.println(newZjyApi.getQuestionManage(""));
 
-        String line ="abc=\"cccccddddddd\";\"ddsd\"=1111111;sdsds=2";
-        String pattern = "(.*?)=(.*?);?";
 
-        // 创建 Pattern 对象
-        Pattern r = Pattern.compile(pattern);
-
-        // 现在创建 matcher 对象
-        Matcher m = r.matcher(line);
-        while (m.find( )) {
-            System.out.println("Found value: " + m.group(1));
-            System.out.println("Found value: " + m.group(2));
-        }
         System.exit(0);
 
         if (!isLogin(vUser)) {
@@ -721,7 +714,8 @@ public class newZjyMain {
             //newZjyApi.print(resp);
 
 
-            //System.out.println(newZjyApi.getModifyClassAuditStatus(ClassId,"1","0"));
+            //System.out.println(newZjyApi.getModifyClassAuditStatus(ClassId,"1","0"));//允许
+            //System.out.println(newZjyApi.getModifyClassAuditStatus(ClassId,"0","0"));//不允许
             //System.out.println(newZjyTestApi.getSaveAssessment(CourseId,ClassId));
             //System.out.println(newZjyTestApi.getCreateStuAssess(CourseId,ClassId));
 

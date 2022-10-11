@@ -7,6 +7,9 @@ import com.vms.ykt.yktUtil.yktHeaders;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class newZjyHttp {
 
@@ -60,14 +63,47 @@ public class newZjyHttp {
     }
 
     public static void addCookie(String upCookie) {
+
         HashMap<String, Object> Header = getHeader();
-        if (Header != null && Header.containsKey("Cookie")) {
-            String ock = (String) Header.get("Cookie");
-            String[] ocks = ock.split("");
-            upCookie = upCookie + ";" + ock;
+
+        if (Header != null && Header.containsKey("Cookie") ) {
+            if (!((String) Objects.requireNonNull(Header.get("Cookie"))).equals("")) {
+                HashMap<String, Object> nckMap = parseCookie(upCookie);
+                String ock = (String) Header.get("Cookie");
+                HashMap<String, Object> ockMap = parseCookie(ock);
+                for (String key:nckMap.keySet()){
+                    if (ockMap.containsKey(key)) {
+                        ockMap.remove(key);
+                    }
+                    ockMap.put(key, nckMap.get(key));
+                }
+                StringBuilder ck=new StringBuilder();
+                for (String key:ockMap.keySet()){
+                    String v=(String) ockMap.get(key);
+                    ck.append(";");
+                    ck.append(key);
+                    ck.append("=");
+                    ck.append(v);
+                }
+                upCookie=ck.toString().replaceFirst(";", "");
+            }
         }
         addHeader("Cookie", upCookie);
         System.out.println(JSONObject.toJSONString(Header));
+    }
+
+
+    private static HashMap<String, Object> parseCookie(String resp) {
+        HashMap<String, Object> cks = new HashMap<>();
+        String pattern = "([^=]+)=(\"?[^;]+\"?);?\\s*";
+        // 创建 Pattern 对象
+        Pattern r = Pattern.compile(pattern);
+        // 现在创建 matcher 对象
+        Matcher m = r.matcher(resp);
+        while (m.find()) {
+            cks.put(m.group(1), m.group(2));
+        }
+        return cks;
     }
 
 
