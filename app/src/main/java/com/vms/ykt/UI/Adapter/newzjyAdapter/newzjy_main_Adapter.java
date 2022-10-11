@@ -118,30 +118,14 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
 
 
     private void showSetDialog(newZjyCourse vNewZjyCourse) {
-        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mContext);
-        //获取界面
-        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.newzjy_main_dialog, null);
-        //将界面填充到AlertDiaLog容器并去除边框
-        setDeBugDialog.setView(dialogView);
+
+        View dialogView=Tool.creatDialog(mContext,R.layout.newzjy_main_dialog);
         //初始化控件
         Button but_kt = dialogView.findViewById(R.id.zjy_bt_kt);
         Button zjy_bt_cjzb = dialogView.findViewById(R.id.zjy_bt_cjzb);
         Button zjy_bt_xggg = dialogView.findViewById(R.id.zjy_bt_xggg);
         Button zjy_bt_jkxq = dialogView.findViewById(R.id.zjy_bt_jkxq);
 
-        setDeBugDialog.setCancelable(true);
-        //创建AlertDiaLog
-        setDeBugDialog.create();
-        //AlertDiaLog显示
-        final AlertDialog customAlert = setDeBugDialog.show();
-        //设置AlertDiaLog宽高属性
-        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
-        params.width = 900;
-        params.height = 850;
-        customAlert.getWindow().setAttributes(params);
-        // 移除dialog的decorview背景色
-        // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
-        //设置自定义界面的点击事件逻辑
 
 
 
@@ -169,6 +153,10 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
 
     }
 
+    private void SaveAssessment(){
+        View dialogView=Tool.creatDialog(mContext,R.layout.newzjy_main_dialog);
+
+    }
 
     public void pauseRequests() {
         Glide.with(mContext).pauseRequests();

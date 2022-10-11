@@ -253,18 +253,26 @@ public class newZjyApi {
     //更改分数权重
     static String saveAssessment = "https://user.icve.com.cn/zhzj/zhzjTeacher_saveAssessment.action";
 
-    public static String getSaveAssessment(String courseId, String classId) {
+    public static String getSaveAssessment(String courseId, String classId
+            ,String learn_time,String learn_time_full, String node_rate,String node_rate_full
+            ,String effective_time,String effective_time_full,String test_rate,String test_rate_full
+            ,String work_rate ,String work_rate_full ,String pop_quiz_rate ,String pop_quiz_full
+            ,String exam_score_rate,String exam_score,String questions_rate,String questions_rate_full
+            ,String sign_num_rate ,String sign_num_full ,String discuss_rate ,String discuss_rate_full
+            ,String groupPK_rate,String groupPK_rate_full) {
         String data = "token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=&courseId=" + courseId +
                 "&classId=" + classId +
-                "&total_learn_time_rate=10&total_learn_time_full=100" +
-                "&node_rate=10&node_rate_full=100" +
-                "&effective_time_rate=10&effective_time_full=100" +
-                "&test_rate=10&test_rate_full=100" +
-                "&work_rate=10&work_rate_full=100" +
-                "&pop_quiz_rate=10&pop_quiz_full=100" +
-                "&exam_score_rate=10&exam_score=100" +
-                "&questions_rate=10&questions_rate_full=100" +
-                "&sign_num_rate=20&sign_num_full=100";
+                "&total_learn_time_rate="+learn_time+"&total_learn_time_full="+learn_time_full +
+                "&node_rate="+node_rate+"&node_rate_full=" +node_rate_full+
+                "&effective_time_rate="+effective_time+"&effective_time_full=" +effective_time_full+
+                "&test_rate="+test_rate+"&test_rate_full=" +test_rate_full+
+                "0&work_rate="+work_rate+"&work_rate_full=" +work_rate_full+
+                "&pop_quiz_rate="+pop_quiz_rate+"&pop_quiz_full=" +pop_quiz_full+
+                "&exam_score_rate="+exam_score_rate+"&exam_score="+exam_score +
+                "&questions_rate="+questions_rate+"&questions_rate_full=" +questions_rate_full+
+                "&sign_num_rate="+sign_num_rate+"&sign_num_full=" +sign_num_full+
+                "&discuss_rate="+discuss_rate+"&discuss_rate_full=" +discuss_rate_full+
+                "&groupPK_rate="+groupPK_rate+"&groupPK_rate_full="+groupPK_rate_full;
         String resp = newZjyHttp.post(saveAssessment, data);
         return resp;
     }
@@ -887,8 +895,8 @@ public class newZjyApi {
     // 设置课程公告
     static String saveCourseNotice = "https://course.icve.com.cn/learnspace/learn/learnCourseNotice/saveCourseNotice.json";
 
-    public static String getSaveCourseNotice(String courseId) {
-        String data = "params.courseId=39e272199dab487ba6f8f76115cbfd2c___&params.title=11111" +
+    public static String getSaveCourseNotice(String courseId,String title) {
+        String data = "params.courseId="+courseId+"___&params.title=" +title+
                 "&params.note=%3Cp%3E11111111%3C%2Fp%3E&params.isTop=true";
         String resp = newZjyHttp.post(saveCourseNotice, data);
         return resp;

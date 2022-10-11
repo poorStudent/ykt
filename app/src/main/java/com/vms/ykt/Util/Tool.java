@@ -13,13 +13,19 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.vms.ykt.R;
 
 import java.io.*;
 
@@ -40,6 +46,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -856,6 +863,27 @@ public class Tool {
         Log.d("h_bl", "屏幕密度dpi（120 / 160 / 240）：" + densityDpi);
         Log.d("h_bl", "屏幕宽度（dp）：" + screenWidth);
         Log.d("h_bl", "屏幕高度（dp）：" + screenHeight);
+    }
+
+    //
+    public static View creatDialog(Context mContext,int id){
+        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mContext);
+        //获取界面
+        View dialogView = LayoutInflater.from(mContext).inflate(id, null);
+        //将界面填充到AlertDiaLog容器并去除边框
+        setDeBugDialog.setView(dialogView);
+
+        setDeBugDialog.setCancelable(true);
+        //创建AlertDiaLog
+        setDeBugDialog.create();
+        //AlertDiaLog显示
+        final AlertDialog customAlert = setDeBugDialog.show();
+        //设置AlertDiaLog宽高属性
+        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
+        params.width = 900;
+        params.height = 850;
+        customAlert.getWindow().setAttributes(params);
+        return dialogView;
     }
 
 }
