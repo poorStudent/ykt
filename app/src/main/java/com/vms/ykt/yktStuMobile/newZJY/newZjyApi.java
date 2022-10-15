@@ -105,7 +105,6 @@ public class newZjyApi {
         return getNamespaceAndSiteCode("FlagActivityType");
     }
 
-
     public static String getFlagQuestionType() {
         return getNamespaceAndSiteCode("FlagQuestionType");
     }
@@ -724,7 +723,13 @@ public class newZjyApi {
     }
 
 
+
+
     //web api
+    // 考试 作业 测试
+    //
+
+
     //获取 考试 作业 测试 详情
     private static String studentExam_getPaperStructure="https://spoc-exam.icve.com.cn/student/exam/studentExam_getPaperStructure.action";
 
@@ -755,6 +760,33 @@ public class newZjyApi {
 
      */
 
+
+
+    //web登陆测试
+    static String findUser = "https://user.icve.com.cn/patch/nlpx/findUser.action";
+    static String auth = "https://spoc-sso.icve.com.cn/auth";
+
+    //static String findUser = "https://user.icve.com.cn/patch/nlpx/findUser.action";
+    public static String webLogin() {
+        String data = "loginId=Debug";
+        newZjyHttp.addCookie("whatysns=b9db789f2acaccfcdbfe216e44e16a70");
+        httpRespnose resp = newZjyHttp.post(findUser, data, null, null);
+        newZjyHttp.addCookie(resp.getSetCookie());
+        //newZjyHttp.addHeader("Host", "spoc-sso.icve.com.cn");
+        newZjyHttp.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27");
+        data = "siteCode=zhzj" +
+                "&errorPage=https%3A%2F%2Fuser.icve.com.cn%2Fsso%2FssoLogin_loginError.action%3FbackURL%3D%2Findex.jsp" +
+                "&password=af30447f10d38ce427778f5fc1fc31ea&username=Debug";
+        printHeader();
+        resp = newZjyHttp.post(auth, data, null, null);
+        //print(resp.getResp());
+        resp = newZjyHttp.post(resp.getLocation(), null, null, null);
+        printHeader(resp.getHearderFileds());
+
+        return "";
+    }
+
+
     //疑似 USERSESSIONID
 
     static String enterMain = "https://spoc-exam.icve.com.cn/platformwebapi/testpaper/bankcontent_enterMain.action";
@@ -764,10 +796,20 @@ public class newZjyApi {
         String resp = newZjyHttp.get(enterMain, data);
         return resp;
         /*
-         * params.kckjToExamFlag=kckjToExamFlag&params.examConfigTypeId=2&params.examCodes=20220903232323367559%2C2022100116441943245&_loginId=venomms&apiKey=zhzj_platform&_name=%E9%AD%8F%E6%B5%B7%E6%97%AD&Signature=MCwCFFPxxgHGhly8mrUZEnP%2FTm0kTqS4AhQZeJCKF394bKzePcKVgeybaBRu7Q%3D%3D&params.configTypeId=6049aaaac97845d1a8a790f397962b0a&params.courseId=39e272199dab487ba6f8f76115cbfd2c&_roleCode=student&timestamp=1665067551683
+         *
          * https://spoc-exam.icve.com.cn/platformwebapi/student/exam/studentExam_studentExamInfoThird.action
          * */
     }
+
+
+    private static String ExamUSERSESSIONID="https://spoc-exam.icve.com.cn/platformwebapi/student/exam/studentExam_studentExamInfoThird.action";
+    public static String ExamUSERSESSIONID(){
+        String data="params.kckjToExamFlag=kckjToExamFlag&params.examConfigTypeId=2&params.examCodes=20220903232323367559%2C2022100116441943245&_loginId=venomms&apiKey=zhzj_platform&_name=%E9%AD%8F%E6%B5%B7%E6%97%AD&Signature=MCwCFFPxxgHGhly8mrUZEnP%2FTm0kTqS4AhQZeJCKF394bKzePcKVgeybaBRu7Q%3D%3D&params.configTypeId=6049aaaac97845d1a8a790f397962b0a&params.courseId=39e272199dab487ba6f8f76115cbfd2c&_roleCode=student&timestamp=1665067551683";
+        httpRespnose resp = newZjyHttp.post(ExamUSERSESSIONID, data, null, null);
+        printHeader(resp.getHearderFileds());
+        return "";
+    }
+
 
     //移动 api 老师相关
 
@@ -804,9 +846,9 @@ public class newZjyApi {
     //加课二维码
     static String QrCode = "https://user.icve.com.cn/patch/nlpx/getQrCode.action";
 
-    public static String getQrCode() {
+    public static String getQrCode(String classId) {
         String data = "url={\"code\":\"1001\",\"service\":\"enterClass\",\"param\":" +
-                "{\"url\":\"qrCodeResult.html?classId=957639a938cc4e63b0953e132e0df096\"}}" +
+                "{\"url\":\"qrCodeResult.html?classId="+classId+"\"}}" +
                 "&pic=";
         String resp = newZjyHttp.post(QrCode, data);
         return resp;
@@ -868,7 +910,7 @@ public class newZjyApi {
 
     public static String getBySqlCode(String courseId) {
         String data = "data=info&page.searchItem.queryId=getTeacherCLssTraineeListSPOC&" +
-                "page.searchItem.courseId=39e272199dab487ba6f8f76115cbfd2c&" +
+                "page.searchItem.courseId="+courseId+"&" +
                 "page.searchItem.keyname=&page.curPage=1&page.pageSize=10";
         String resp = newZjyHttp.post(BySqlCode, data);
         return resp;
@@ -895,9 +937,9 @@ public class newZjyApi {
     // 设置课程公告
     static String saveCourseNotice = "https://course.icve.com.cn/learnspace/learn/learnCourseNotice/saveCourseNotice.json";
 
-    public static String getSaveCourseNotice(String courseId,String title) {
+    public static String getSaveCourseNotice(String courseId,String title,String note) {
         String data = "params.courseId="+courseId+"___&params.title=" +title+
-                "&params.note=%3Cp%3E11111111%3C%2Fp%3E&params.isTop=true";
+                "&params.note="+note+"&params.isTop=true";
         String resp = newZjyHttp.post(saveCourseNotice, data);
         return resp;
     }
@@ -949,31 +991,6 @@ public class newZjyApi {
                 "itemTitle=%E6%96%B0%E8%AE%B2%E8%AF%BE&sectionIndex=3";
         String resp = newZjyHttp.post(addSectionCourseItem, data);
         return resp;
-    }
-
-
-    //web登陆测试
-    static String findUser = "https://user.icve.com.cn/patch/nlpx/findUser.action";
-    static String auth = "https://spoc-sso.icve.com.cn/auth";
-
-    //static String findUser = "https://user.icve.com.cn/patch/nlpx/findUser.action";
-    public static String webLogin() {
-        String data = "loginId=Debug";
-        newZjyHttp.addCookie("whatysns=b9db789f2acaccfcdbfe216e44e16a70");
-        httpRespnose resp = newZjyHttp.post(findUser, data, null, null);
-        newZjyHttp.addCookie(resp.getSetCookie());
-        //newZjyHttp.addHeader("Host", "spoc-sso.icve.com.cn");
-        newZjyHttp.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27");
-        data = "siteCode=zhzj" +
-                "&errorPage=https%3A%2F%2Fuser.icve.com.cn%2Fsso%2FssoLogin_loginError.action%3FbackURL%3D%2Findex.jsp" +
-                "&password=af30447f10d38ce427778f5fc1fc31ea&username=Debug";
-        printHeader();
-        resp = newZjyHttp.post(auth, data, null, null);
-        //print(resp.getResp());
-        resp = newZjyHttp.post(resp.getLocation(), null, null, null);
-        printHeader(resp.getHearderFileds());
-
-        return "";
     }
 
     //token转换

@@ -150,82 +150,49 @@ public class newzjy_DiscussActivity extends AppCompatActivity {
     }
 
     private void showSetDialog() {
-        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mContext);
-        //获取界面
-        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.newzjy_discuss_too_dialog, null);
-        //将界面填充到AlertDiaLog容器并去除边框
-        setDeBugDialog.setView(dialogView);
+
+        View dialogView = Tool.creatDialog(mContext, R.layout.newzjy_discuss_too_dialog);
+
         //初始化控件
         Button newzjy_bt_yjgf = dialogView.findViewById(R.id.newzjy_bt_qd);
         Button newzjy_bt_tjtl = dialogView.findViewById(R.id.newzjy_bt_sckt);
-        //取消点击外部消失弹窗
-        setDeBugDialog.setCancelable(true);
-        //创建AlertDiaLog
-        setDeBugDialog.create();
-        //AlertDiaLog显示
-        final AlertDialog customAlert = setDeBugDialog.show();
-        //设置AlertDiaLog宽高属性
-        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
-        params.width = 900;
-        params.height = 850;
-        customAlert.getWindow().setAttributes(params);
-        // 移除dialog的decorview背景色
-        // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
-        //设置自定义界面的点击事件逻辑
+
 
         newzjy_bt_yjgf.setText("一键改分");
 
         newzjy_bt_yjgf.setOnClickListener((View view) -> {
-            if(mSignAndQuestionStuList!=null) {
+            if (mSignAndQuestionStuList != null) {
                 updateStudentSignStatus();
             }
         });
 
         newzjy_bt_tjtl.setText("提交讨论");
         newzjy_bt_tjtl.setOnClickListener((View view) -> {
-                SaveStuDiscussAnswer();
+            SaveStuDiscussAnswer();
         });
 
     }
 
     private void updateStudentSignStatus() {
-        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mContext);
-        //获取界面
-        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.newzjy_discuss_too_dialog_xgfs, null);
-        //将界面填充到AlertDiaLog容器并去除边框
-        setDeBugDialog.setView(dialogView);
-        //初始化控件
+
+
+        View dialogView = Tool.creatDialog(mContext, R.layout.newzjy_discuss_too_dialog_xgfs);
 
         Button newzjy_bt_xgfs = dialogView.findViewById(R.id.newzjy_bt_qd);
         EditText newzjy_et_fs = dialogView.findViewById(R.id.newzjy_et_fzs);
         TextView newzjy_tv_fsts = dialogView.findViewById(R.id.newzjy_tv_fzs);
 
-
-        //取消点击外部消失弹窗
-        setDeBugDialog.setCancelable(true);
-        //创建AlertDiaLog
-        setDeBugDialog.create();
-        //AlertDiaLog显示
-        final AlertDialog customAlert = setDeBugDialog.show();
-        //设置AlertDiaLog宽高属性
-        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
-        params.width = 900;
-        params.height = 850;
-        customAlert.getWindow().setAttributes(params);
-        // 移除dialog的decorview背景色
-        // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
-        //设置自定义界面的点击事件逻辑
         newzjy_tv_fsts.setText("分数： ");
         newzjy_et_fs.setHint("5");
 
         newzjy_bt_xgfs.setOnClickListener((View view) -> {
-            String fs=newzjy_et_fs.getText().toString();
+            String fs = newzjy_et_fs.getText().toString();
             if (!fs.isEmpty()) {
                 new Thread(() -> {
-                    for (SignAndQuestionStu vSignAndQuestionStu:mSignAndQuestionStuList){
-                        String resp=newZjyApi.getUpdateStudentSignStatus(fs,vSignAndQuestionStu.getId());
+                    for (SignAndQuestionStu vSignAndQuestionStu : mSignAndQuestionStuList) {
+                        String resp = newZjyApi.getUpdateStudentSignStatus(fs, vSignAndQuestionStu.getId());
                         runOnUiThread(() -> {
-                            Tool.toast(mContext,  vSignAndQuestionStu.getStuName()+ "\n" + resp);
+                            Tool.toast(mContext, vSignAndQuestionStu.getStuName() + "\n" + resp);
                         });
                         try {
                             Thread.sleep(1000);
@@ -241,59 +208,42 @@ public class newzjy_DiscussActivity extends AppCompatActivity {
     }
 
     private void SaveStuDiscussAnswer() {
-        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mContext);
-        //获取界面
-        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.newzjy_discuss_too_dialog_xgfs, null);
-        //将界面填充到AlertDiaLog容器并去除边框
-        setDeBugDialog.setView(dialogView);
-        //初始化控件
 
 
+        View dialogView = Tool.creatDialog(mContext, R.layout.newzjy_discuss_too_dialog_xgfs);
         Button newzjy_bt_xgfs = dialogView.findViewById(R.id.newzjy_bt_qd);
         Button newzjy_bt_cxqd = dialogView.findViewById(R.id.newzjy_bt_cxqd);
         EditText newzjy_et_fs = dialogView.findViewById(R.id.newzjy_et_fzs);
         TextView newzjy_tv_fsts = dialogView.findViewById(R.id.newzjy_tv_fzs);
 
 
-        //取消点击外部消失弹窗
-        setDeBugDialog.setCancelable(true);
-        //创建AlertDiaLog
-        setDeBugDialog.create();
-        //AlertDiaLog显示
-        final AlertDialog customAlert = setDeBugDialog.show();
-        //设置AlertDiaLog宽高属性
-        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
-        params.width = 900;
-        params.height = 850;
-        customAlert.getWindow().setAttributes(params);
-        // 移除dialog的decorview背景色
-        // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
-        //设置自定义界面的点击事件逻辑
         newzjy_tv_fsts.setText("内容： ");
         newzjy_et_fs.setHint("11111");
         newzjy_bt_xgfs.setText("提交");
-        newzjy_bt_xgfs.setOnClickListener((View view) -> {
-            String nr=newzjy_et_fs.getText().toString();
-                new Thread(() -> {
-                        String resp=newZjyApi.getSaveStuDiscussAnswer(mClassActivity.getId(),nr);
-                        runOnUiThread(() -> {
-                            Tool.toast(mContext,  mClassActivity.getTypeName()+ "\n" + resp);
-                        });
-
-                }).start();
-
-        });
         newzjy_bt_cxqd.setVisibility(View.VISIBLE);
         newzjy_bt_cxqd.setText("修改提交");
+
+        newzjy_bt_xgfs.setOnClickListener((View view) -> {
+            String nr = newzjy_et_fs.getText().toString();
+            new Thread(() -> {
+                String resp = newZjyApi.getSaveStuDiscussAnswer(mClassActivity.getId(), nr);
+                runOnUiThread(() -> {
+                    Tool.toast(mContext, mClassActivity.getTypeName() + "\n" + resp);
+                });
+
+            }).start();
+
+        });
+
         newzjy_bt_cxqd.setOnClickListener((View view) -> {
-            String nr=newzjy_et_fs.getText().toString();
-            final String vRecordId=mClassActivity.getRecordId();
-            if (vRecordId!=null && !vRecordId.isEmpty())
+            String nr = newzjy_et_fs.getText().toString();
+            final String vRecordId = mClassActivity.getRecordId();
+            if (vRecordId != null && !vRecordId.isEmpty())
                 new Thread(() -> {
-                        String resp=newZjyApi.getRenewStuTopicInfo(mClassActivity.getId(),vRecordId,nr);
-                        runOnUiThread(() -> {
-                            Tool.toast(mContext,  mClassActivity.getTypeName()+ "\n" + resp);
-                        });
+                    String resp = newZjyApi.getRenewStuTopicInfo(mClassActivity.getId(), vRecordId, nr);
+                    runOnUiThread(() -> {
+                        Tool.toast(mContext, mClassActivity.getTypeName() + "\n" + resp);
+                    });
 
                 }).start();
 

@@ -106,8 +106,11 @@ public class newzjy_classRoom_Adapter extends baseRecyclerAdapter<newzjy_classRo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                if (vClassRoom.getId()!=null){
                 showSetDialog(vClassRoom);
+                newZjyUserDao.sClassRoom=vClassRoom;
 
+            }
             }
 
         });
@@ -174,7 +177,7 @@ public class newzjy_classRoom_Adapter extends baseRecyclerAdapter<newzjy_classRo
         newzjy_bt_jrkt.setOnClickListener((View view)-> {
             if (vClassRoom.getCourseId()!=null) {
 
-                newZjyUserDao.sClassRoom=vClassRoom;
+
 
                 Intent i = new Intent(mActivity, newzjy_courseHdActivity.class);
 

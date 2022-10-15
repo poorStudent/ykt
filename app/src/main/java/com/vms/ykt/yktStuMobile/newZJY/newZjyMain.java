@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.vms.ykt.Ruikey.RuiKey;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktDao.newZjy.newZjyUserDao;
 
@@ -633,7 +634,7 @@ public class newZjyMain {
         //System.out.println(newZjyApi.getExamPaperStatisticsDetail());
         //System.out.println(newZjyApi.getQuestionManage(""));
 
-
+        new RuiKey().Demo();
         System.exit(0);
 
         if (!isLogin(vUser)) {

@@ -1,55 +1,19 @@
 package com.vms.ykt.yktUtil.zjy;
 
-import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
-import android.os.Environment;
-import android.os.TransactionTooLargeException;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.WindowManager;
-import android.widget.Toast;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.vms.ykt.Util.StringUtils;
 import com.vms.ykt.Util.SystemUtil;
 import com.vms.ykt.Util.Tool;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
-import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class zjyTool {
-
-
 
 
     public static String getDevice(String appVersion, String time) {
@@ -60,17 +24,6 @@ public class zjyTool {
         return device;
 
     }
-
-    public static String a(String stuid, String str, String str2) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(stuid);
-        stringBuilder.append(str2);
-        stringBuilder.append(str);
-        stringBuilder.append("123456789");
-        str = stringBuilder.toString();
-        return getMd5(str).toUpperCase();
-    }
-
 
     public static String[] getEmitDevice()  {
 
@@ -97,12 +50,12 @@ public class zjyTool {
         String verion = getVersion();//软件版本 写死了2.8.43
         StringBuilder stringBuilder = new StringBuilder();
         StringBuilder stringBuilder2 = new StringBuilder();
-        String stringBuilder3 = StringUtils.getMd5(systemModel) + systemVersion;
-        stringBuilder2.append(StringUtils.getMd5(stringBuilder3));
+        String stringBuilder3 = getMd5(systemModel) + systemVersion;
+        stringBuilder2.append(getMd5(stringBuilder3));
         stringBuilder2.append(verion);
-        stringBuilder.append(StringUtils.getMd5(stringBuilder2.toString()));
+        stringBuilder.append(getMd5(stringBuilder2.toString()));
         stringBuilder.append(str);
-        return StringUtils.getMd5(stringBuilder.toString());
+        return getMd5(stringBuilder.toString());
         //标准md5加密
     }
 
@@ -117,6 +70,16 @@ public class zjyTool {
             parse = null;
         }
         return String.valueOf(parse.getTime());
+    }
+
+    public static String a(String stuid, String str, String str2) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(stuid);
+        stringBuilder.append(str2);
+        stringBuilder.append(str);
+        stringBuilder.append("123456789");
+        str = stringBuilder.toString();
+        return getMd5(str).toUpperCase();
     }
 
     public static String getSecretKey(String UserId, final String time,String cellId) {
@@ -193,11 +156,6 @@ public class zjyTool {
 
 
     }
-
-
-
-
-
 
 
 }

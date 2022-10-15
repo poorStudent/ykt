@@ -96,12 +96,6 @@
                 android:layout_marginTop="1dp"
                 android:background="@android:color/darker_gray" />
 
-            <Button
-                android:id="@+id/zjy_bt_sckt"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="3dp"
-                android:text="删除全部课堂"  />
 
             <View
                 android:layout_width="match_parent"
@@ -109,12 +103,7 @@
                 android:layout_marginTop="1dp"
                 android:background="@android:color/darker_gray" />
 
-            <Button
-                android:id="@+id/zjy_bt_kcm"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="3dp"
-                android:text="获取课程码"  />
+
 
 
             <View

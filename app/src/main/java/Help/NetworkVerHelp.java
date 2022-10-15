@@ -466,7 +466,7 @@ public class NetworkVerHelp {
                                      int _encrypttypeid, String _goodscode, String _platformUserCode) {
 
         //ini();
-        Log.e("ruikeyz.com", "当前版本号：v2.5 ");
+       // Log.e("ruikeyz.com", "当前版本号：v2.5 ");
         platformtypeid = _platformtypeid;
         if (ApiAddress.lastIndexOf("/") + 1 == ApiAddress.length()) {
             ApiAddress = ApiAddress.substring(0, ApiAddress.length());

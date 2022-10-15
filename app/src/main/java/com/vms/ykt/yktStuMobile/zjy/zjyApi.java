@@ -17,6 +17,7 @@ import com.alibaba.fastjson.*;
 
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.Util.httpTool;
+import com.vms.ykt.yktUtil.zjy.zjyTool;
 
 
 import java.text.*;
@@ -310,7 +311,7 @@ public class zjyApi {
 
         postParam.append("sourceType=2" + "&");
         String Time = Tool.getStuProcessTime();
-        postParam.append("secretKey=" + Tool.a(zjyUser.getUserId(), Time, zjyCellList.getCellId()) + "&");
+        postParam.append("secretKey=" + zjyTool.a(zjyUser.getUserId(), Time, zjyCellList.getCellId()) + "&");
         postParam.append("answerTime=" + Time + "&");
         postParam.append("token=" + zjyInfoByCelld.getToken() + "&");
         postParam.append("picNum=900" + "&");

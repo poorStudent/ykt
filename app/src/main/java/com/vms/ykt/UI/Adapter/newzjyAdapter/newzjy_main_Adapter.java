@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.vms.ykt.UI.Activity.newZjyActivity.newZjy_mainActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktDao.newZjy.newZjyUserDao;
+import com.vms.ykt.yktStuMobile.newZJY.newZjyApi;
 import com.vms.ykt.yktStuMobile.newZJY.newZjyCourse;
 import com.vms.ykt.yktStuMobile.newZJY.newZjyUser;
 
@@ -98,6 +100,7 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
             @Override
             public void onClick(final View v) {
                 if (vNewZjyCourse.getCourseId() != null) {
+                    newZjyUserDao.sNewZjyCourse=vNewZjyCourse;
                     showSetDialog(vNewZjyCourse);
                 } else {
                     Tool.toast(mActivity, "请重新加载");
@@ -131,18 +134,17 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
 
         but_kt.setOnClickListener((View view) -> {
             Intent i = new Intent(mActivity, newzjy_classRoomActivity.class);
-            newZjyUserDao.sNewZjyCourse = vNewZjyCourse;
             i.putExtra("type", 3);
             mActivity.startActivity(i);
 
         });
 
         zjy_bt_cjzb.setOnClickListener((View view) -> {
-
+            SaveAssessment();
         });
 
         zjy_bt_xggg.setOnClickListener((View view) -> {
-
+            SaveCourseNotice(vNewZjyCourse);
         });
 
 
@@ -154,7 +156,53 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
     }
 
     private void SaveAssessment(){
-        View dialogView=Tool.creatDialog(mContext,R.layout.newzjy_main_dialog);
+        View dialogView=Tool.creatDialog(mContext,R.layout.newzjy_main_cjzb_dialog);
+
+    }
+
+    private void SaveCourseNotice(newZjyCourse vNewZjyCourse){
+        View dialogView=Tool.creatDialog(mContext,R.layout.newzjy_main_xggg_dialog);
+        Button newzjy_bt_qd = dialogView.findViewById(R.id.newzjy_bt_qd);
+        EditText newzjy_et_bt = dialogView.findViewById(R.id.newzjy_et_bt);
+        EditText newzjy_et_nr = dialogView.findViewById(R.id.newzjy_et_nr);
+
+        newzjy_bt_qd.setOnClickListener((view)->{
+            String bt=newzjy_et_bt.getText().toString();
+            String nr=newzjy_et_nr.getText().toString();
+            new Thread(()->{
+                String resp=newZjyApi.getSaveCourseNotice(vNewZjyCourse.getCourseId(),bt,nr);
+                mActivity.runOnUiThread(()->{
+                    Tool.toast(mContext,resp);
+                });
+            }).start();
+        });
+    }
+
+    private void ModifyClassAuditStatus(newZjyCourse vNewZjyCourse){
+
+        View dialogView=Tool.creatDialog(mContext,R.layout.newzjy_main_jkxq_dialog);
+        Button newzjy_bt_yxjk = dialogView.findViewById(R.id.newzjy_bt_yxjk);
+        Button newzjy_bt_jzjk = dialogView.findViewById(R.id.newzjy_bt_jzjk);
+        Button newzjy_img_jkm = dialogView.findViewById(R.id.newzjy_img_jkm);
+        newzjy_bt_yxjk.setOnClickListener((view)->{
+            new Thread(()->{
+                String resp=newZjyApi.getModifyClassAuditStatus(vNewZjyCourse.getClassId(),"1","0");//允许
+                mActivity.runOnUiThread(()->{
+                    Tool.toast(mContext,resp);
+                });
+            }).start();
+        });
+        newzjy_bt_jzjk.setOnClickListener((view)->{
+            new Thread(()->{
+                String resp=newZjyApi.getModifyClassAuditStatus(vNewZjyCourse.getClassId(),"0","0");//不允许
+                mActivity.runOnUiThread(()->{
+                    Tool.toast(mContext,resp);
+                });
+            }).start();
+        });
+        new Thread(()->{
+            String resp=newZjyApi.getQrCode(vNewZjyCourse.getClassId());
+        }).start();
 
     }
 

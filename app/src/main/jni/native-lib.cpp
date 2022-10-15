@@ -11,17 +11,19 @@
 #include <unistd.h>
 #include <sys/user.h>
 #include <sys/reg.h>
+#include "base64.h"
+#include "aes.h"
 #include "common.h"
-#include "native2-lib.cpp"
+#include "MD5.h"
 
 using namespace std;
 
 JavaVM *vm = nullptr;
 
 
-//加解密
+/**
 
-
+  //加解密
 static const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                         "abcdefghijklmnopqrstuvwxyz"
                                         "0123456789+/";
@@ -114,6 +116,7 @@ string base64d(std::string const &encoded_string) {
     return ret;
 }
 
+**/
 
 
 //堆栈打印
@@ -255,6 +258,7 @@ void *threadTask(void* args){
     vm->DetachCurrentThread();
 }
 
+
 extern "C"
 JNIEXPORT jstring JNICALL gothread(JNIEnv *jniEnv, jobject thiz) {
     has_debugger();
@@ -263,7 +267,6 @@ JNIEXPORT jstring JNICALL gothread(JNIEnv *jniEnv, jobject thiz) {
     }
 
 }
-
 
 //检查包名和签名
 extern "C"
@@ -323,13 +326,186 @@ JNIEXPORT jstring JNICALL gck(JNIEnv *jniEnv, jobject cls, jobject thiz) {
 }
 
 
+extern "C"
+JNIEXPORT jstring JNICALL sk(JNIEnv *jniEnv, jclass cls, jstring jstring1){
+    jclass sbclass=jniEnv->FindClass("java/lang/StringBuilder");
+    jmethodID sbinit=jniEnv->GetMethodID(sbclass,"<init>","()V");
+    jmethodID tostr = jniEnv->GetMethodID(sbclass,"toString", "()Ljava/lang/String;");
+    jmethodID apd = jniEnv->GetMethodID(sbclass,"append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+    jmethodID m=jniEnv->GetMethodID(cls,"getMd5","(Ljava/lang/String;)Ljava/lang/String;");
+    jobject sb=jniEnv->NewObject(sbclass,sbinit);
+    sb=jniEnv->CallObjectMethod(sb,apd,jstring1);
+    jstring jstring2 = jniEnv->NewStringUTF("123456789");
+    sb=jniEnv->CallObjectMethod(sb,apd,jstring2);
+    jstring2=(jstring)jniEnv->CallObjectMethod(sb,tostr);
+    jstring2=(jstring)jniEnv->CallStaticObjectMethod(cls,m,jstring2);
+    jniEnv->DeleteLocalRef(sb);
+    return jstring2;
+
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL sm(JNIEnv *jniEnv, jclass cls, jstring jstring1,jstring jstring2){
+    jclass sbclass=jniEnv->FindClass("java/lang/StringBuilder");
+    jmethodID sbinit=jniEnv->GetMethodID(sbclass,"<init>","()V");
+    jmethodID tostr = jniEnv->GetMethodID(sbclass,"toString", "()Ljava/lang/String;");
+    jmethodID apd = jniEnv->GetMethodID(sbclass,"append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+    jmethodID m=jniEnv->GetMethodID(cls,"getMd5","(Ljava/lang/String;)Ljava/lang/String;");
+    jobject sb=jniEnv->NewObject(sbclass,sbinit);
+    sb=jniEnv->CallObjectMethod(sb,apd,jstring1);
+    sb=jniEnv->CallObjectMethod(sb,apd,jstring2);
+    jstring2=(jstring)jniEnv->CallObjectMethod(sb,tostr);
+    jstring2=(jstring)jniEnv->CallStaticObjectMethod(cls,m,jstring2);
+    jniEnv->DeleteLocalRef(sb);
+    return jstring2;
+
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL stringFormM(JNIEnv*env,jobject clazz,jstring str){
+    const char* test = env->GetStringUTFChars(str,0);
+    MD5 md5 = MD5(test);
+    string md5Result = md5.hexdigest();
+    return env->NewStringUTF(md5Result.c_str());
+
+}
+
+
+
+
+/*****************************************************************************/
+/*                         base64                                            */
+/*****************************************************************************/
+
+/**
+ * 编码
+ */
+extern "C"
+JNIEXPORT jstring JNICALL
+string2Base64(JNIEnv *env, jclass type,jbyteArray buf_) {
+    char *str = NULL;
+    jsize alen = env->GetArrayLength(buf_);
+    jbyte *ba = env->GetByteArrayElements(buf_, 0);
+    str = (char *) malloc(alen + 1);
+    memcpy(str, ba, alen);
+    str[alen] = '\0';
+    env->ReleaseByteArrayElements(buf_, ba, 0);
+    char *res = b64_encode((unsigned char *) str, alen);
+    // 结果转换为utf-8格式字符串
+    return env->NewStringUTF(res);
+}
+
+/**
+ * 解码 返回对应的一个byte数组
+ */
+extern "C"
+JNIEXPORT jbyteArray JNICALL
+base642Byte(JNIEnv *env, jclass type,jstring out_str) {
+    const char *str = env->GetStringUTFChars(out_str, 0);
+    size_t size = (size_t) env->GetStringUTFLength(out_str);//152
+    size_t decsize = 0;
+    char *result = (char *) b64_decode_ex(str, size, &decsize);
+    env->ReleaseStringUTFChars(out_str, str);
+    jbyteArray jbArr = env->NewByteArray(decsize);
+    env->SetByteArrayRegion(jbArr, 0, decsize, (jbyte *) result);
+    return jbArr;
+}
+
+/*****************************************************************************/
+/*                         base64                                            */
+/*****************************************************************************/
+
+
+/*****************************************************************************/
+/*                         AES                                               */
+/*****************************************************************************/
+
+//CBC模式初始化向量
+static const uint8_t AES_IV[] = "1012132405963708";
+static uint8_t AES_KEY[] = "abcdabcdabcdabcd";
+
+extern "C"
+JNIEXPORT jstring JNICALL
+encrypt(JNIEnv *env, jclass type, jstring src_) {
+    const char *str = (char *) env->GetStringUTFChars(src_, 0);
+    char *result = AES_ECB_PKCS7_Encrypt(str, AES_KEY);//AES ECB PKCS7Padding加密
+    env->ReleaseStringUTFChars(src_, str);
+    //char *result = AES_CBC_PKCS7_Encrypt(str, AES_KEY, AES_IV);//AES CBC PKCS7Padding加密
+    return env->NewStringUTF(result);
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+decrypt(JNIEnv *env, jclass type, jstring encrypted_) {
+    const char *str = (char *) env->GetStringUTFChars(encrypted_, 0);
+    const char *result = AES_ECB_PKCS7_Decrypt(str, AES_KEY);//AES ECB PKCS7Padding解密
+    env->ReleaseStringUTFChars(encrypted_, str);
+    //char *result = AES_CBC_PKCS7_Decrypt(str, AES_KEY, AES_IV);//AES CBC PKCS7Padding解密
+    return env->NewStringUTF(result);
+}
+
+/*****************************************************************************/
+/*                         AES                                               */
+/*****************************************************************************/
+
+/*****************************************************************************/
+/*                         密钥 get set                                      */
+/****************************************************************************/
+
+/**
+ * 重新设置密钥 key
+ * @param key java层传输进来的key
+ */
+void setKey(unsigned char *_key, size_t size) {
+    for (int i = 0; i < size; i++) {//元素复制
+        if (i > sizeof(AES_KEY) / sizeof(AES_KEY[0]) - 1)
+            break;
+        AES_KEY[i] = *_key;
+        _key++;
+    }
+    for (int i = size; i < 16; i++) {//补齐key
+        AES_KEY[i] = 0x30;
+    }
+    AES_KEY[16] = '\0';//结束符
+}
+
+/**
+ * 给java层返回密钥
+ */
+extern "C"
+JNIEXPORT jstring JNICALL
+getAESKey(JNIEnv *env, jclass type) {
+    return env->NewStringUTF((const char *) AES_KEY);
+}
+
+/**
+ * java层接口设置密钥
+ */
+extern "C"
+JNIEXPORT void JNICALL
+setAESKey(JNIEnv *env, jclass type, jstring key_) {
+    unsigned char *_key = (unsigned char *) env->GetStringUTFChars(key_, 0);
+    //获取key的长度
+    size_t size = (size_t) env->GetStringUTFLength(key_);
+    setKey(_key, size);
+    env->ReleaseStringUTFChars(key_, (char *) _key);
+}
+
+/*****************************************************************************/
+/*                         密钥 get set                                      */
+/****************************************************************************/
 
 //动态注册
 static JNINativeMethod mMethods[] = {
         {"ck", "(Landroid/content/Context;)Ljava/lang/String;", (void *) gck},
         {"thread", "()Ljava/lang/String;", (void *) gothread},
         {"sk", "(Ljava/lang/String;)Ljava/lang/String;", (void *) sk},
-        {"sm", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", (void *) sm}
+        {"sm", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", (void *) sm},
+        {"encrypt", "(Ljava/lang/String;)Ljava/lang/String;", (void *) encrypt},
+        {"decrypt", "(Ljava/lang/String)Ljava/lang/String;", (void *) decrypt},
+        {"string2Base64", "([B)Ljava/lang/String;", (void *) string2Base64},
+        {"base642Byte", "(Ljava/lang/String;)[B", (void *) base642Byte},
+        {"stringFormM", "(Ljava/lang/String;)Ljava/lang/String;", (void *) stringFormM},
 };
 
 
