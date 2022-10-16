@@ -44,7 +44,7 @@ import java.util.Objects;
 public class LoginActivity extends Activity {
 
     private String TAG = this.getClass().getSimpleName();
-    private TextView cqooc;
+    private TextView cqooc,ykt_kmjh;
     public EditText userNameEdit, passWordEdit, cookEdit;
     public androidx.appcompat.widget.SwitchCompat showPassSwitch, wirtePassSwitch, webLoginSwitch, otherLoginSwitch;
     public Button goLoginButton;
@@ -80,6 +80,7 @@ public class LoginActivity extends Activity {
         goLoginButton = findViewById(R.id.zjy_gologin);
         loadingProgressBar = findViewById(R.id.cq_loadingProgressBar);
         cqooc = findViewById(R.id.cqooc);
+        ykt_kmjh = findViewById(R.id.ykt_kmjh);
     }
 
     private void initData() {
@@ -184,6 +185,11 @@ public class LoginActivity extends Activity {
 
         userNameEdit.addTextChangedListener(afterTextChangedListener);
         passWordEdit.addTextChangedListener(afterTextChangedListener);
+
+        ykt_kmjh.setOnClickListener((view)->{
+        View dialogView=Tool.creatDialog(LoginActivity.this, R.layout.ykt_login_kmjh_dialog);
+
+        });
 
     }
 
