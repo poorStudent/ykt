@@ -44,7 +44,7 @@ import java.util.Objects;
 public class LoginActivity extends Activity {
 
     private String TAG = this.getClass().getSimpleName();
-    private TextView cqooc,ykt_kmjh;
+    private TextView cqooc, ykt_kmjh;
     public EditText userNameEdit, passWordEdit, cookEdit;
     public androidx.appcompat.widget.SwitchCompat showPassSwitch, wirtePassSwitch, webLoginSwitch, otherLoginSwitch;
     public Button goLoginButton;
@@ -64,7 +64,7 @@ public class LoginActivity extends Activity {
         initId();
         initData();
         initListener();
-       // new BlankFragment();
+        // new BlankFragment();
         Log.d(TAG, "onCreate: " + Tool.getDEVICEModle());
 
     }
@@ -186,11 +186,14 @@ public class LoginActivity extends Activity {
         userNameEdit.addTextChangedListener(afterTextChangedListener);
         passWordEdit.addTextChangedListener(afterTextChangedListener);
 
-        ykt_kmjh.setOnClickListener((view)->{
-        View dialogView=Tool.creatDialog(LoginActivity.this, R.layout.ykt_login_kmjh_dialog);
-
+        ykt_kmjh.setOnClickListener((view) -> {
+            setYkt_kmjh();
         });
 
+    }
+
+    private void setYkt_kmjh() {
+        View dialogView = Tool.creatDialog(LoginActivity.this, R.layout.ykt_login_kmjh_dialog);
     }
 
     private void SwitchPt() {
