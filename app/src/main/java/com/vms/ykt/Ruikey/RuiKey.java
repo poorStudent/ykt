@@ -29,11 +29,13 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.text.method.ScrollingMovementMethod;
 import android.view.WindowManager;
@@ -42,6 +44,9 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.util.JSONObject1O;
 import com.vms.ykt.R;
+import com.vms.ykt.UI.LoginActivity;
+import com.vms.ykt.Util.AppStatus;
+import com.vms.ykt.Util.Tool;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -66,7 +71,7 @@ import Model.Out.accountDetail.Out_accountDetail;
 import Model.Out.cardDetail.Out_cardDetail;
 import Model.Result;
 
-public class RuiKey  {
+public class RuiKey {
 
     //瑞科网络验证：https://www.rukeyz.com
 
@@ -76,7 +81,7 @@ public class RuiKey  {
      * 加密的key
      * 注意：如果软件设置了DES加密通讯那么此值必填(此参数是在软件列表里面进行设置)
      * */
-   static String encryptKey = "16bffdb7";
+    static String encryptKey = "16bffdb7";
     /*
      * 签名盐(此参数是在软件列表里面进行设置)
      * 注意：如果软件设置了加密通讯，那么此值必填
@@ -95,9 +100,8 @@ public class RuiKey  {
     static String platformUserCode = "b5d0d950751f971e";
 
 
-
     static String versionname = "v1.0";//当前软件版本号
-    static String maccode = "";//机器码
+    public static String maccode = "";//机器码
 
 
     //此账号是测试的账号，已过期了。请您在验证平台手动注册一个，或者通过接口注册一个用来测试
@@ -106,98 +110,118 @@ public class RuiKey  {
     static String newUserPwd = "222222";
 
     //此卡号是测试的卡号，已过期了。您自己请从“卡密登录->>卡密列表,生成一个卡密，然后拿做测试”
-    static String cardnum = "ykt-255e7090d3e2fa64";
+    public static String cardnum = "ykt-255e7090d3e2fa64";
     static String TestVer = "";//获取软件的变量，如果变量名称为空的话，那么接口返回来的是此软件所有变量，否则就是此变量名所以应的变量值
 
     static String heartbeatkey;//心跳Key,每次心跳此值都会变
     static String token;//登录成功后的令牌
 
+    public static boolean RkInit = false;
+
+    static Handler sHandler = new Handler();
+
+    public static void initRK(Context context) {
+        new Thread(() -> {
+            RkInit = IniSoftInfo();
+            if (RkInit) {
+                sHandler.post(() -> {
+                    Tool.toast(context, "初始化失败请重初始化");
+                });
+            } else {
+                sHandler.post(() -> {
+                    Tool.toast(context, "初始化ok");
+                });
+            }
+        }).start();
+
+    }
+
 
     public static void Demo() {
 
-                maccode = "222222";//NetworkVerHelp.GetMacCode(MainActivity.this.getApplicationContext());
-                if (IniSoftInfo()) {
+        //maccode = "222222";//NetworkVerHelp.GetMacCode(MainActivity.this.getApplicationContext());
+        if (IniSoftInfo()) {
 
-                    // //订单查询
-                    // String orderid = "b016fe8478ea07c81e2";
-                    // SearchOrder(orderid);
+            // //订单查询
+            // String orderid = "b016fe8478ea07c81e2";
+            // SearchOrder(orderid);
 
-                    int businessType = BusinessType.getremoteVar;
-                    switch (businessType) {
-                        case BusinessType.softPriceList://获取软件价格列表示例
-                            getSoftPriceList();
-                            break;
-                        case BusinessType.goodsPrice://获取商品价格示例
-                            getGoodsPrice();
-                            break;
-                        case BusinessType.cardLogin://卡密登录示例
-                            LoginByCard(cardnum, true);
-                            break;
-                        case BusinessType.openRenewCardNum://卡开通/续费卡密示例
-                            OpenRenewCardNum();
+            int businessType = BusinessType.getremoteVar;
+            switch (businessType) {
+                case BusinessType.softPriceList://获取软件价格列表示例
+                    getSoftPriceList();
+                    break;
+                case BusinessType.goodsPrice://获取商品价格示例
+                    getGoodsPrice();
+                    break;
+                case BusinessType.cardLogin://卡密登录示例
+                    LoginByCard(cardnum, true);
+                    break;
+                case BusinessType.openRenewCardNum://卡开通/续费卡密示例
+                    OpenRenewCardNum();
 
-                            break;
-                        case BusinessType.cardDetail://卡密详情示例
-                            CardDetail();
-                            break;
-                        case BusinessType.accountRegister://账号注册示例
-                            AccountRegister(userName, userpwd);
-                            break;
-                        case BusinessType.accountLogin://账号登录示例
-                            LoginAccount(userName, userpwd, true);
-                            break;
-                        case BusinessType.openRenewAccount://在线支付开通续费账号示例
-                            OpenRenewAccount();
-                            break;
-                        case BusinessType.accountDetail://账号详情示例
-                            AccountDetail();
-                            break;
-                        case BusinessType.updPwd://修改用户密码示例
-                            updPwd(userName, userpwd, newUserPwd);
-                            break;
-                        case BusinessType.bucklePoint://扣点示例
-                            //先登录
-                            if (LoginByCard(cardnum, false)) {
-                                //然后再扣点,注意，如果指定的扣点数为0，那么就会默认扣除后台设置的数值
-                                BucklePoint(cardnum, 1, token);
-                            }
-                            break;
-                        case BusinessType.getremoteVar://获取软件变量示例
-                            //先登录
-                            if (LoginByCard(cardnum, false)) {
-                                //然后再获取变量(卡密示例),如果变量名为空，那么接口返回来的是此软件所有的变量，否则是此变量名所对应的变量值
-                                GetremoteVar(cardnum, token, TestVer);
-                            }
-                            ////先登录
-                            //if (LoginAccount(userName, userpwd, false))
-                            //{
-                            //	//然后再获取变量(账号示例),如果变量名为空，那么接口返回来的是此软件所有的变量，否则是此变量名所对应的变量值
-                            //	GetremoteVar(userName, token);
-                            //}
-                            break;
-                        case BusinessType.unbundMac://解绑机器码示例
-                            //先登录
-                            if (LoginByCard(cardnum, false)) {
-                                //然后解除绑定机器码(卡密示例)
-                                unbundMac(cardnum, token);
-                            }
-                            ////先登录
-                            //if (LoginAccount(userName, userpwd, false))
-                            //{
-                            //	//然后解除绑定机器码(账号示例)
-                            //	unbundMac(userName, token);
-                            //}
-                            break;
-                        case BusinessType.buyGoods://在线支付购买商品
-                            BuyGoods();
-                            break;
-                        case BusinessType.updOrderFlag:
-                            String orderid = "";
-                            String orderflag = "";
-                            UpdOrderFlag(orderid, orderflag);
-                            break;
+                    break;
+                case BusinessType.cardDetail://卡密详情示例
+                    CardDetail();
+                    break;
+                case BusinessType.accountRegister://账号注册示例
+                    AccountRegister(userName, userpwd);
+                    break;
+                case BusinessType.accountLogin://账号登录示例
+                    LoginAccount(userName, userpwd, true);
+                    break;
+                case BusinessType.openRenewAccount://在线支付开通续费账号示例
+                    OpenRenewAccount();
+                    break;
+                case BusinessType.accountDetail://账号详情示例
+                    AccountDetail();
+                    break;
+                case BusinessType.updPwd://修改用户密码示例
+                    updPwd(userName, userpwd, newUserPwd);
+                    break;
+                case BusinessType.bucklePoint://扣点示例
+                    //先登录
+                    if (LoginByCard(cardnum, false)) {
+                        //然后再扣点,注意，如果指定的扣点数为0，那么就会默认扣除后台设置的数值
+                        BucklePoint(cardnum, 1, token);
                     }
-                }
+                    break;
+                case BusinessType.getremoteVar://获取软件变量示例
+                    //先登录
+                    if (LoginByCard(cardnum, false)) {
+                        //然后再获取变量(卡密示例),如果变量名为空，那么接口返回来的是此软件所有的变量，否则是此变量名所对应的变量值
+                        GetremoteVar(cardnum, token, TestVer);
+                    }
+                    ////先登录
+                    //if (LoginAccount(userName, userpwd, false))
+                    //{
+                    //	//然后再获取变量(账号示例),如果变量名为空，那么接口返回来的是此软件所有的变量，否则是此变量名所对应的变量值
+                    //	GetremoteVar(userName, token);
+                    //}
+                    break;
+                case BusinessType.unbundMac://解绑机器码示例
+                    //先登录
+                    if (LoginByCard(cardnum, false)) {
+                        //然后解除绑定机器码(卡密示例)
+                        unbundMac(cardnum, token);
+                    }
+                    ////先登录
+                    //if (LoginAccount(userName, userpwd, false))
+                    //{
+                    //	//然后解除绑定机器码(账号示例)
+                    //	unbundMac(userName, token);
+                    //}
+                    break;
+                case BusinessType.buyGoods://在线支付购买商品
+                    BuyGoods();
+                    break;
+                case BusinessType.updOrderFlag:
+                    String orderid = "";
+                    String orderflag = "";
+                    UpdOrderFlag(orderid, orderflag);
+                    break;
+            }
+        }
 
     }
 
@@ -663,7 +687,7 @@ public class RuiKey  {
     /**
      * 卡密登录示例
      */
-    static Boolean LoginByCard(String CardNum, boolean IsLoginOut) {
+  public static Boolean LoginByCard(String CardNum, boolean IsLoginOut) {
         Boolean IsLoginOk = false;
         //构建登录入参
         In_CardLoginArgs args = new In_CardLoginArgs();
@@ -883,7 +907,7 @@ public class RuiKey  {
     /**
      * 卡密详情示例
      */
-    static void CardDetail() {
+   public static String CardDetail() {
         String Msg = "";
         //构建卡密详情入参
         In_cardDetailArgs args = new In_cardDetailArgs();
@@ -902,16 +926,16 @@ public class RuiKey  {
                     if (cardDetail.requestflag.equals(args.requestflag) == false) {
                         Msg = Msg + "接口返回的数据已被“破解者”截持，您可以强制关闭软件或者不做任何处理\n";
                     } else {
-                        Msg = Msg + "卡密详情成功\n";
+                       /* Msg = Msg + "卡密详情成功\n";
                         Msg = Msg + "接口返回的数据：\n";
                         Msg = Msg + "编码：" + result.code + "\n";
                         Msg = Msg + "信息：" + result.msg + "\n";
                         Msg = Msg + "data数据：" + result.data + "\n";
-
+*/
                         Msg = Msg + "到期时间：" + cardDetail.endtime + "\n";
                         Msg = Msg + "剩余点数:" + cardDetail.surpluspointvalue + "\n";
                         if (encrypttypeid == EncryptType.DES) {
-                            Msg = Msg + "data解密后的数据：" + NetworkVerHelp.DesDecrypt(result.data, encryptKey) + "\n";
+                          //  Msg = Msg + "data解密后的数据：" + NetworkVerHelp.DesDecrypt(result.data, encryptKey) + "\n";
                         }
                     }
 
@@ -959,7 +983,7 @@ public class RuiKey  {
         }
 
         final String finalMsg = Msg;
-
+        return finalMsg;
     }
 
 
@@ -1528,7 +1552,7 @@ public class RuiKey  {
     }
 
     //获取软件变量示例
-    static void GetremoteVar(String cardnumorusername, String _token, String _testVer) {
+    public static void GetremoteVar(String cardnumorusername, String _token, String _testVer) {
         //构建获取软件变量入参
         In_getRemoteVarArgs args = new In_getRemoteVarArgs();
         args.maccode = maccode;//必填
@@ -1606,6 +1630,7 @@ public class RuiKey  {
 
     }
 
+    
     /**
      * 解绑机器码(如果软件设置解绑扣除相应的时间或点数，那么解绑成功后会自动扣除)
      */

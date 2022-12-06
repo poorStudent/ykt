@@ -36,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:hint="输入卡密1"
                 android:maxLines="1"
+                android:id="@+id/yktkm1"
                 android:text=""
                 android:textColor="@color/black"
                 android:textSize="19sp"/>
@@ -46,6 +47,7 @@
                 android:hint="输入卡密2"
                 android:maxLines="1"
                 android:text=""
+                android:id="@+id/yktkm2"
                 android:textColor="@color/black"
                 android:textSize="19sp" />
 
@@ -53,6 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="机器码"
+                android:id="@+id/yktmac"
                 android:maxLines="1"
                 android:textColor="@color/black"
                 android:textSize="19sp" />
@@ -61,16 +64,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="3dp"
+                android:id="@+id/yktkmjh"
                 android:text="激活" />
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="3dp"
-                android:text="绑定机器码" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="3dp"
+                android:id="@+id/yktkmjb"
                 android:text="解绑机器码" />
 
             <View
@@ -85,9 +86,30 @@
                 android:textIsSelectable="true"
                 android:gravity="center"
                 android:text="卡密详情\n1111"
+                android:id="@+id/yktkmxq"
                 android:textColor="@color/black"
                 android:textSize="19sp"
                 android:layout_height="wrap_content" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:id="@+id/kmcsh"
+                android:text="重新初始化" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true"
+                android:gravity="center"
+                android:text="软件详情\n1111"
+                android:id="@+id/yktrjxq"
+                android:textColor="@color/black"
+                android:textSize="19sp"
+                android:layout_height="wrap_content" />
+
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 

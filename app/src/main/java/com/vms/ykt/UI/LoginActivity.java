@@ -25,6 +25,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.alibaba.fastjson.JSONObject;
 
 import com.vms.ykt.R;
+import com.vms.ykt.Ruikey.RuiKey;
 import com.vms.ykt.UI.Activity.newZjyActivity.newZjy_mainActivity;
 import com.vms.ykt.Util.AppStatus;
 import com.vms.ykt.Util.CacheUs;
@@ -39,6 +40,8 @@ import com.vms.ykt.yktUtil.zjy.zjyOtherLogin;
 import com.vms.ykt.yktUtil.zjy.zjyWebLogin;
 
 import java.util.Objects;
+
+import Help.NetworkVerHelp;
 
 
 public class LoginActivity extends Activity {
@@ -57,6 +60,9 @@ public class LoginActivity extends Activity {
 
     private boolean isLoging = true;
 
+    private TextWatcher afterTextChangedListener;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,10 +70,12 @@ public class LoginActivity extends Activity {
         initId();
         initData();
         initListener();
+        setYkt_kmjh();
         // new BlankFragment();
         Log.d(TAG, "onCreate: " + Tool.getDEVICEModle());
 
     }
+
 
     private void initId() {
         userNameEdit = findViewById(R.id.cq_username);
@@ -84,6 +92,7 @@ public class LoginActivity extends Activity {
     }
 
     private void initData() {
+
 
         mPermissionRequest = new PermissionRequest();
         mPermissionRequest.checkPermission(this);
@@ -105,9 +114,32 @@ public class LoginActivity extends Activity {
             goLoginButton.setEnabled(false);
         }
 
+        RuiKey.initRK(this);
     }
 
     private void initListener() {
+
+        afterTextChangedListener = new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // ignore
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (passWordEdit.getText().length() > 0 && (userNameEdit.getText().length() > 0)) {
+                    goLoginButton.setEnabled(true);
+                } else {
+                    goLoginButton.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
 
         cqooc.setOnClickListener((view) -> {
             SwitchPt();
@@ -191,68 +223,6 @@ public class LoginActivity extends Activity {
         });
 
     }
-
-    private void setYkt_kmjh() {
-        View dialogView = Tool.creatDialog(LoginActivity.this, R.layout.ykt_login_kmjh_dialog);
-    }
-
-    private void SwitchPt() {
-
-        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(this);
-
-        //获取界面
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.ykt_switchpt_dialog, null);
-        //将界面填充到AlertDiaLog容器并去除边框
-        setDeBugDialog.setView(dialogView);
-        //初始化控件
-        Button ykt_bt_cqooc = dialogView.findViewById(R.id.ykt_bt_cqooc);
-        Button ykt_bt_newzjy = dialogView.findViewById(R.id.ykt_bt_newzjy);
-        //取消点击外部消失弹窗
-        setDeBugDialog.setCancelable(true);
-        //创建AlertDiaLog
-        setDeBugDialog.create();
-        //AlertDiaLog显示
-        final AlertDialog customAlert = setDeBugDialog.show();
-        //设置AlertDiaLog宽高属性
-        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
-        params.width = 900;
-        params.height = 1000;
-        customAlert.getWindow().setAttributes(params);
-        ykt_bt_cqooc.setOnClickListener((v) -> {
-            Intent intent = new Intent(LoginActivity.this, yktMainActivity.class);
-            intent.putExtra("goCqooc", 3);
-            startActivity(intent);
-            finish();
-        });
-        ykt_bt_newzjy.setOnClickListener((v) -> {
-            Intent intent = new Intent(LoginActivity.this, newZjy_mainActivity.class);
-            //intent.putExtra("goCqooc", 3);
-            startActivity(intent);
-            //finish();
-        });
-    }
-
-    TextWatcher afterTextChangedListener = new TextWatcher() {
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            // ignore
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (passWordEdit.getText().length() > 0 && (userNameEdit.getText().length() > 0)) {
-                goLoginButton.setEnabled(true);
-            } else {
-                goLoginButton.setEnabled(false);
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
 
     private boolean isLogin(zjyUser zjyUser) {
         String resp = zjyApi.getUserInfo(zjyUser);
@@ -370,6 +340,116 @@ public class LoginActivity extends Activity {
         }).start();
     }
 
+    private void SwitchPt() {
+
+        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(this);
+
+        //获取界面
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.ykt_switchpt_dialog, null);
+        //将界面填充到AlertDiaLog容器并去除边框
+        setDeBugDialog.setView(dialogView);
+        //初始化控件
+        Button ykt_bt_cqooc = dialogView.findViewById(R.id.ykt_bt_cqooc);
+        Button ykt_bt_newzjy = dialogView.findViewById(R.id.ykt_bt_newzjy);
+        //取消点击外部消失弹窗
+        setDeBugDialog.setCancelable(true);
+        //创建AlertDiaLog
+        setDeBugDialog.create();
+        //AlertDiaLog显示
+        final AlertDialog customAlert = setDeBugDialog.show();
+        //设置AlertDiaLog宽高属性
+        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
+        params.width = 900;
+        params.height = 1000;
+        customAlert.getWindow().setAttributes(params);
+        ykt_bt_cqooc.setOnClickListener((v) -> {
+            Intent intent = new Intent(LoginActivity.this, yktMainActivity.class);
+            intent.putExtra("goCqooc", 3);
+            startActivity(intent);
+            finish();
+        });
+        ykt_bt_newzjy.setOnClickListener((v) -> {
+            Intent intent = new Intent(LoginActivity.this, newZjy_mainActivity.class);
+            //intent.putExtra("goCqooc", 3);
+            startActivity(intent);
+            //finish();
+        });
+    }
+
+    private void setYkt_kmjh() {
+
+        mPreferences = getSharedPreferences("userKm", MODE_PRIVATE);
+        mEditor = mPreferences.edit();
+        RuiKey.cardnum = mPreferences.getString("yktKm", "vms");
+        RuiKey.maccode = NetworkVerHelp.GetMacCode(LoginActivity.this.getApplicationContext());
+
+        View dialogView = Tool.creatDialog(LoginActivity.this, R.layout.ykt_login_kmjh_dialog);
+
+        Button kmcsh = dialogView.findViewById(R.id.kmcsh);
+        EditText yktkm1 = dialogView.findViewById(R.id.yktkm1);
+        EditText yktkm2 = dialogView.findViewById(R.id.yktkm2);
+        EditText yktmac = dialogView.findViewById(R.id.yktmac);
+        Button yktkmjh = dialogView.findViewById(R.id.yktkmjh);
+        Button yktkmjb = dialogView.findViewById(R.id.yktkmjb);
+        TextView yktkmxq = dialogView.findViewById(R.id.yktkmxq);
+        TextView yktrjxq = dialogView.findViewById(R.id.yktrjxq);
+
+
+        yktkm1.setText(RuiKey.cardnum);
+        yktmac.setText(RuiKey.maccode);
+        yktmac.setEnabled(false);
+
+        if (NetworkVerHelp.iniSoftInfoData != null) {
+           String Msg = "发现新版本：" + NetworkVerHelp.iniSoftInfoData.softInfo.newversionnum + "\n";
+            Msg = Msg + "新版本下载地址:" + NetworkVerHelp.iniSoftInfoData.softInfo.networkdiskurl + "\n";
+            Msg = Msg + "提取码:" + NetworkVerHelp.iniSoftInfoData.softInfo.diskpwd + "\n";
+            yktrjxq.setText(Msg);
+        }
+        kmcsh.setOnClickListener((view) -> {
+            RuiKey.maccode = NetworkVerHelp.GetMacCode(LoginActivity.this.getApplicationContext());
+            RuiKey.initRK(this);
+        });
+
+        yktkmjh.setOnClickListener((view) -> {
+            RuiKey.cardnum = yktkm1.getText().toString().trim();
+            new Thread(()->{
+                init_cardnum(RuiKey.cardnum,RuiKey.maccode);
+            }).start();
+        });
+
+        yktkmjb.setOnClickListener((view) -> {
+
+        });
+        new Thread(()->{
+            init_cardnum(RuiKey.cardnum,RuiKey.maccode);
+        }).start();
+
+    }
+
+    private String init_cardnum(String cardnum, String mac) {
+        if (cardnum.equals("vms") || cardnum.isEmpty()) {
+            return "";
+        }
+        if (mac.isEmpty()) {
+            return "";
+        }
+        if (!RuiKey.RkInit){
+            return "";
+        }
+        if (RuiKey.LoginByCard(cardnum, true)){
+            return "";
+        };
+        String CardDetail=RuiKey.CardDetail();
+        runOnUiThread(()->{
+
+        });
+
+        mEditor.putString("yktKm",cardnum);
+        mEditor.commit();
+        return "";
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -407,6 +487,7 @@ public class LoginActivity extends Activity {
         }
         super.onActivityReenter(resultCode, data);
     }
+
 }
 
 
