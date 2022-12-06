@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
@@ -61,7 +62,7 @@ public class LoginActivity extends Activity {
     private boolean isLoging = true;
 
     private TextWatcher afterTextChangedListener;
-
+    private Handler sHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,6 @@ public class LoginActivity extends Activity {
         initId();
         initData();
         initListener();
-        setYkt_kmjh();
         // new BlankFragment();
         Log.d(TAG, "onCreate: " + Tool.getDEVICEModle());
 
@@ -114,7 +114,12 @@ public class LoginActivity extends Activity {
             goLoginButton.setEnabled(false);
         }
 
-        RuiKey.initRK(this);
+        new Thread(() -> {
+            RuiKey.initRK(this);
+        }).start();
+
+        sHandler.postDelayed(()->{ ykt_kmjh.performClick();}, 3000);
+
     }
 
     private void initListener() {
@@ -380,7 +385,7 @@ public class LoginActivity extends Activity {
 
         mPreferences = getSharedPreferences("userKm", MODE_PRIVATE);
         mEditor = mPreferences.edit();
-        RuiKey.cardnum = mPreferences.getString("yktKm", "vms");
+        RuiKey.cardnum = mPreferences.getString("yktKm", "");
         RuiKey.maccode = NetworkVerHelp.GetMacCode(LoginActivity.this.getApplicationContext());
 
         View dialogView = Tool.creatDialog(LoginActivity.this, R.layout.ykt_login_kmjh_dialog);
@@ -399,29 +404,45 @@ public class LoginActivity extends Activity {
         yktmac.setText(RuiKey.maccode);
         yktmac.setEnabled(false);
 
-        if (NetworkVerHelp.iniSoftInfoData != null) {
-           String Msg = "发现新版本：" + NetworkVerHelp.iniSoftInfoData.softInfo.newversionnum + "\n";
-            Msg = Msg + "新版本下载地址:" + NetworkVerHelp.iniSoftInfoData.softInfo.networkdiskurl + "\n";
-            Msg = Msg + "提取码:" + NetworkVerHelp.iniSoftInfoData.softInfo.diskpwd + "\n";
-            yktrjxq.setText(Msg);
-        }
+
         kmcsh.setOnClickListener((view) -> {
             RuiKey.maccode = NetworkVerHelp.GetMacCode(LoginActivity.this.getApplicationContext());
-            RuiKey.initRK(this);
+            RuiKey.cardnum = yktkm1.getText().toString().trim();
+
+            new Thread(() -> {
+
+                RuiKey.initRK(this);
+
+                String rt= init_cardnum(RuiKey.cardnum,RuiKey.maccode);
+
+                runOnUiThread(()->{
+                    yktrjxq.setText( RuiKey.gxrz());
+                    yktkmxq.setText(rt);
+                });
+
+            }).start();
         });
 
         yktkmjh.setOnClickListener((view) -> {
             RuiKey.cardnum = yktkm1.getText().toString().trim();
             new Thread(()->{
-                init_cardnum(RuiKey.cardnum,RuiKey.maccode);
+                String rt= init_cardnum(RuiKey.cardnum,RuiKey.maccode);
+                runOnUiThread(()->{
+                    yktkmxq.setText(rt);
+                });
             }).start();
         });
 
         yktkmjb.setOnClickListener((view) -> {
 
         });
+
+        yktrjxq.setText( RuiKey.gxrz());
         new Thread(()->{
-            init_cardnum(RuiKey.cardnum,RuiKey.maccode);
+            String rt= init_cardnum(RuiKey.cardnum,RuiKey.maccode);
+            runOnUiThread(()->{
+                yktkmxq.setText(rt);
+            });
         }).start();
 
     }
@@ -440,13 +461,10 @@ public class LoginActivity extends Activity {
             return "";
         };
         String CardDetail=RuiKey.CardDetail();
-        runOnUiThread(()->{
-
-        });
 
         mEditor.putString("yktKm",cardnum);
         mEditor.commit();
-        return "";
+        return CardDetail;
     }
 
 

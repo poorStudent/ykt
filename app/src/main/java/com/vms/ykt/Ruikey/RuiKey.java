@@ -118,12 +118,13 @@ public class RuiKey {
 
     public static boolean RkInit = false;
 
+
     static Handler sHandler = new Handler();
 
     public static void initRK(Context context) {
-        new Thread(() -> {
-            RkInit = IniSoftInfo();
-            if (RkInit) {
+
+            RuiKey.RkInit = RuiKey.IniSoftInfo();
+            if (RuiKey.RkInit) {
                 sHandler.post(() -> {
                     Tool.toast(context, "初始化失败请重初始化");
                 });
@@ -132,10 +133,15 @@ public class RuiKey {
                     Tool.toast(context, "初始化ok");
                 });
             }
-        }).start();
-
     }
 
+    public static String gxrz(){
+        if (NetworkVerHelp.iniSoftInfoData == null) return "null";
+        String Msg = "发现新版本：" + NetworkVerHelp.iniSoftInfoData.softInfo.newversionnum + "\n";
+        Msg = Msg + "新版本下载地址:" + NetworkVerHelp.iniSoftInfoData.softInfo.networkdiskurl + "\n";
+        Msg = Msg + "提取码:" + NetworkVerHelp.iniSoftInfoData.softInfo.diskpwd + "\n";
+        return Msg;
+    }
 
     public static void Demo() {
 
@@ -228,7 +234,7 @@ public class RuiKey {
     /**
      * 第一步，先初始化软件信息
      */
-    static boolean IniSoftInfo() {
+    public static boolean IniSoftInfo() {
         boolean IniResult = false;
         //构建初化软件入参
         In_IniSoftInfoArgs IniInfoArgs = new In_IniSoftInfoArgs();
