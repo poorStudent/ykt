@@ -5,6 +5,7 @@ import android.util.Pair;
 import okhttp3.Cookie;
 import okhttp3.Headers;
 
+import java.lang.annotation.Retention;
 import java.net.ResponseCache;
 import java.util.HashMap;
 import java.util.List;
@@ -20,19 +21,27 @@ public class httpRespnose {
     }
 
 
-    public  httpRespnose(){
-        this(null,null,null,null);
+    public httpRespnose() {
+        this(null, null, null, null);
     }
 
-
+    private List<String> cookieList = null;
     private String SetCookie;
 
     public String getSetCookie() {
         return SetCookie;
     }
 
-    public void setSetCookie(String setCookie) {
-        SetCookie = setCookie;
+    public void setSetCookie() {
+        if (cookieList == null) return;
+
+        String ck = "";
+        for (String c : cookieList) {
+            ck = ck + ";" + c;
+        }
+        String vS = ck.replaceFirst(";", "");
+
+        SetCookie = vS;
     }
 
 
@@ -47,34 +56,41 @@ public class httpRespnose {
     }
 
 
-    private Map<String , List<String>> mHearderFileds;
+
+    private Map<String, List<String>> mHearderFileds;
 
     public Map<String, List<String>> getHearderFileds() {
         return mHearderFileds;
     }
 
-
     public void setHearderFileds(Map<String, List<String>> hearderFileds) {
         mHearderFileds = hearderFileds;
-        if (mHearderFileds==null || mHearderFileds.isEmpty())return;
-        List<String> cks= mHearderFileds.get("Set-Cookie");
-        if (cks==null) return;;
-        String ck = "";
-        for (String c:cks){
-            ck=ck+";"+c;
-        }
-        String vS = ck.replaceFirst(";", "");
-        setSetCookie(vS);
+        if (mHearderFileds == null || mHearderFileds.isEmpty()) return;
+        cookieList = mHearderFileds.get("Set-Cookie");
+        setSetCookie();
     }
 
 
-    private  String code;
 
-    public  String getCode() {
+
+    public String getCookieV(String fd) {
+
+        if (cookieList == null || cookieList.isEmpty()) return "";
+        for (String c : cookieList) {
+            if (c.contains(fd))return c;
+        }
+        return "";
+    }
+
+
+
+    private String code;
+
+    public String getCode() {
         return code;
     }
 
-    public  void setCode(String ParmsCode) {
+    public void setCode(String ParmsCode) {
         code = ParmsCode;
     }
 
@@ -101,12 +117,14 @@ public class httpRespnose {
     }
 
 
-
-
 }
-interface mRespnose{
+
+interface mRespnose {
     void bodyString(String resp);
+
     void bodyBytes(byte[] respBytes);
+
     void bodyHeaders(Headers headers);
-    void bodyHeaderFileds( Map<String, List<String>> headers);
+
+    void bodyHeaderFileds(Map<String, List<String>> headers);
 }

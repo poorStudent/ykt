@@ -47,8 +47,8 @@ public class newZjyApi {
     public static void upHeader1() {
 
         newZjyHttp.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        newZjyHttp.addHeader("Host", "user.icve.com.cn");
-        printHeader();
+        //newZjyHttp.addHeader("Host", "user.icve.com.cn");
+        //printHeader();
 
         //System.out.println(JSONObject.toJSON(newZjyHttp.getHeader()));
     }
@@ -61,7 +61,7 @@ public class newZjyApi {
     //更新authorization
     public static void upAuthorization(String authorization) {
         newZjyHttp.addHeader("authorization", "Bearer " + authorization);
-        printHeader();
+        //printHeader();
     }
     //更新UNTYXLCOOKIE
     public static void upUNTYXLCOOKIE( String UNTYXLCOOKIE) {
@@ -693,6 +693,31 @@ public class newZjyApi {
     }
 
 
+    ///Usersessionidm
+
+    static String Usersessionidm="https://course.icve.com.cn/learnspace/course/exam/weixinCourseExamAction_examListGoExam.action";
+
+    public static String getUsersessionidm(String courseId,String examCode){
+        String data="params.appIntoType=examInfoConfirm" +
+                "&params.examCode=" +examCode+
+                "&params.courseId=" +courseId+
+                "&params.intoDevice=weixin&params.filterType=all";
+
+        httpRespnose vHttpRespnose =  newZjyHttp.get(Usersessionidm,null,data);
+        //printHeader(vHttpRespnose.getHearderFileds());
+        String Location=vHttpRespnose.getLocation();
+        //System.out.println(Location);
+        vHttpRespnose= newZjyHttp.get(Location,null,null);
+       // String ck=vHttpRespnose.getSetCookie();
+        String USERSESSIONID=vHttpRespnose.getCookieV("USERSESSIONID");
+
+        return USERSESSIONID;
+    };
+
+    public static void upUsersessionid(String Usersessionid){
+        newZjyHttp.upCookie(Usersessionid);
+    }
+
     //考试 作业 测试
     static String exam_list_data = "https://course.icve.com.cn/learnspace/learn/weixin/common/exam/exam_list_data.action";
 
@@ -703,7 +728,7 @@ public class newZjyApi {
         String data = "params.courseId=" + courseId +
                 "&params.columnTypeId=" + columnTypeId +
                 "&params.curPage=1&params.pageSize=100&params.filterType=all";
-        String resp = newZjyHttp.post(saveNote, data);
+        String resp = newZjyHttp.post(exam_list_data, data);
         return resp;
     }
 
@@ -714,7 +739,7 @@ public class newZjyApi {
 
     //作业
     public static String getExam_list_data_w(String courseId) {
-        return getExam_list_data(courseId, "");
+        return getExam_list_data(courseId, "6049aaaac97845d1a8a790f397962b0a");
     }
 
     //考试
@@ -726,62 +751,206 @@ public class newZjyApi {
 
 
     //web api
+    // 学生api
+
+    //获取课件
+    static String courseware_index="https://course.icve.com.cn/learnspace/learn/learn/templateeight/courseware_index.action";
+    public static String getCourseware_index(String courseId){
+        String data="params.courseId="+courseId+"___";
+        String resp = newZjyHttp.get(courseware_index,data);
+        return resp;
+    }
+
     // 考试 作业 测试
-    //
+
+    static String studentExam_studentExamListData="https://spoc-exam.icve.com.cn/student/exam/studentExam_studentExamListData.action?pager.pageSize=100&pager.curPage=1&pager.searchTotalSize=true";
+    public static String getExam_list_dataw(String courseId,String configTypeId){
+        String data="params.examName=&params.examType=&params.examConfigTypeId=2" +
+                "&params.courseId="+courseId +
+                "&params.configTypeId="+configTypeId;
+        String resp = newZjyHttp.post(studentExam_studentExamListData,data);
+        return resp;
+    }
+
+    //测验
+    public static String getExam_list_data_tw(String courseId) {
+        return getExam_list_dataw(courseId, "");
+    }
+
+    //作业
+    public static String getExam_list_data_ww(String courseId) {
+        return getExam_list_dataw(courseId, "6049aaaac97845d1a8a790f397962b0a");
+    }
+
+    //考试
+    public static String getExam_list_data_ew(String courseId) {
+        return getExam_list_dataw(courseId, "");
+    }
 
 
     //获取 考试 作业 测试 详情
     private static String studentExam_getPaperStructure="https://spoc-exam.icve.com.cn/student/exam/studentExam_getPaperStructure.action";
 
-    public static String getExamPaperStructure() {
+    public static String getExamPaperStructure(String examIds) {
+
         //{"retCode":"0","data":{"402883ab82fee62c0183204009171f77":{"isTemplatePaper":"0","courseNameAlias":"课程","courseName":"789456","examId":"402883ab82fee62c0183204009171f77","examScore":100,"structure":[{"id":"6d39be8eb4e447759ec62e8cf75d9389","name":"单选题","count":2,"total":100}],"paperId":"3960ed80fd384bf9a1ace9f7e23ddbd9"}}}
-        String data = "examIds=402883ab82fee62c0183204009171f77";
+        String data = "examIds="+examIds;
         String resp = newZjyHttp.post(studentExam_getPaperStructure, data);
         return resp;
     }
 
-    /*
-    学生api
 
-    个人进度详情
+
+    //学习状况
+    static String zhzjStudent_checkAssess="https://user.icve.com.cn/zhzj/zhzjStudent_checkAssess.action";
+    public static String getZhzjStudent_checkAssess(){
+        String data = "token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q%3D&classId=957639a938cc4e63b0953e132e0df096&loginId=venomms";
+        String resp = newZjyHttp.post(studentExam_getPaperStructure, data);
+        return resp;
+    }
+
+    public static void upUseridHd(){
+
+
+
+        String host = "spoc-exam.icve.com.cn";
+        String Origin = "https://course.icve.com.cn";
+        String defaultAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.42";
+        String ctype = "application/x-www-form-urlencoded";
+
+        HashMap<String, Object> header = new HashMap<>();
+        header.put("Connection", "Keep-Alive");
+        header.put("Content-Type", ctype);
+        header.put("Referer ","https://course.icve.com.cn/");
+        header.put("Origin", Origin);
+        header.put("User-Agent", defaultAgent);
+        header.put("sec-ch-ua-platform", "Windows");
+        header.put("Upgrade-Insecure-Requests", "1");
+        // header.put("Sec-Fetch-Dest", "empty");
+        header.put("Sec-Fetch-Mode", "navigate");
+        header.put("sec-ch-ua-mobile", "?0");
+        //header.put("Accept", "application/json, text/javascript, */*; q=0.01");
+        // header.put("Accept-Encoding", "gzip, deflate, br");
+        //header.put("X-Requested-With", "XMLHttpRequest");
+        header.put("Host", host);
+        header.put("sec-ch-ua","\"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"108\", \"Microsoft Edge\";v=\"108\"");
+        newZjyHttp.setHeader(header);
+    }
+    //USERSESSIONID
+    static String usersessionid="https://spoc-exam.icve.com.cn/platformwebapi/student/exam/studentExam_studentExamInfoThird.action";
+    //老师api
+    static String usersessionidt="https://spoc-exam.icve.com.cn/platformwebapi/college/exam/examBatch_intoExamListThird.action";
+
+    public static String getUsersessionidw(){
+
+        String data="params.kckjToExamFlag=kckjToExamFlag" +
+                "&params.examCodes=" +
+                "&apiKey=zhzj_platform&_name=%E9%AD%8F%E6%B5%B7%E6%97%AD" +
+                "&params.configTypeId=6049aaaac97845d1a8a790f397962b0a" +
+                "&params.zhzjAlias=2034060125&params.examConfigTypeId=2" +
+                "&_loginId=venomms" +
+                "&Signature=MCwCFACqD5kSlZgNsuN1lm1VDbMC%2BsTEAhQICPiFnI15s0MtiBZKG9zOtuZ8Ng%3D%3D" +
+                "&params.courseId=39e272199dab487ba6f8f76115cbfd2c" +
+                "&_roleCode=student" +
+                "&timestamp="+System.currentTimeMillis()+"&";
+
+        String ck="qBankId3960ed80fd384bf9a1ace9f7e23ddbd9=fc4103d4ff60426fb2fa8a9cff0eac7f; %26%2Fcollege%2Fexam%2FexamBatch_loadExamListData.action%262=null%26%26%2639e272199dab487ba6f8f76115cbfd2c%261%2610; %26%2Fcollege%2Fexam%2FexamBatch_loadExamListData.action%261=null%26%26%2639e272199dab487ba6f8f76115cbfd2c%261%2610; %26%2Fcollege%2Fexam%2FexamBatch_loadExamListData.action%263=null%26%26%2639e272199dab487ba6f8f76115cbfd2c%261%2610; qBankIdbcd8841d680946ddb1387e06cc61af6e=85c246a67da74212b0258efa12413552; ORSESSIONID=null; aliyungf_tc=7f6580f4828d7e0b46259aaf48766c14dd5bce820bac1c1cd46f3c88fa6e90b5; token=3dbd5841-caa0-4dec-ae96-991784191eb1; SERVERID=f7f48d88576f2594f65fbfc6df2be025|1670599271|1670594510; JSESSIONID=7FA9DD01EBDD4F045BAEC453FA6E943D; JSESSIONID=7FA9DD01EBDD4F045BAEC453FA6E943D; USERSESSIONID=402883ab82fee62c018307a26e3e1f1d#interface#20221110213841312314#attachData";
+
+        newZjyHttp.addCookie(ck);
+
+        HashMap<String, Object> oheader = newZjyHttp.getHeader();
+
+        upUseridHd();
+
+        //printHeader();
+        httpRespnose resp = newZjyHttp.post(usersessionid,data,null,null);
+
+        printHeader(resp.getHearderFileds());
+
+        newZjyHttp.setHeader(oheader);
+
+        String ret=resp.getSetCookie();
+        return ret;
+
+
+    }
+
+    static String courseExamAction_stuIntoExamConfirm="https://course.icve.com.cn/learnspace/course/exam/courseExamAction_stuIntoExamConfirm.json";
+    public static String getUsersessionidw2(){
+        String data ="params.classId=" +
+                "&params.courseId=a41689a28e5442a39410e348fce1bd71___" +
+                "&params.parentId=" +
+                "&params.itemId=&params.audit=" +
+                "&params.templateType=8&params.templateStyleType=0" +
+                "&params.kckjWinHeight=529&_t=2022-12-11%2000:01:31";
+
+        String ck="token=3dbd5841-caa0-4dec-ae96-991784191eb1; UNTYXLCOOKIE=\"dXNlci5pY3ZlLmNvbS5jbnx8NjUxN2ZkMjhlNTQxNWIxNzdjMzEwYzY0OTFiOGU0YTZ8fHZlbm9tbXN8fHpoemo=\"";
+        newZjyHttp.addCookie(ck);
+        //printHeader();
+        HashMap<String, Object> oheader = newZjyHttp.getHeader();
+
+        upUseridHd();
+
+        httpRespnose resp = newZjyHttp.get(courseExamAction_stuIntoExamConfirm,null,data);
+
+        printHeader(resp.getHearderFileds());
+
+        newZjyHttp.setHeader(oheader);
+        return "";
+    }
+    /**个人进度详情
     get 请求
     https://course.icve.com.cn/learnspace/course/study/learnRecord_stuLearnRecord.action
     courseId=39e272199dab487ba6f8f76115cbfd2c___&userId=2w7jafiswazbrev468vb5q&isShowHistory=1&templateType=8
+
 
      获取 Signature
     <input type='hidden' name='_loginId' value='venomms' />
            <input type='hidden' name='apiKey' value='zhzj_platform' />
           <input type='hidden' name='_name' value='魏海旭' />
           <input type='hidden' name='Signature' value='MCwCFFPxxgHGhly8mrUZEnP/Tm0kTqS4AhQZeJCKF394bKzePcKVgeybaBRu7Q==' />
-
-    get 请求
-     https://course.icve.com.cn/learnspace/course/exam/courseExamAction_intoCourseExamList.action
-     params.courseId=39e272199dab487ba6f8f76115cbfd2c___&params.columnTypeId=6049aaaac97845d1a8a790f397962b0a&params.examConfigTypeId=2
-
      */
 
+    //获取 Signature name
+    static String courseExamAction="https://course.icve.com.cn/learnspace/course/exam/courseExamAction_intoCourseExamList.action";
+    public static String getCourseExamAction(String courseId,String columnTypeId){
+        String data="params.courseId="+courseId+"___" +
+                "&params.columnTypeId="+columnTypeId+
+                "&params.examConfigTypeId=20";
+        String resp = newZjyHttp.get(courseware_index,data);
+        return resp;
+    }
 
 
     //web登陆测试
     static String findUser = "https://user.icve.com.cn/patch/nlpx/findUser.action";
     static String auth = "https://spoc-sso.icve.com.cn/auth";
+    static String userLogin="https://sso.icve.com.cn/data/userLogin";
+    static String login_logout="https://user.icve.com.cn/learning/sso/login_logout.action";
+    static String cms="https://user.icve.com.cn/cms/";
 
-    //static String findUser = "https://user.icve.com.cn/patch/nlpx/findUser.action";
     public static String webLogin() {
-        String data = "loginId=Debug";
-        newZjyHttp.addCookie("whatysns=b9db789f2acaccfcdbfe216e44e16a70");
-        httpRespnose resp = newZjyHttp.post(findUser, data, null, null);
+        String data = "{\"userName\":\"venomms\",\"password\":\"Poor2579988653\",\"type\":1}";
+        //newZjyHttp.addCookie("whatysns=b9db789f2acaccfcdbfe216e44e16a70");
+        httpRespnose resp = newZjyHttp.post(userLogin, data, null, null);
         newZjyHttp.addCookie(resp.getSetCookie());
-        //newZjyHttp.addHeader("Host", "spoc-sso.icve.com.cn");
-        newZjyHttp.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27");
-        data = "siteCode=zhzj" +
-                "&errorPage=https%3A%2F%2Fuser.icve.com.cn%2Fsso%2FssoLogin_loginError.action%3FbackURL%3D%2Findex.jsp" +
-                "&password=af30447f10d38ce427778f5fc1fc31ea&username=Debug";
         printHeader();
-        resp = newZjyHttp.post(auth, data, null, null);
+        String tk = resp.getCookieV("token");
+        System.out.println(tk);
+        data="token="+tk;
+        resp = newZjyHttp.get(login_logout, null,data);
+        newZjyHttp.addCookie(resp.getSetCookie());
+        printHeader();
+        String rt= newZjyHttp.get(cms);
+        System.out.println(rt);
+        //newZjyHttp.addHeader("Host", "spoc-sso.icve.com.cn");
+        //newZjyHttp.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27");
+        //data = "";
+        //printHeader();
+       // resp = newZjyHttp.post(auth, data, null, null);
         //print(resp.getResp());
-        resp = newZjyHttp.post(resp.getLocation(), null, null, null);
-        printHeader(resp.getHearderFileds());
+        //resp = newZjyHttp.post(resp.getLocation(), null, null, null);
+        //printHeader(resp.getHearderFileds());
 
         return "";
     }
@@ -1087,7 +1256,7 @@ public class newZjyApi {
     static String PaperStructureForPreview = "https://spoc-exam.icve.com.cn/testpaper/paper_getPaperStructureForPreview.action";
 
     public static String getPaperStructureForPreview(String paperId) {
-        String data = "params.paperId=2d66ef24b663465089eafd7d48039da9";
+        String data = "params.paperId=e520d449b23540ac81aedf340d6e4597";
         String ck = "USERSESSIONID=402883e682f4d8ea0182f7123f521677#interface#batchCode#attachData";
         newZjyHttp.addCookie(ck);
         newZjyHttp.addHeader("Host", "spoc-exam.icve.com.cn");

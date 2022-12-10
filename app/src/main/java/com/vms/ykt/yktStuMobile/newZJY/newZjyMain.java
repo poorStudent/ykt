@@ -143,9 +143,10 @@ public class newZjyMain {
         JSONArray jsona = Tool.parseJsonA(resp, "Set-Cookie");
         for (int i = 0; i < jsona.size(); i++) {
             String js = jsona.getString(i);
-            System.out.println(js);
+            //System.out.println(js);
             if (js.contains("UNTYXLCOOKIE")) {
-                user.setUNTYXLCOOKIE(js.replaceAll("\"", ""));
+                String uk = js.replaceAll("\"", "");
+                user.setUNTYXLCOOKIE(js);
                 return true;
             }
         }
@@ -160,6 +161,12 @@ public class newZjyMain {
         return false;
     }
 
+    public static boolean upUsersessionidm(String courseId, String examCode) {
+        String Usersessionid = newZjyApi.getUsersessionidm(courseId, examCode);
+        if (Usersessionid.isEmpty() || !Usersessionid.contains("USERSESSIONID")) return false;
+        newZjyHttp.upCookie(Usersessionid);
+        return true;
+    }
 
     public static List<classActivity> getClassActivityQ(ClassRoom vClassRoom) {
         String resp = newZjyApi.getClassActivityQ(vClassRoom.getId());
@@ -604,6 +611,11 @@ public class newZjyMain {
     }
 
 
+    //作业
+    public static String getExam_list_data_w(String courseId) {
+        return newZjyApi.getExam_list_data_w(courseId);
+    }
+
 
     public static void doMain() {
         //aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA==
@@ -611,7 +623,7 @@ public class newZjyMain {
         //MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=
         //22befd2145494c4cb15b772c0d66ab07
 
-        String token = "fedb9ae7687947e187a549ddf01d94ff";
+        String token = "d8baeb4ea0d945d1a34e2ed408be5723";
         //String token = "7d4322bbfaee4cef83fd76cd96e27131";
         //xnzy2113418
         //20030517lei@
@@ -630,12 +642,13 @@ public class newZjyMain {
 
         //测试api
         //System.out.println(testApi.getSaveClassroom());
-        //System.out.println(newZjyApi.getPaperStructureForPreview());
+        //System.out.println(newZjyApi.getPaperStructureForPreview(""));
         //System.out.println(newZjyApi.getExamPaperStatisticsDetail());
         //System.out.println(newZjyApi.getQuestionManage(""));
 
-        new RuiKey().Demo();
-        System.exit(0);
+        //newZjyApi.getUsersessionidw2();
+       // System.exit(0);
+        //new RuiKey().Demo();
 
         if (!isLogin(vUser)) {
             System.out.println("登陆失效");
@@ -664,12 +677,30 @@ public class newZjyMain {
                     CourseName + " * " + CourseId);
 
 
+            if (!CourseName.contains("789")) continue;
+
             if (!upUNTYXLCOOKIE(vUser, CourseId)) {
                 System.out.println("upUNTYXLCOOKIE erro");
             }
 
+            //newZjyApi.upHeader2();
 
-            newZjyApi.upHeader2();
+            // System.out.println(getExam_list_data_w(CourseId));
+
+
+            if (!upUsersessionidm(CourseId, "")) {
+                System.out.println("upUsersessionidm erro");
+            }
+
+            //6049aaaac97845d1a8a790f397962b0a
+            System.out.println(newZjyApi.getCourseExamAction(CourseId,"6049aaaac97845d1a8a790f397962b0a"));
+            System.out.println(newZjyApi.getExam_list_data_ww(CourseId));
+            //newZjyApi.upHeader1();
+
+
+            newZjyApi.printHeader();
+
+            System.exit(0);
 
             List<ClassRoom> ClassRooms = getClassroomByStudent(vCourse);
 

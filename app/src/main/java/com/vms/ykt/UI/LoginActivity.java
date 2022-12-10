@@ -457,7 +457,7 @@ public class LoginActivity extends Activity {
         if (!RuiKey.RkInit){
             return "";
         }
-        if (RuiKey.LoginByCard(cardnum, true)){
+        if (RuiKey.LoginByCard(cardnum)){
             return "";
         };
         String CardDetail=RuiKey.CardDetail();

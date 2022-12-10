@@ -62,6 +62,8 @@ public class newZjyHttp {
         }
     }
 
+
+
     public static void addCookie(String upCookie) {
 
         HashMap<String, Object> Header = getHeader();
@@ -73,7 +75,7 @@ public class newZjyHttp {
                 HashMap<String, Object> ockMap = parseCookie(ock);
                 for (String key:nckMap.keySet()){
                     if (ockMap.containsKey(key)) {
-                        ockMap.remove(key);
+                        //ockMap.remove(key);
                     }
                     ockMap.put(key, nckMap.get(key));
                 }
@@ -89,13 +91,13 @@ public class newZjyHttp {
             }
         }
         addHeader("Cookie", upCookie);
-        System.out.println(JSONObject.toJSONString(Header));
+        //System.out.println(JSONObject.toJSONString(Header));
     }
 
 
-    private static HashMap<String, Object> parseCookie(String resp) {
+    public static HashMap<String, Object> parseCookie(String resp) {
         HashMap<String, Object> cks = new HashMap<>();
-        String pattern = "([^=]+)=(\"?[^;]+\"?);?\\s*";
+        String pattern = "([^=].+)=(\"?.+\"?);?\\s*";
         // 创建 Pattern 对象
         Pattern r = Pattern.compile(pattern);
         // 现在创建 matcher 对象
@@ -106,6 +108,13 @@ public class newZjyHttp {
         return cks;
     }
 
+    public static void upCookie(String ck){
+        HashMap<String, Object> Header = getHeader();
+        if (Header != null && Header.containsKey("Cookie") ) {
+            String upCookie=String.valueOf(Header.get("Cookie"))+";"+ck;
+            addHeader("Cookie", upCookie);
+        }
+    }
 
     public static String get(String requestUrl) {
         return get(requestUrl, "");

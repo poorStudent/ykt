@@ -161,7 +161,7 @@ public class RuiKey {
                     getGoodsPrice();
                     break;
                 case BusinessType.cardLogin://卡密登录示例
-                    LoginByCard(cardnum, true);
+                    LoginByCard(cardnum);
                     break;
                 case BusinessType.openRenewCardNum://卡开通/续费卡密示例
                     OpenRenewCardNum();
@@ -187,14 +187,14 @@ public class RuiKey {
                     break;
                 case BusinessType.bucklePoint://扣点示例
                     //先登录
-                    if (LoginByCard(cardnum, false)) {
+                    if (LoginByCard(cardnum)) {
                         //然后再扣点,注意，如果指定的扣点数为0，那么就会默认扣除后台设置的数值
                         BucklePoint(cardnum, 1, token);
                     }
                     break;
                 case BusinessType.getremoteVar://获取软件变量示例
                     //先登录
-                    if (LoginByCard(cardnum, false)) {
+                    if (LoginByCard(cardnum)) {
                         //然后再获取变量(卡密示例),如果变量名为空，那么接口返回来的是此软件所有的变量，否则是此变量名所对应的变量值
                         GetremoteVar(cardnum, token, TestVer);
                     }
@@ -207,7 +207,7 @@ public class RuiKey {
                     break;
                 case BusinessType.unbundMac://解绑机器码示例
                     //先登录
-                    if (LoginByCard(cardnum, false)) {
+                    if (LoginByCard(cardnum)) {
                         //然后解除绑定机器码(卡密示例)
                         unbundMac(cardnum, token);
                     }
@@ -249,10 +249,10 @@ public class RuiKey {
 
         if (result.code == 0) {
             Msg = Msg + "初始化软件成功\n";
-            Msg = Msg + "接口返回的数据：\n";
-            Msg = Msg + "编码：" + result.code + "\n";
-            Msg = Msg + "信息：" + result.msg + "\n";
-            Msg = Msg + "data数据：" + result.data + "\n";
+            //Msg = Msg + "接口返回的数据：\n";
+            //Msg = Msg + "编码：" + result.code + "\n";
+            //Msg = Msg + "信息：" + result.msg + "\n";
+           // Msg = Msg + "data数据：" + result.data + "\n";
 
             switch (platformtypeid) {
                 case 1://网络验证平台
@@ -260,7 +260,7 @@ public class RuiKey {
                     if (NetworkVerHelp.iniSoftInfoData != null) {
                         if (NetworkVerHelp.iniSoftInfoData.requestflag.equals(IniInfoArgs.requestflag) == false) {
                             IniResult = false;
-                            Msg = Msg + "接口返回的数据已被“破解者”截持，您可以强制关闭软件或者不做任何处理\n";
+                            //Msg = Msg + "接口返回的数据已被“破解者”截持，您可以强制关闭软件或者不做任何处理\n";
                         } else {
                             if (NetworkVerHelp.iniSoftInfoData.softInfo.newversionnum != versionname) {
                                 Msg = Msg + "发现新版本：" + NetworkVerHelp.iniSoftInfoData.softInfo.newversionnum + "\n";
@@ -269,7 +269,7 @@ public class RuiKey {
                             }
                             IniResult = true;
                             if (encrypttypeid == EncryptType.DES) {
-                                Msg = Msg + "data解密后的数据：" + NetworkVerHelp.DesDecrypt(result.data, encryptKey) + "\n";
+                               // Msg = Msg + "data解密后的数据：" + NetworkVerHelp.DesDecrypt(result.data, encryptKey) + "\n";
                             }
                         }
                     }
@@ -280,11 +280,11 @@ public class RuiKey {
                     if (NetworkVerHelp.iniGoodsInfoData != null) {
                         if (NetworkVerHelp.iniGoodsInfoData.requestflag.equals(IniInfoArgs.requestflag) == false) {
                             IniResult = false;
-                            Msg = Msg + "接口返回的数据已被“破解者”截持，您可以强制关闭软件或者不做任何处理\n";
+                            //Msg = Msg + "接口返回的数据已被“破解者”截持，您可以强制关闭软件或者不做任何处理\n";
                         } else {
                             IniResult = true;
                             if (encrypttypeid == EncryptType.DES) {
-                                Msg = Msg + "data解密后的数据：" + NetworkVerHelp.DesDecrypt(result.data, encryptKey) + "\n";
+                               // Msg = Msg + "data解密后的数据：" + NetworkVerHelp.DesDecrypt(result.data, encryptKey) + "\n";
                             }
                         }
                     }
@@ -693,7 +693,7 @@ public class RuiKey {
     /**
      * 卡密登录示例
      */
-  public static Boolean LoginByCard(String CardNum, boolean IsLoginOut) {
+  public static Boolean LoginByCard(String CardNum) {
         Boolean IsLoginOk = false;
         //构建登录入参
         In_CardLoginArgs args = new In_CardLoginArgs();
@@ -716,24 +716,20 @@ public class RuiKey {
                         Msg = Msg + "接口返回的数据已被“破解者”截持，您可以强制关闭软件或者不做任何处理\n";
                     } else {
                         Msg = Msg + "登录成功\n";
-                        Msg = Msg + "接口返回的数据：\n";
-                        Msg = Msg + "编码：" + String.valueOf(result.code) + "\n";
+                        //Msg = Msg + "接口返回的数据：\n";
+                        //Msg = Msg + "编码：" + String.valueOf(result.code) + "\n";
                         Msg = Msg + "信息：" + result.msg + "\n";
-                        Msg = Msg + "data数据：" + result.data + "\n";
+                        //Msg = Msg + "data数据：" + result.data + "\n";
                         if (encrypttypeid == EncryptType.DES) {
-                            Msg = Msg + "data解密后的数据：" + NetworkVerHelp.DesDecrypt(result.data, encryptKey) + "\n";
+                            //Msg = Msg + "data解密后的数据：" + NetworkVerHelp.DesDecrypt(result.data, encryptKey) + "\n";
                         }
                         IsLoginOk = true;
                         token = LoginData.token;
                         heartbeatkey = LoginData.heartbeatkey;
-                        Msg = Msg + "token令牌：" + LoginData.token + "\n";
-                        Msg = Msg + "登录接口返回的心跳Key：" + LoginData.heartbeatkey + "\n";
+                        //Msg = Msg + "token令牌：" + LoginData.token + "\n";
+                       //Msg = Msg + "登录接口返回的心跳Key：" + LoginData.heartbeatkey + "\n";
 
-                        Msg = Msg + HeartBeat(CardNum); //心跳示例
-                        if (IsLoginOut) {
-                            IsLoginOk = false;
-                            Msg = Msg + LoginOut(CardNum);//退出登录示例
-                        }
+                        //Msg = Msg + HeartBeat(CardNum); //心跳示例
                     }
 
                 } else {
@@ -743,10 +739,10 @@ public class RuiKey {
 
             } else {
                 Msg = Msg + "登录失败\n";
-                Msg = Msg + "接口返回的数据：\n";
+                //Msg = Msg + "接口返回的数据：\n";
                 Msg = Msg + "编码：" + String.valueOf(result.code) + "\n";
-                Msg = Msg + "信息：" + result.msg + "\n";
-                Msg = Msg + "data数据：" + result.data + "\n";
+                //Msg = Msg + "信息：" + result.msg + "\n";
+                //Msg = Msg + "data数据：" + result.data + "\n";
                 //卡密登录错误信息
                 //1001:未知错误
                 //1005:平台ID-platformtypeid,业务ID-businessID,加密类型-encrypttypeid,平台用户编码-platformusercode,商品编码-goodscode,时间戳-timestamp,不能为空
@@ -930,7 +926,7 @@ public class RuiKey {
                 Out_cardDetail cardDetail = NetworkVerHelp.DecryptData(result.data, Out_cardDetail.class);
                 if (cardDetail != null) {
                     if (cardDetail.requestflag.equals(args.requestflag) == false) {
-                        Msg = Msg + "接口返回的数据已被“破解者”截持，您可以强制关闭软件或者不做任何处理\n";
+                       // Msg = Msg + "接口返回的数据已被“破解者”截持，您可以强制关闭软件或者不做任何处理\n";
                     } else {
                        /* Msg = Msg + "卡密详情成功\n";
                         Msg = Msg + "接口返回的数据：\n";
@@ -949,10 +945,10 @@ public class RuiKey {
 
             } else {
                 Msg = Msg + "卡密详情失败\n";
-                Msg = Msg + "接口返回的数据：\n";
+               // Msg = Msg + "接口返回的数据：\n";
                 Msg = Msg + "编码：" + result.code + "\n";
-                Msg = Msg + "信息：" + result.msg + "\n";
-                Msg = Msg + "data数据：" + result.data + "\n";
+               // Msg = Msg + "信息：" + result.msg + "\n";
+                //Msg = Msg + "data数据：" + result.data + "\n";
                 //卡密详情错误信息
                 //1001:未知错误
                 //1005:平台ID-platformtypeid,业务ID-businessID,加密类型-encrypttypeid,平台用户编码-platformusercode,商品编码-goodscode,时间戳-timestamp,不能为空
@@ -1558,7 +1554,7 @@ public class RuiKey {
     }
 
     //获取软件变量示例
-    public static void GetremoteVar(String cardnumorusername, String _token, String _testVer) {
+    public static String GetremoteVar(String cardnumorusername, String _token, String _testVer) {
         //构建获取软件变量入参
         In_getRemoteVarArgs args = new In_getRemoteVarArgs();
         args.maccode = maccode;//必填
@@ -1572,22 +1568,22 @@ public class RuiKey {
         try {
             //请求接口，获取结果
             Result result = NetworkVerHelp.GetRequestResult(args, BusinessType.getremoteVar);
-            Msg = Msg + "----------获取软件变量操作----------\n";
+           // Msg = Msg + "----------获取软件变量操作----------\n";
             if (result.code == 0) {
                 //变量具体数据
                 Out_getRemoteVar RemoteVar = NetworkVerHelp.DecryptData(result.data, Out_getRemoteVar.class);
                 if (RemoteVar != null) {
                     if (RemoteVar.requestflag.equals(args.requestflag) == false) {
-                        Msg = Msg + "接口返回的数据已被“破解者”截持，您可以强制关闭软件或者不做任何处理\n";
+                        //Msg = Msg + "接口返回的数据已被“破解者”截持，您可以强制关闭软件或者不做任何处理\n";
                     } else {
-                        Msg = Msg + "获取软件变量成功\n";
-                        Msg = Msg + "接口返回的数据：\n";
-                        Msg = Msg + "编码：" + String.valueOf(result.code) + "\n";
-                        Msg = Msg + "信息：" + result.msg + "\n";
-                        Msg = Msg + "data数据：" + result.data + "\n";
+                       // Msg = Msg + "获取软件变量成功\n";
+                        //Msg = Msg + "接口返回的数据：\n";
+                        //Msg = Msg + "编码：" + String.valueOf(result.code) + "\n";
+                        //Msg = Msg + "信息：" + result.msg + "\n";
+                        //Msg = Msg + "data数据：" + result.data + "\n";
 
                         if (encrypttypeid == EncryptType.DES) {
-                            Msg = Msg + "data解密后的数据：" + NetworkVerHelp.DesDecrypt(result.data, encryptKey) + "\n";
+                            Msg = Msg + NetworkVerHelp.DesDecrypt(result.data, encryptKey) + "\n";
                         }
                     }
 
@@ -1595,10 +1591,10 @@ public class RuiKey {
 
             } else {
                 Msg = Msg + "获取软件变量失败\n";
-                Msg = Msg + "接口返回的数据：\n";
+              // Msg = Msg + "接口返回的数据：\n";
                 Msg = Msg + "编码：" + String.valueOf(result.code) + "\n";
-                Msg = Msg + "信息：" + result.msg + "\n";
-                Msg = Msg + "data数据：" + result.data + "\n";
+                //Msg = Msg + "信息：" + result.msg + "\n";
+               // Msg = Msg + "data数据：" + result.data + "\n";
                 //获取软件变量错误信息
                 //1001:未知错误
                 //1005:平台ID-platformtypeid,业务ID-businessID,加密类型-encrypttypeid,平台用户编码-platformusercode,商品编码-goodscode,时间戳-timestamp,不能为空
@@ -1633,7 +1629,7 @@ public class RuiKey {
 
         final String finalMsg = Msg;
         System.out.println(finalMsg);
-
+        return finalMsg;
     }
 
     
