@@ -791,7 +791,7 @@ public class newZjyMain {
             String ret = newZjyApi.getExam_list_data_ww(CourseId);
             List<ExamWork> vExamWorks = parseExamW(ret);
             for (ExamWork vExamWork : vExamWorks) {
-                String ExamId="402883ad82fee5a601831397f14c42d5";//vExamWork.getExamId();
+                String ExamId="4028813884ea68b20184f9ec6a39673d";//vExamWork.getExamId();
                 ret=newZjyApi.getConfirmPagePaperStructure(ExamId);
                 ExamWorkInfo vExamWorkInfo=parseExamInfo(ret,ExamId);
                 String PaperId=vExamWorkInfo.getPaperId();
