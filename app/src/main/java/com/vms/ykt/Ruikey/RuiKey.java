@@ -118,18 +118,18 @@ public class RuiKey {
 
     public static boolean RkInit = false;
 
-
-    static Handler sHandler = new Handler();
+    static Boolean IsLoginOk = false;
 
     public static void initRK(Context context) {
 
             RuiKey.RkInit = RuiKey.IniSoftInfo();
             if (RuiKey.RkInit) {
-                sHandler.post(() -> {
+
+                ((Activity)context).runOnUiThread(() -> {
                     Tool.toast(context, "初始化失败请重初始化");
                 });
             } else {
-                sHandler.post(() -> {
+                ((Activity)context).runOnUiThread(() -> {
                     Tool.toast(context, "初始化ok");
                 });
             }
@@ -694,7 +694,7 @@ public class RuiKey {
      * 卡密登录示例
      */
   public static Boolean LoginByCard(String CardNum) {
-        Boolean IsLoginOk = false;
+
         //构建登录入参
         In_CardLoginArgs args = new In_CardLoginArgs();
         args.maccode = maccode;//必填

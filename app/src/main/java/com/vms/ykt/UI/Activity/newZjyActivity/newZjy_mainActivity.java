@@ -135,9 +135,9 @@ public class newZjy_mainActivity extends AppCompatActivity {
                 mNewZjyCourseList = newZjyMain.getMyClassList(mNewZjyUser);
 
                 if (mNewZjyCourseList.size() !=0){
-                    new Thread(()->{
+                    /*new Thread(()->{
                         newZjyMain.upUNTYXLCOOKIE(mNewZjyUser,mNewZjyCourseList.get(0).getCourseId());
-                    }).start();
+                    }).start();*/
                 }
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
@@ -325,6 +325,8 @@ public class newZjy_mainActivity extends AppCompatActivity {
                             newZjyUserDao.sNewZjyUser=mNewZjyUser;
                             new Thread(()->{
                                 newZjyMain.upAuthorization(mNewZjyUser);
+                                newZjyMain.upUNTYXLCOOKIE(mNewZjyUser,"");
+                                newZjyMain.upUsersessionidm(mNewZjyUser,"","");
                                // Log.d(TAG, "run: "+mNewZjyUser.getUserAccessToken());
                             }).start();
 

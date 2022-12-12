@@ -17,6 +17,15 @@ public class newZjyUser {
     private String UNTYXLCOOKIE;
     private String sessionId;
     private String id;
+    private String USERSESSIONID;
+
+    public String getUSERSESSIONID() {
+        return USERSESSIONID;
+    }
+
+    public void setUSERSESSIONID(String USERSESSIONID) {
+        this.USERSESSIONID = USERSESSIONID;
+    }
 
     public String getSessionId() {
         return sessionId;

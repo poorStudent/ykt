@@ -47,7 +47,7 @@ public class newZjyApi {
     public static void upHeader1() {
 
         newZjyHttp.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        //newZjyHttp.addHeader("Host", "user.icve.com.cn");
+        newZjyHttp.addHeader("Host", "user.icve.com.cn");
         //printHeader();
 
         //System.out.println(JSONObject.toJSON(newZjyHttp.getHeader()));
@@ -722,8 +722,9 @@ public class newZjyApi {
     static String exam_list_data = "https://course.icve.com.cn/learnspace/learn/weixin/common/exam/exam_list_data.action";
 
     //columnTypeId
-    //81805198bddb4cdc84afbc3a1774f57
+    //81805198bddb4cdc84afbc3a1774f576 //考试
     //6049aaaac97845d1a8a790f397962b0a 在线作业
+    //ed134338b38640aa89cd34497437a97d 测试作业
     public static String getExam_list_data(String courseId, String columnTypeId) {
         String data = "params.courseId=" + courseId +
                 "&params.columnTypeId=" + columnTypeId +
@@ -734,13 +735,19 @@ public class newZjyApi {
 
     //测验
     public static String getExam_list_data_t(String courseId) {
-        return getExam_list_data(courseId, "");
+        return getExam_list_data(courseId, "ed134338b38640aa89cd34497437a97d");
     }
 
     //作业
     public static String getExam_list_data_w(String courseId) {
         return getExam_list_data(courseId, "6049aaaac97845d1a8a790f397962b0a");
     }
+
+    //考试
+    public static String getExam_list_data_e(String courseId) {
+        return getExam_list_data(courseId, "81805198bddb4cdc84afbc3a1774f576");
+    }
+
     //附件作业
     static String homework="https://course.icve.com.cn/homework-api/mobile/student/homework/list";
     public static String getHomework(String courseId){
@@ -751,10 +758,6 @@ public class newZjyApi {
         return resp;
     }
 
-    //考试
-    public static String getExam_list_data_e(String courseId) {
-        return getExam_list_data(courseId, "");
-    }
 
     //获取 考试 作业 测试 的id详情
     static String ConfirmPagePaperStructure="https://spoc-exam.icve.com.cn/student/exam/studentExam_getConfirmPagePaperStructure.action";
@@ -793,7 +796,7 @@ public class newZjyApi {
 
     //测验
     public static String getExam_list_data_tw(String courseId) {
-        return getExam_list_dataw(courseId, "");
+        return getExam_list_dataw(courseId, "ed134338b38640aa89cd34497437a97d");
     }
 
     //作业
@@ -803,7 +806,18 @@ public class newZjyApi {
 
     //考试
     public static String getExam_list_data_ew(String courseId) {
-        return getExam_list_dataw(courseId, "");
+        return getExam_list_dataw(courseId, "81805198bddb4cdc84afbc3a1774f576");
+    }
+
+
+    //附件
+    static String homeworkw="https://course.icve.com.cn/homework-api/student/homework/list";
+
+    public static String getHomeworkw(String courseId){
+        String data = "{\"params\":{\"groupId\":\""+courseId+"\"," +
+                "\"columnId\":\"1fb6d397336642eca759b285074fb63e\"}}";
+        String resp = newZjyHttp.post(homeworkw, data);
+        return resp;
     }
 
 
@@ -826,11 +840,23 @@ public class newZjyApi {
         return resp;
     }
 
+
     //学习状况
     static String zhzjStudent_checkAssess="https://user.icve.com.cn/zhzj/zhzjStudent_checkAssess.action";
     public static String getZhzjStudent_checkAssess(){
         String data = "token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q%3D&classId=957639a938cc4e63b0953e132e0df096&loginId=venomms";
         String resp = newZjyHttp.post(studentExam_getPaperStructure, data);
+        return resp;
+    }
+
+    //进度详情
+    static String learnRecord_stuLearnRecord="https://course.icve.com.cn/learnspace/course/study/learnRecord_stuLearnRecord.action";
+    public static String getLearnRecord_stuLearnRecord(String courseId,String userId){
+
+        String data="courseId="+courseId+"___" +
+                "&userId=" +userId+
+                "&isShowHistory=1&templateType=8";
+        String resp = newZjyHttp.get(learnRecord_stuLearnRecord, data);
         return resp;
     }
 
@@ -859,6 +885,7 @@ public class newZjyApi {
         header.put("sec-ch-ua","\"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"108\", \"Microsoft Edge\";v=\"108\"");
         newZjyHttp.addHeader(header);
     }
+
     //USERSESSIONID
     static String usersessionid="https://spoc-exam.icve.com.cn/platformwebapi/student/exam/studentExam_studentExamInfoThird.action";
     //老师api
@@ -920,6 +947,7 @@ public class newZjyApi {
         newZjyHttp.addHeader(yktHeaders.getNewZjyMHeader());
         return "";
     }
+
     /**个人进度详情
     get 请求
     https://course.icve.com.cn/learnspace/course/study/learnRecord_stuLearnRecord.action
@@ -1051,8 +1079,8 @@ public class newZjyApi {
     public static String getSaveClassroom(String courseId,String title,String tk) {
 
         String classId=Tool.md5(title);
-        String data = "classId=&" +classId+
-                "courseId="+courseId+"&title=" +title+
+        String data = "classId=" +classId+
+                "&courseId="+courseId+"&title=" +title+
                 "&startDate="+ Tool.getCurrentData() +"&token="+tk;
         String resp = newZjyHttp.post(saveClassroom, data);
         return resp;
@@ -1275,7 +1303,7 @@ public class newZjyApi {
     }
 
     //答案
-    static String PaperStructureForPreview = "https://spoc-exam.icve.com.cn/testpaper/paper_getPaperStructureForPreview.action";
+    private static String PaperStructureForPreview = "https://spoc-exam.icve.com.cn/testpaper/paper_getPaperStructureForPreview.action";
 
     public static String getPaperStructureForPreview(String paperId) {
         String data = "params.paperId="+paperId;
@@ -1293,7 +1321,7 @@ public class newZjyApi {
         return resp;
     }
 
-    //答案
+    //
     static String ExamPaperStatisticsDetail = "https://spoc-exam.icve.com.cn/exam/statistics/examPaperContentStatistics_getExamPaperStatisticsDetail.action";
 
     public static String getExamPaperStatisticsDetail(String examId,String paperId) {
@@ -1304,7 +1332,7 @@ public class newZjyApi {
     }
 
 
-    //重批改分
+    //考试 作业 测试 重批改分
     static String saveScore = "https://spoc-exam.icve.com.cn/teacher/exampaper/papercheck_saveScoreAndFinishCheck.action";
 
     public static String getSaveScore() {
@@ -1315,7 +1343,7 @@ public class newZjyApi {
         return resp;
     }
 
-    //附件批改
+    //附件作业改分
     static String saveCheckHomework="https://course.icve.com.cn/homework-api/teacher/saveCheckHomework";
     public static String getSaveCheckHomework(){
         String data="\n" +
@@ -1325,7 +1353,12 @@ public class newZjyApi {
         String resp = newZjyHttp.post(saveCheckHomework, data);
         return resp;
 
-    }    //题库答案
+    }
+
+    //修改考试 作业 测试 的时间
+
+
+    //题库答案
     static String questionManage = "https://spoc-exam.icve.com.cn/question/questionManage_getQuestionList.action?pager.pageSize=100&pager.curPage=1&pager.searchTotalSize=true";
 
     public static String getQuestionManage(String bankId) {

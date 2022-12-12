@@ -935,8 +935,8 @@ public class Tool {
         final AlertDialog customAlert = setDeBugDialog.show();
         //设置AlertDiaLog宽高属性
         WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
-        params.width = 900;
-        params.height = 850;
+        params.width = 950;
+        params.height = 900;
         customAlert.getWindow().setAttributes(params);
         return dialogView;
     }

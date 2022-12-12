@@ -94,105 +94,105 @@
             android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_workAnswActivity"
             android:label="zjy"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_examActivity"
             android:label="zjy"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_examAnswActivity"
             android:label="zjy"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_examDoActivity"
             android:label="zjy"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_courseHdActivity"
             android:label="zjy"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.zjyActivity.zjy_testAnswActivity"
             android:label="zjy"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_shuakeActivity"
             android:label="mooc"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_moreUserSkActivity"
             android:label="mooc"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_testActivity"
             android:label="mooc"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_workActivity"
             android:label="mooc"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
 
         <activity
             android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_examActivity"
             android:label="mooc"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_AnswActivity"
             android:label="mooc"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.moocActivity.mooc_DoAnswActivity"
             android:label="mooc"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
         <activity
             android:name="com.vms.ykt.UI.Activity.icveActivity.icve_shukeActivity"
             android:label="icve"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
 
         <activity
             android:name="com.vms.ykt.UI.Activity.icveActivity.icve_moreUserSkActivity"
             android:label="icve"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
 
         <activity
             android:name="com.vms.ykt.UI.Activity.icveActivity.icve_workExamActivity"
             android:label="icve"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
 
 
         <activity
             android:name="com.vms.ykt.UI.Activity.icveActivity.icve_AnswActivity"
             android:label="icve"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
 
 
         <activity
             android:name="com.vms.ykt.UI.Activity.icveActivity.icve_DoAnswActivity"
             android:label="icve"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
 
         <activity
             android:name="com.vms.ykt.UI.Activity.cqoocActivity.cqooc_shuakeActivity"
             android:label="cqooc"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy"></activity>
+            android:theme="@style/Theme.VmsZjy"/>
 
         <activity
             android:name="com.vms.ykt.UI.Activity.cqoocActivity.cqooc_moreUserSkActivity"
@@ -234,21 +234,21 @@
 
         </activity>
 
-   <activity
+        <activity
             android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_signStudentActivity"
             android:label="newZjy"
             android:launchMode="singleTop"
             android:theme="@style/Theme.VmsZjy">
 
         </activity>
-   <activity
+        <activity
             android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_DiscussActivity"
             android:label="newZjy"
             android:launchMode="singleTop"
             android:theme="@style/Theme.VmsZjy">
 
         </activity>
-<activity
+        <activity
             android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_QuestionActivity"
             android:label="newZjy"
             android:launchMode="singleTop"
@@ -256,8 +256,18 @@
 
         </activity>
 
-<activity
+        <activity
             android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_GroupActivity"
+            android:label="newZjy"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"/>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_ExamWorkActivity"
+            android:label="newZjy"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"/>
+        <activity
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_ExamWorkAnswActivity"
             android:label="newZjy"
             android:launchMode="singleTop"
             android:theme="@style/Theme.VmsZjy">

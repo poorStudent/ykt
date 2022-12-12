@@ -1,6 +1,9 @@
 package com.vms.ykt.yktStuMobile.newZJY;
 
 import android.app.Activity;
+import android.net.rtp.RtpStream;
+
+import androidx.core.app.NotificationCompatSideChannelService;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -15,7 +18,9 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
 
@@ -161,10 +166,11 @@ public class newZjyMain {
         return false;
     }
 
-    public static boolean upUsersessionidm(String courseId, String examCode) {
+    public static boolean upUsersessionidm(newZjyUser user,String courseId, String examCode) {
         String Usersessionid = newZjyApi.getUsersessionidm(courseId, examCode);
         if (Usersessionid.isEmpty() || !Usersessionid.contains("USERSESSIONID")) return false;
-        newZjyHttp.upCookie(Usersessionid);
+        user.setUSERSESSIONID(Usersessionid);
+        newZjyApi.upUsersessionid(Usersessionid);
         return true;
     }
 
@@ -591,11 +597,119 @@ public class newZjyMain {
         return vOverCellItems;
     }
 
-    //web端解析
+
+    //添加课堂
+    public static String SaveClassroom(String courseId, String title, String tk) {
+        return newZjyApi.getSaveClassroom(courseId, title, tk);
+    }
+
+
+    public static List<SignAndQuestionStu> getStudentsQuestioned(String classroomId) {
+        String resp = newZjyApi.getStudentsQuestioned(classroomId);
+        return StudentsQuestioned(resp);
+    }
+
+    public static List<SignAndQuestionStu> StudentsQuestioned(String resp) {
+        List<SignAndQuestionStu> Students = new ArrayList<>();
+        if (resp == null || !resp.contains("data")) return Students;
+        Students = Tool.parseJsonA(resp, "data", SignAndQuestionStu.class);
+        return Students;
+    }
+
+
+    //作业
+    public static List<ExamWork> getExam_list_data_w(String courseId) {
+        String ret= newZjyApi.getExam_list_data_w(courseId);
+        return parseExamM(ret);
+    }
+
+    //测验
+    public static List<ExamWork> getExam_list_data_t(String courseId) {
+        String ret=newZjyApi.getExam_list_data_t(courseId);
+        return parseExamM(ret);
+    }
+
+
+    //考试
+    public static List<ExamWork> getExam_list_data_e(String courseId) {
+        String ret= newZjyApi.getExam_list_data_e(courseId);
+        return parseExamM(ret);
+    }
+
+    //附件作业
+    public static String getHomework(String courseId) {
+        return newZjyApi.getHomework(courseId);
+    }
+
+
+    //移动端解析 作业 考试 测验
+    public static List<ExamWork> parseExamM(String resp) {
+        List<ExamWork> vExamWorks = new ArrayList<>();
+        if (resp==null || resp.isEmpty()){
+          return vExamWorks;
+        }
+
+        Document doc = Jsoup.parse(resp, "UTF-8");
+        Elements list_cards = doc.getElementsByClass("list_card");
+        for (Element list_card : list_cards) {
+            ExamWork vExamWork = new ExamWork();
+
+            String exam_num = list_card.attr("examcode");
+            vExamWork.setExam_num(exam_num);
+
+            String examId = list_card.id();
+            vExamWork.setExamId(examId);
+
+            Elements examlist_top = list_card.getElementsByClass("examlist_top");
+            String examStatus = examlist_top.select("span[name*=\"examStatus\"]").first().text();
+            vExamWork.setExamStatus(examStatus);
+
+            String examName = examlist_top.select("h2[name*=\"examName\"]").first().text();
+
+            vExamWork.setExamName(examName);
+            vExamWorks.add(vExamWork);
+
+
+        }
+        return vExamWorks;
+    }
+
+
+
+
+    //作业
+    public static List<ExamWork> getExam_list_data_ww(String courseId) {
+        String ret= newZjyApi.getExam_list_data_ww(courseId);
+        return parseExamW(ret);
+    }
+
+    //测验
+    public static List<ExamWork> getExam_list_data_tw(String courseId) {
+        String ret=newZjyApi.getExam_list_data_tw(courseId);
+        return parseExamW(ret);
+    }
+
+
+    //考试
+    public static List<ExamWork> getExam_list_data_ew(String courseId) {
+        String ret= newZjyApi.getExam_list_data_ew(courseId);
+        return parseExamW(ret);
+    }
+
+
+    public static String getHomeworkw(String courseId){
+        String resp=newZjyApi.getHomeworkw(courseId);
+        return resp;
+    }
+
+    //web端解析 作业 考试 测验
     public static List<ExamWork> parseExamW(String resp) {
         //File input = new File("E:\\start Menu\\zjy.html");
         //resp=Tool.fr(input);
         List<ExamWork> vExamWorks = new ArrayList<>();
+        if (resp==null || resp.isEmpty()){
+            return vExamWorks;
+        }
 
         Document doc = Jsoup.parse(resp, "UTF-8");
         Elements box2s = doc.getElementsByAttributeValue("class", "box2 mt10");
@@ -644,70 +758,223 @@ public class newZjyMain {
         return vExamWorks;
     }
 
-    //移动端解析
-    public static List<ExamWork> parseExamM(String resp) {
 
-        List<ExamWork> vExamWorks = new ArrayList<>();
-        Document doc = Jsoup.parse(resp, "UTF-8");
-        Elements list_cards = doc.getElementsByClass("list_card");
-        for (Element list_card : list_cards) {
-            ExamWork vExamWork = new ExamWork();
-
-            String exam_num = list_card.attr("examcode");
-            vExamWork.setExam_num(exam_num);
-
-            String examId = list_card.id();
-            vExamWork.setExamId(examId);
-
-            Elements examlist_top = list_card.getElementsByClass("examlist_top");
-            String examStatus = examlist_top.select("span[name*=\"examStatus\"]").first().text();
-            vExamWork.setExamStatus(examStatus);
-            System.out.println(examStatus);
-            String examName = examlist_top.select("h2[name*=\"examName\"]").first().text();
-            System.out.println(examName);
-            vExamWork.setExamName(examName);
-
-
+    //获取 PaperId
+    public static ExamWorkInfo getExamConfirm(String ExamId){
+        String ret = newZjyApi.getConfirmPagePaperStructure(ExamId);
+        System.out.println(ret);
+        if (ret==null || ret.isEmpty()){
+            ret=newZjyApi.getExamPaperStructure(ExamId);
+            System.out.println(ret);
         }
-        return vExamWorks;
+
+        ExamWorkInfo vExamWorkInfo = newZjyMain.parseExamInfo(ret, ExamId);
+        return vExamWorkInfo;
     }
 
-    public static ExamWorkInfo parseExamInfo(String resp,String ExamId) {
+    public static ExamWorkInfo parseExamInfo(String resp, String ExamId) {
         ExamWorkInfo vExamWorkInfo = new ExamWorkInfo();
         if (resp == null || resp.isEmpty() || !resp.contains("paperId")) return vExamWorkInfo;
-        JSONObject data = Tool.parseJsonO(resp,"data");
+        JSONObject data = Tool.parseJsonO(resp, "data");
         if (resp.contains(ExamId)) {
             data = data.getJSONObject(ExamId);
         }
-        String structure=data.getString("structure");
+        String structure = data.getString("structure");
         vExamWorkInfo.setStructure(structure);
-        String paperId=data.getString("paperId");
+        String paperId = data.getString("paperId");
         vExamWorkInfo.setPaperId(paperId);
         return vExamWorkInfo;
     }
 
-    //添加课堂
-    public static String SaveClassroom(String courseId, String title, String tk) {
-        return newZjyApi.getSaveClassroom(courseId, title, tk);
+
+    public static examAnsw getPaperAnsw1(String paperId) {
+        String resp= newZjyApi.getPaperStructureForPreview(paperId);
+        System.out.println(resp);
+        return parseAnsw(resp,1);
     }
 
 
-    public static List<SignAndQuestionStu> getStudentsQuestioned(String classroomId) {
-        String resp = newZjyApi.getStudentsQuestioned(classroomId);
-        return StudentsQuestioned(resp);
-    }
-
-    public static List<SignAndQuestionStu> StudentsQuestioned(String resp) {
-        List<SignAndQuestionStu> Students = new ArrayList<>();
-        if (resp == null || !resp.contains("data")) return Students;
-        Students = Tool.parseJsonA(resp, "data", SignAndQuestionStu.class);
-        return Students;
+    public static examAnsw getPaperAnsw2(String paperId) {
+        String resp= newZjyApi.getPaperStructure(paperId);
+        System.out.println(resp);
+        return parseAnsw(resp,2);
     }
 
 
-    //作业
-    public static String getExam_list_data_w(String courseId) {
-        return newZjyApi.getExam_list_data_w(courseId);
+    public static examAnsw parseAnsw(String resp, int type) {
+
+        examAnsw vExamAnsw = new examAnsw();
+        if (resp == null || resp.isEmpty()) return vExamAnsw;
+
+        //File input = new File("E:\\start Menu\\zjy.html");
+        //resp = Tool.fr(input);
+        Document doc = Jsoup.parse(resp, "UTF-8");
+        doc.prepend("<h1 style=background-color:rgb(0,255,0)> 标绿的为正确答案！！！！</h1>");
+        Map<String, String> answMap = new HashMap<>();
+        StringBuilder answStr = new StringBuilder();
+        List<String> choice = new ArrayList();
+
+        int index = 0;
+        String answ = "";
+        String css_class = "";
+
+        if (type == 1) {
+
+            Elements exam_items = doc.getElementsByClass("exam_item");
+            for (Element exam_item : exam_items) {
+
+                String sectionid = exam_item.attr("sectionid");
+
+
+                Elements questionContents = exam_item.children();
+
+                for (Element questionContent : questionContents) {
+
+
+                    String id = questionContent.id();
+
+                    Element exam_answer_tits = questionContent.getElementsByClass("exam_answer_tit").first();
+                    String exam_answer_tit = exam_answer_tits.text();
+
+                    answStr.append(" ");
+                    answStr.append(exam_answer_tit);
+                    answStr.append("\n ");
+
+                    String answertype = questionContent.attr("answertype");
+
+
+                    choice.clear();
+
+                    if (answertype.contains("singlechoice")) {
+                        css_class = "label_radio r_on";
+                        choice.add("A");
+                        choice.add("B");
+                        choice.add("C");
+                        choice.add("D");
+                        choice.add("E");
+                    } else if (answertype.contains("multichoice")) {
+                        css_class = "label_check c_on";
+                        choice.add("A");
+                        choice.add("B");
+                        choice.add("C");
+                        choice.add("D");
+                        choice.add("E");
+                    } else if (answertype.contains("bijudgement")) {
+                        css_class = "label_radio r_on";
+                        choice.add("0");
+                        choice.add("1");
+                    }
+
+                    Element exam_forms = questionContent.select("div.exam_form").first();
+
+                    Elements labels = exam_forms.select("label");
+
+
+                    answStr.append(" 答案：");
+
+                    if (answertype.contains("singlechoice") || answertype.contains("bijudgement") || answertype.contains("multichoice"))
+                        ;
+
+                    for (Element label : labels) {
+                        String vClassName = label.className();
+                        if (css_class.equals(vClassName)) {
+
+                            String answs = label.text();
+                            answStr.append(" ");
+                            answStr.append(answs);
+                            answStr.append("\n ");
+
+                            label.attr("style", "background-color:rgb(0,255,0)");
+
+                            answ = answ + " " + choice.get(index);
+                            index++;
+
+                        }
+                    }
+
+                    answStr.append("\n");
+                    answ = id + " " + answ;
+                    answMap.put(sectionid, answ);
+                    index = 0;
+                    answ = "";
+                }
+            }
+
+        } else {
+
+            Elements assRow_cons = doc.getElementsByClass("assRow_con");
+            for (Element assRow_con : assRow_cons) {
+                Elements assItems = assRow_con.getElementsByClass("assItem");
+                for (Element assItem : assItems) {
+                    String id = assItem.id();
+                    String answertype = assItem.attr("answertype");
+                    Element assItem_tit = assItem.getElementsByClass("assItem_tit").first();
+                    String Item_tit=assItem_tit.text();
+
+                    answStr.append(" ");
+                    answStr.append(Item_tit);
+                    answStr.append("\n ");
+
+                    choice.clear();
+
+
+                    if (answertype.contains("singlechoice")) {
+                        choice.add("A");
+                        choice.add("B");
+                        choice.add("C");
+                        choice.add("D");
+                        choice.add("E");
+                        css_class = "ass_correct";
+
+                    } else if (answertype.contains("multichoice")) {
+                        choice.add("A");
+                        choice.add("B");
+                        choice.add("C");
+                        choice.add("D");
+                        choice.add("E");
+                        css_class = "ass_correct";
+                    } else if (answertype.contains("bijudgement")) {
+                        css_class = "ass_correct";
+                        choice.add("0");
+                        choice.add("1");
+                    }
+
+                    Element assItem_cons = assItem.getElementsByClass("assItem_con").first();
+                    Element tbodys = assItem_cons.select("div.paper_table").first().select("table>tbody").first();
+                    Elements trs = tbodys.select("tr[name=\"optionContent\"]");
+
+
+                    answStr.append(" 答案：");
+
+                    for (Element tr : trs) {
+                        if (tr.hasClass(css_class)) {
+                            String answs = tr.text();
+                            answStr.append(" ");
+                            answStr.append(answs);
+                            answStr.append("\n ");
+
+                            tr.attr("style", "background-color:rgb(0,255,0)");
+
+                            answ = answ + " " + choice.get(index);
+                            index++;
+                        }
+                        ;
+                    }
+
+                    answStr.append("\n");
+                    answMap.put(id, answ);
+                    index = 0;
+                    answ = "";
+                }
+
+            }
+
+        }
+
+        vExamAnsw.setAnswMap(answMap);
+        vExamAnsw.setAnswStr(answStr.toString());
+        vExamAnsw.setAnswHtml(doc.html());
+        return vExamAnsw;
     }
 
 
@@ -716,6 +983,8 @@ public class newZjyMain {
         //9b933b5e625e459ba9df0ea29e9e50ed
         //MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=
         //22befd2145494c4cb15b772c0d66ab07
+
+
 
         String token = "d8baeb4ea0d945d1a34e2ed408be5723";
         //String token = "7d4322bbfaee4cef83fd76cd96e27131";
@@ -742,7 +1011,7 @@ public class newZjyMain {
         //System.out.println(newZjyApi.getQuestionManage(""));
 
         //newZjyApi.getUsersessionidw2();
-        //
+        //      System.exit(0);
         //new RuiKey().Demo();
 
         if (!isLogin(vUser)) {
@@ -756,6 +1025,17 @@ public class newZjyMain {
             System.out.println("upAuthorization erro");
         }
 
+        if (!upUNTYXLCOOKIE(vUser, "")) {
+            System.out.println("upUNTYXLCOOKIE erro");
+        }
+
+        if (!upUsersessionidm(vUser,"", "")) {
+            System.out.println("upUsersessionidm erro");
+        }
+
+
+        newZjyApi.printHeader();
+        System.exit(0);
 
         //System.out.println(Tool.parseDataTime("1662134400000"));
         //newZjyTestApi.getAuth();
@@ -772,40 +1052,107 @@ public class newZjyMain {
                     CourseName + " * " + CourseId);
 
 
-            if (!CourseName.contains("中国传统文化与哲学")) continue;
+            if (!CourseName.contains("789")) continue;
+            //if (!CourseName.contains("中国传统文化与哲学")) continue;
 
-            if (!upUNTYXLCOOKIE(vUser, CourseId)) {
-                System.out.println("upUNTYXLCOOKIE erro");
-            }
 
             //newZjyApi.upHeader2();
 
 
-            if (!upUsersessionidm(CourseId, "")) {
-                System.out.println("upUsersessionidm erro");
-            }
 
             //6049aaaac97845d1a8a790f397962b0a
             // System.out.println(newZjyApi.getCourseExamAction(CourseId,"6049aaaac97845d1a8a790f397962b0a"));
-            // System.out.println(getExam_list_data_w(CourseId));
-            String ret = newZjyApi.getExam_list_data_ww(CourseId);
-            List<ExamWork> vExamWorks = parseExamW(ret);
-            for (ExamWork vExamWork : vExamWorks) {
-                String ExamId="4028813884ea68b20184f9ec6a39673d";//vExamWork.getExamId();
-                ret=newZjyApi.getConfirmPagePaperStructure(ExamId);
-                ExamWorkInfo vExamWorkInfo=parseExamInfo(ret,ExamId);
-                String PaperId=vExamWorkInfo.getPaperId();
+            // newZjyApi.getExam_list_data_ww(CourseId);
 
-               // System.out.println(newZjyApi.getExamPaperStatisticsDetail(ExamId,PaperId));
+            String ret;
+
+            List<ExamWork> vExamWorks ;
+
+
+            vExamWorks=getExam_list_data_e(CourseId);
+            //System.out.println(ret);
+            //System.exit(0);
+
+
+            for (ExamWork vExamWork : vExamWorks) {
+
+                //String ExamId="4028813884ea68b20184f9ec6a39673d";
+
+
+                String ExamId = vExamWork.getExamId();
+                String Exam_num = vExamWork.getExam_num();
+                String ExamName = vExamWork.getExamName();
+                String ExamStatus = vExamWork.getExamStatus();
+
+                ret = newZjyApi.getConfirmPagePaperStructure(ExamId);
+                ExamWorkInfo vExamWorkInfo = parseExamInfo(ret, ExamId);
+                String PaperId = vExamWorkInfo.getPaperId();
+
+                System.out.println("\n" + "考试" + ExamId + " * " + Exam_num + "\n" + PaperId + " * " + ExamName + " * " + ExamStatus + "\n");
+                // System.out.println(newZjyApi.getExamPaperStatisticsDetail(ExamId,PaperId));
+
+                System.out.println(newZjyApi.getPaperStructure(PaperId));
+
+                //System.out.println(newZjyApi.getPaperStructureForPreview(PaperId));
+                //break;
+            }
+
+
+
+
+
+            vExamWorks = getExam_list_data_t(CourseId);
+
+
+            for (ExamWork vExamWork : vExamWorks) {
+
+                //String ExamId="4028813884ea68b20184f9ec6a39673d";
+
+                String ExamId = vExamWork.getExamId();
+                String Exam_num = vExamWork.getExam_num();
+                String ExamName = vExamWork.getExamName();
+                String ExamStatus = vExamWork.getExamStatus();
+
+                ret = newZjyApi.getConfirmPagePaperStructure(ExamId);
+                ExamWorkInfo vExamWorkInfo = parseExamInfo(ret, ExamId);
+                String PaperId = vExamWorkInfo.getPaperId();
+
+                System.out.println("\n" + "测验" + ExamId + " * " + Exam_num + "\n" + PaperId + " * " + ExamName + " * " + ExamStatus + "\n");
+
+                // System.out.println(newZjyApi.getExamPaperStatisticsDetail(ExamId,PaperId));
+
+                //System.out.println(newZjyApi.getPaperStructure(PaperId));
+                //System.out.println(newZjyApi.getPaperStructureForPreview(PaperId));
+                //break;
+            }
+            System.exit(0);
+
+            vExamWorks = getExam_list_data_w(CourseId);
+
+
+            for (ExamWork vExamWork : vExamWorks) {
+
+                //String ExamId="4028813884ea68b20184f9ec6a39673d";
+
+                String ExamId = vExamWork.getExamId();
+                String Exam_num = vExamWork.getExam_num();
+                String ExamName = vExamWork.getExamName();
+                String ExamStatus = vExamWork.getExamStatus();
+
+                ret = newZjyApi.getConfirmPagePaperStructure(ExamId);
+                ExamWorkInfo vExamWorkInfo = parseExamInfo(ret, ExamId);
+                String PaperId = vExamWorkInfo.getPaperId();
+
+                System.out.println("作业 " + ExamId + " * " + Exam_num + "\n" + PaperId + " * " + ExamName + " * " + ExamStatus + "\n");
+                // System.out.println(newZjyApi.getExamPaperStatisticsDetail(ExamId,PaperId));
+
                 System.out.println(newZjyApi.getPaperStructure(PaperId));
                 System.out.println(newZjyApi.getPaperStructureForPreview(PaperId));
-                break;
+                //break;
             }
+
             //newZjyApi.upHeader1();
-
-
-          //  newZjyApi.printHeader();
-
+            //  newZjyApi.printHeader();
             System.exit(0);
 
             List<ClassRoom> ClassRooms = getClassroomByStudent(vCourse);

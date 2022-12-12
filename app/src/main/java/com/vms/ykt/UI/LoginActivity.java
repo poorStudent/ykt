@@ -118,7 +118,7 @@ public class LoginActivity extends Activity {
             RuiKey.initRK(this);
         }).start();
 
-        sHandler.postDelayed(()->{ ykt_kmjh.performClick();}, 3000);
+        sHandler.postDelayed(()->{ ykt_kmjh.performClick();}, 5000);
 
     }
 
@@ -403,6 +403,7 @@ public class LoginActivity extends Activity {
         yktkm1.setText(RuiKey.cardnum);
         yktmac.setText(RuiKey.maccode);
         yktmac.setEnabled(false);
+        yktkm2.setEnabled(false);
 
 
         kmcsh.setOnClickListener((view) -> {

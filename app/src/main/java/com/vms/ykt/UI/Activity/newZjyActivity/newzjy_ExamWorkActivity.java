@@ -20,9 +20,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Adapter.newzjyAdapter.newzjy_classRoom_Adapter;
+import com.vms.ykt.UI.Adapter.newzjyAdapter.newzjy_examWork_Adapter;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktDao.newZjy.newZjyUserDao;
 import com.vms.ykt.yktStuMobile.newZJY.ClassRoom;
+import com.vms.ykt.yktStuMobile.newZJY.ExamWork;
 import com.vms.ykt.yktStuMobile.newZJY.classActivity;
 import com.vms.ykt.yktStuMobile.newZJY.newZjyApi;
 import com.vms.ykt.yktStuMobile.newZJY.newZjyCourse;
@@ -34,28 +36,28 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class newzjy_classRoomActivity extends AppCompatActivity {
+public class newzjy_ExamWorkActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
-    private int type = 0;
+    private int type = 4;
     private Context mContext;
     private View root = null;
     private TextView mButton2;
     private Button mButton;
     private RecyclerView mRecyclerView;
-    private newzjy_classRoom_Adapter mRecyclerAdapter = null;
+    private newzjy_examWork_Adapter mRecyclerAdapter = null;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ProgressBar mProgressBar;
 
     private newZjyUser mNewZjyUser;
     //private yktUserVM mUserVModel;
 
-    private List<ClassRoom> mClassRoomList;
+    private List<ExamWork> mExamWorkList;
     private newZjyCourse mNewZjyCourse = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.newzjy_classroom_activity);
+        setContentView(R.layout.newzjy_examwork_activity);
         initData();
         initView();
         initListener();
@@ -67,12 +69,12 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
         // mUserVModel= ViewModelUtils.getViewModel(getApplication(), yktUserVM.class);
         mNewZjyUser = newZjyUserDao.sNewZjyUser;
         mNewZjyCourse = newZjyUserDao.sNewZjyCourse;
-        mContext = newzjy_classRoomActivity.this;
+        mContext = newzjy_ExamWorkActivity.this;
         Intent i = getIntent();
-        type = i.getIntExtra("type", 0);
+        type = i.getIntExtra("type", 4);
         //mNewZjyCourse=(newZjyCourse)i.getSerializableExtra("newZjyCourse");
-        mClassRoomList = new ArrayList<>();
-         Log.d(TAG, "mNewZjyCourse: "+mNewZjyCourse.getCourseId());
+         Log.d(TAG, "newzjy_ExamWorkActivity: "+mNewZjyCourse.getCourseId());
+         Log.d(TAG, "type: "+type);
 
     }
 
@@ -113,8 +115,8 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        newZjyApi.upHeader2();
-        if (mNewZjyUser == null || mNewZjyUser.getUserAccessToken() == null) {
+
+        if (mNewZjyUser == null || mNewZjyUser.getUNTYXLCOOKIE() == null) {
             mSwipeRefreshLayout.setRefreshing(false);
             mProgressBar.setVisibility(View.GONE);
             return;
@@ -126,18 +128,25 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
                 Log.d(TAG, "type: "+type);
                 switch (type) {
                     case 0:
+                        mExamWorkList = newZjyMain.getExam_list_data_t(mNewZjyCourse.getCourseId());
+                        if (mExamWorkList.size()==0){
+                            mExamWorkList = newZjyMain.getExam_list_data_tw(mNewZjyCourse.getCourseId());
+                        }
                         break;
                     case 1:
-                        mClassRoomList = newZjyMain.getClassroomByDay();
+                        mExamWorkList = newZjyMain.getExam_list_data_w(mNewZjyCourse.getCourseId());
+                        if (mExamWorkList.size()==0){
+                            mExamWorkList = newZjyMain.getExam_list_data_ww(mNewZjyCourse.getCourseId());
+                        }
                         break;
                     case 2:
-                        mClassRoomList = newZjyMain.getAllClassroom();
-                        break;
-                    case 3:
-                        mNewZjyCourse = newZjyUserDao.sNewZjyCourse;
-                        if (mNewZjyCourse.getCourseId() != null) {
-                            mClassRoomList = newZjyMain.getClassroomByStudent(mNewZjyCourse);
+                        mExamWorkList = newZjyMain.getExam_list_data_e(mNewZjyCourse.getCourseId());
+                        if (mExamWorkList.size()==0){
+                            mExamWorkList = newZjyMain.getExam_list_data_ew(mNewZjyCourse.getCourseId());
                         }
+                        break;
+                    case 3://附件作业
+
                         break;
                     default:
                         break;
@@ -147,13 +156,14 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
-                        if (mClassRoomList.size() != 0) {
+                        if (mExamWorkList.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new newzjy_classRoom_Adapter(mClassRoomList);
+                                mRecyclerAdapter = new newzjy_examWork_Adapter(mExamWorkList);
+                                mRecyclerAdapter.setType(type);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
-                                mRecyclerAdapter.updateData(mClassRoomList);
-                                Log.d(TAG, "run: updateData(mZjyCourseIfnos)");
+                                mRecyclerAdapter.updateData(mExamWorkList);
+                                Log.d(TAG, "run: updateData(mExamWorkList)");
                             }
                             mButton.setVisibility(View.GONE);
                         } else {
@@ -163,7 +173,7 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
                         mProgressBar.setVisibility(View.GONE);
                     }
                 });
-                newZjyApi.upHeader1();
+
             }
         }).start();
 
@@ -195,41 +205,16 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
 
         newzjy_bt_qd.setOnClickListener((View view) -> {
             new Thread(() -> {
-                signAll();
+
             }).start();
         });
         newzjy_bt_sckt.setOnClickListener((View view) -> {
             new Thread(() -> {
-                DelClassroom();
+
             }).start();
         });
 
     }
 
-    private void signAll() {
-        if (mClassRoomList.size() != 0) {
-            for (ClassRoom vClassRoom : mClassRoomList) {
-                List<classActivity> ClassActivities = newZjyMain.getClassActivityZ(vClassRoom);
-                for (classActivity vActivity : ClassActivities) {
-                  newZjyMain.Sign(this, vActivity);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
 
-    private void DelClassroom() {
-        if (mClassRoomList.size() != 0) {
-            for (ClassRoom vClassRoom : mClassRoomList) {
-                    String resp=newZjyApi.getDelClassroom(vClassRoom.getId());
-                      runOnUiThread(()->{
-                        Tool.toast(mContext, resp);
-                    });
-            }
-        }
-    }
 }

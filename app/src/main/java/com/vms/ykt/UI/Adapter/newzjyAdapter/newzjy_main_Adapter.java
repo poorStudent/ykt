@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.vms.ykt.R;
+import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_ExamWorkActivity;
 import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_classRoomActivity;
 import com.vms.ykt.UI.Activity.newZjyActivity.newZjy_mainActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
@@ -130,6 +131,12 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
         Button zjy_bt_jkxq = dialogView.findViewById(R.id.zjy_bt_jkxq);
 
 
+        Button zjy_bt_cy = dialogView.findViewById(R.id.zjy_bt_cy);
+        Button zjy_bt_zy = dialogView.findViewById(R.id.zjy_bt_zy);
+        Button zjy_bt_ks = dialogView.findViewById(R.id.zjy_bt_ks);
+        Button zjy_bt_fjzy = dialogView.findViewById(R.id.zjy_bt_fjzy);
+
+
 
 
         but_kt.setOnClickListener((View view) -> {
@@ -149,6 +156,35 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
 
 
         zjy_bt_jkxq.setOnClickListener((View view) -> {
+
+        });
+
+
+        zjy_bt_cy.setOnClickListener((View view) -> {
+            Intent i = new Intent(mActivity, newzjy_ExamWorkActivity.class);
+            i.putExtra("type", 0);
+            mActivity.startActivity(i);
+
+        });
+
+
+        zjy_bt_zy.setOnClickListener((View view) -> {
+            Intent i = new Intent(mActivity, newzjy_ExamWorkActivity.class);
+            i.putExtra("type", 1);
+            mActivity.startActivity(i);
+
+        });
+
+
+        zjy_bt_ks.setOnClickListener((View view) -> {
+            Intent i = new Intent(mActivity, newzjy_ExamWorkActivity.class);
+            i.putExtra("type", 2);
+            mActivity.startActivity(i);
+
+        });
+
+
+        zjy_bt_fjzy.setOnClickListener((View view) -> {
 
         });
 
