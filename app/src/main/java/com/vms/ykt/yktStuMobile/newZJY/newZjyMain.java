@@ -145,17 +145,8 @@ public class newZjyMain {
     public static boolean getUNTYXLCOOKIE(newZjyUser user, String courseid) {
         String resp = newZjyApi.getSignLearn(courseid, user.getLoginId());
         if (resp == null || !resp.contains("UNTYXLCOOKIE")) return false;
-        JSONArray jsona = Tool.parseJsonA(resp, "Set-Cookie");
-        for (int i = 0; i < jsona.size(); i++) {
-            String js = jsona.getString(i);
-            //System.out.println(js);
-            if (js.contains("UNTYXLCOOKIE")) {
-                String uk = js.replaceAll("\"", "");
-                user.setUNTYXLCOOKIE(js);
-                return true;
-            }
-        }
-        return false;
+        user.setUNTYXLCOOKIE(resp);
+        return true;
     }
 
     public static boolean upUNTYXLCOOKIE(newZjyUser user, String courseid) {
@@ -166,12 +157,26 @@ public class newZjyMain {
         return false;
     }
 
-    public static boolean upUsersessionidm(newZjyUser user,String courseId, String examCode) {
+    public static boolean getUsersessionidm(newZjyUser user, String courseId, String examCode) {
         String Usersessionid = newZjyApi.getUsersessionidm(courseId, examCode);
-        if (Usersessionid.isEmpty() || !Usersessionid.contains("USERSESSIONID")) return false;
+        if (Usersessionid.isEmpty() || !Usersessionid.contains("USERSESSIONID")) {
+            Usersessionid = "USERSESSIONID=402883ab82fee62c018307a26e3e1f1d#interface#batchCode#attachData; " +
+                    "Max-Age=2592000; " +
+                    "Domain=spoc-exam.icve.com.cn; Path=/; SameSite=None; Secure";
+            Usersessionid = "";
+        }
+
         user.setUSERSESSIONID(Usersessionid);
-        newZjyApi.upUsersessionid(Usersessionid);
+
         return true;
+    }
+
+    public static boolean upUsersessionidm(newZjyUser user, String courseId, String examCode) {
+        if (getUsersessionidm(user, courseId, examCode)) {
+            newZjyApi.upUsersessionid(user.getUSERSESSIONID());
+            return true;
+        }
+        return false;
     }
 
     public static List<classActivity> getClassActivityQ(ClassRoom vClassRoom) {
@@ -619,20 +624,20 @@ public class newZjyMain {
 
     //作业
     public static List<ExamWork> getExam_list_data_w(String courseId) {
-        String ret= newZjyApi.getExam_list_data_w(courseId);
+        String ret = newZjyApi.getExam_list_data_w(courseId);
         return parseExamM(ret);
     }
 
     //测验
     public static List<ExamWork> getExam_list_data_t(String courseId) {
-        String ret=newZjyApi.getExam_list_data_t(courseId);
+        String ret = newZjyApi.getExam_list_data_t(courseId);
         return parseExamM(ret);
     }
 
 
     //考试
     public static List<ExamWork> getExam_list_data_e(String courseId) {
-        String ret= newZjyApi.getExam_list_data_e(courseId);
+        String ret = newZjyApi.getExam_list_data_e(courseId);
         return parseExamM(ret);
     }
 
@@ -645,8 +650,8 @@ public class newZjyMain {
     //移动端解析 作业 考试 测验
     public static List<ExamWork> parseExamM(String resp) {
         List<ExamWork> vExamWorks = new ArrayList<>();
-        if (resp==null || resp.isEmpty()){
-          return vExamWorks;
+        if (resp == null || resp.isEmpty()) {
+            return vExamWorks;
         }
 
         Document doc = Jsoup.parse(resp, "UTF-8");
@@ -675,30 +680,28 @@ public class newZjyMain {
     }
 
 
-
-
     //作业
     public static List<ExamWork> getExam_list_data_ww(String courseId) {
-        String ret= newZjyApi.getExam_list_data_ww(courseId);
+        String ret = newZjyApi.getExam_list_data_ww(courseId);
         return parseExamW(ret);
     }
 
     //测验
     public static List<ExamWork> getExam_list_data_tw(String courseId) {
-        String ret=newZjyApi.getExam_list_data_tw(courseId);
+        String ret = newZjyApi.getExam_list_data_tw(courseId);
         return parseExamW(ret);
     }
 
 
     //考试
     public static List<ExamWork> getExam_list_data_ew(String courseId) {
-        String ret= newZjyApi.getExam_list_data_ew(courseId);
+        String ret = newZjyApi.getExam_list_data_ew(courseId);
         return parseExamW(ret);
     }
 
 
-    public static String getHomeworkw(String courseId){
-        String resp=newZjyApi.getHomeworkw(courseId);
+    public static String getHomeworkw(String courseId) {
+        String resp = newZjyApi.getHomeworkw(courseId);
         return resp;
     }
 
@@ -707,13 +710,13 @@ public class newZjyMain {
         //File input = new File("E:\\start Menu\\zjy.html");
         //resp=Tool.fr(input);
         List<ExamWork> vExamWorks = new ArrayList<>();
-        if (resp==null || resp.isEmpty()){
+        if (resp == null || resp.isEmpty()) {
             return vExamWorks;
         }
 
         Document doc = Jsoup.parse(resp, "UTF-8");
         Elements box2s = doc.getElementsByAttributeValue("class", "box2 mt10");
-        System.out.println(box2s.size());
+        //System.out.println(box2s.size());
         for (Element box2 : box2s) {
             //Element vElement=box2.select("input[name*=structure]").first();
             //Element vElement=box2.getElementsByAttributeValue("name","structure").get(0);
@@ -760,17 +763,18 @@ public class newZjyMain {
 
 
     //获取 PaperId
-    public static ExamWorkInfo getExamConfirm(String ExamId){
+    public static ExamWorkInfo getExamConfirm(String ExamId) {
         String ret = newZjyApi.getConfirmPagePaperStructure(ExamId);
         System.out.println(ret);
-        if (ret==null || ret.isEmpty()){
-            ret=newZjyApi.getExamPaperStructure(ExamId);
+        if (ret == null || ret.isEmpty()) {
+            ret = newZjyApi.getExamPaperStructure(ExamId);
             System.out.println(ret);
         }
 
         ExamWorkInfo vExamWorkInfo = newZjyMain.parseExamInfo(ret, ExamId);
         return vExamWorkInfo;
     }
+
 
     public static ExamWorkInfo parseExamInfo(String resp, String ExamId) {
         ExamWorkInfo vExamWorkInfo = new ExamWorkInfo();
@@ -788,16 +792,17 @@ public class newZjyMain {
 
 
     public static examAnsw getPaperAnsw1(String paperId) {
-        String resp= newZjyApi.getPaperStructureForPreview(paperId);
+        String resp = newZjyApi.getPaperStructureForPreview(paperId);
         System.out.println(resp);
-        return parseAnsw(resp,1);
+        return parseAnsw(resp, 1);
     }
 
 
     public static examAnsw getPaperAnsw2(String paperId) {
-        String resp= newZjyApi.getPaperStructure(paperId);
+        String resp = newZjyApi.getPaperStructure(paperId);
         System.out.println(resp);
-        return parseAnsw(resp,2);
+
+        return parseAnsw(resp, 2);
     }
 
 
@@ -865,35 +870,46 @@ public class newZjyMain {
                         choice.add("1");
                     }
 
-                    Element exam_forms = questionContent.select("div.exam_form").first();
-
-                    Elements labels = exam_forms.select("label");
-
 
                     answStr.append(" 答案：");
 
-                    if (answertype.contains("singlechoice") || answertype.contains("bijudgement") || answertype.contains("multichoice"))
-                        ;
+                    if (answertype.contains("textarea")) {
+                        Element exam_keys_con = questionContent.select("div.showHide").select("div.exam_keys")
+                                .select("div.exam_keys_con").first();
+                        exam_keys_con.attr("style", "background-color:rgb(0,255,0)");
+                        String answs = exam_keys_con.text();
+                        answStr.append(" ");
+                        answStr.append(answs);
+                        answStr.append("\n ");
+                        answ = answs;
+                    } else {
+                        Element exam_forms = questionContent.select("div.exam_form").first();
 
-                    for (Element label : labels) {
-                        String vClassName = label.className();
-                        if (css_class.equals(vClassName)) {
+                        Elements labels = exam_forms.select("label");
 
-                            String answs = label.text();
-                            answStr.append(" ");
-                            answStr.append(answs);
-                            answStr.append("\n ");
 
-                            label.attr("style", "background-color:rgb(0,255,0)");
+                        //if (answertype.contains("singlechoice") || answertype.contains("bijudgement") || answertype.contains("multichoice"));
 
-                            answ = answ + " " + choice.get(index);
-                            index++;
+                        for (Element label : labels) {
+                            String vClassName = label.className();
+                            if (css_class.equals(vClassName)) {
 
+                                String answs = label.text();
+                                answStr.append(" ");
+                                answStr.append(answs);
+                                answStr.append("\n ");
+
+                                label.attr("style", "background-color:rgb(0,255,0)");
+
+                                answ = answ + " || " + choice.get(index);
+                                index++;
+
+                            }
                         }
                     }
 
                     answStr.append("\n");
-                    answ = id + " " + answ;
+                    answ = id + " || " + answ;
                     answMap.put(sectionid, answ);
                     index = 0;
                     answ = "";
@@ -909,7 +925,7 @@ public class newZjyMain {
                     String id = assItem.id();
                     String answertype = assItem.attr("answertype");
                     Element assItem_tit = assItem.getElementsByClass("assItem_tit").first();
-                    String Item_tit=assItem_tit.text();
+                    String Item_tit = assItem_tit.text();
 
                     answStr.append(" ");
                     answStr.append(Item_tit);
@@ -939,29 +955,41 @@ public class newZjyMain {
                         choice.add("1");
                     }
 
-                    Element assItem_cons = assItem.getElementsByClass("assItem_con").first();
-                    Element tbodys = assItem_cons.select("div.paper_table").first().select("table>tbody").first();
-                    Elements trs = tbodys.select("tr[name=\"optionContent\"]");
-
-
                     answStr.append(" 答案：");
 
-                    for (Element tr : trs) {
-                        if (tr.hasClass(css_class)) {
-                            String answs = tr.text();
-                            answStr.append(" ");
-                            answStr.append(answs);
-                            answStr.append("\n ");
+                    if (answertype.contains("textarea")){
+                        Element assItem_subTit = assItem.select("div.assItem_subTit").first();
+                        String answs = assItem_subTit.text().replace("参考答案：", "");
+                        answStr.append(" ");
+                        answStr.append(answs);
+                        answStr.append("\n ");
+                        assItem_subTit.attr("style", "background-color:rgb(0,255,0)");
+                        answ =answs;
+                    }else {
 
-                            tr.attr("style", "background-color:rgb(0,255,0)");
+                        Element assItem_cons = assItem.getElementsByClass("assItem_con").first();
+                        Element tbodys = assItem_cons.select("div.paper_table").first().select("table>tbody").first();
+                        Elements trs = tbodys.select("tr[name=\"optionContent\"]");
 
-                            answ = answ + " " + choice.get(index);
-                            index++;
+
+                        for (Element tr : trs) {
+                            if (tr.hasClass(css_class)) {
+                                String answs = tr.text();
+                                answStr.append(" ");
+                                answStr.append(answs);
+                                answStr.append("\n ");
+
+                                tr.attr("style", "background-color:rgb(0,255,0)");
+
+                                answ = answ + " || " + choice.get(index);
+                                index++;
+                            }
+
                         }
-                        ;
                     }
 
                     answStr.append("\n");
+                    answ = id + " || " + answ;
                     answMap.put(id, answ);
                     index = 0;
                     answ = "";
@@ -977,13 +1005,19 @@ public class newZjyMain {
         return vExamAnsw;
     }
 
+    //web 获取课件
+    public static String getCourseware_index(String courseId) {
+        String resp = newZjyApi.getCourseware_index(courseId);
+        System.out.println(resp);
+        return resp;
+    }
+
 
     public static void doMain() {
         //aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA==
         //9b933b5e625e459ba9df0ea29e9e50ed
         //MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=
         //22befd2145494c4cb15b772c0d66ab07
-
 
 
         String token = "d8baeb4ea0d945d1a34e2ed408be5723";
@@ -1029,17 +1063,25 @@ public class newZjyMain {
             System.out.println("upUNTYXLCOOKIE erro");
         }
 
-        if (!upUsersessionidm(vUser,"", "")) {
+        if (!upUsersessionidm(vUser, "", "")) {
             System.out.println("upUsersessionidm erro");
         }
 
+        //newZjyApi.printHeader();
 
-        newZjyApi.printHeader();
-        System.exit(0);
+
+        // System.exit(0);
 
         //System.out.println(Tool.parseDataTime("1662134400000"));
         //newZjyTestApi.getAuth();
         //newZjyApi.webLogin();
+
+        examAnsw vExamAnsw ;
+
+
+
+
+
 
 
         String resp;
@@ -1052,13 +1094,14 @@ public class newZjyMain {
                     CourseName + " * " + CourseId);
 
 
-            if (!CourseName.contains("789")) continue;
-            //if (!CourseName.contains("中国传统文化与哲学")) continue;
+            // if (!CourseName.contains("789")) continue;
+            if (!CourseName.contains("中国传统文化与哲学")) continue;
 
 
+            //getCourseware_index(CourseId);
             //newZjyApi.upHeader2();
 
-
+            //System.exit(0);
 
             //6049aaaac97845d1a8a790f397962b0a
             // System.out.println(newZjyApi.getCourseExamAction(CourseId,"6049aaaac97845d1a8a790f397962b0a"));
@@ -1066,10 +1109,10 @@ public class newZjyMain {
 
             String ret;
 
-            List<ExamWork> vExamWorks ;
+            List<ExamWork> vExamWorks;
 
 
-            vExamWorks=getExam_list_data_e(CourseId);
+            vExamWorks = getExam_list_data_ww(CourseId);
             //System.out.println(ret);
             //System.exit(0);
 
@@ -1089,65 +1132,13 @@ public class newZjyMain {
                 String PaperId = vExamWorkInfo.getPaperId();
 
                 System.out.println("\n" + "考试" + ExamId + " * " + Exam_num + "\n" + PaperId + " * " + ExamName + " * " + ExamStatus + "\n");
-                // System.out.println(newZjyApi.getExamPaperStatisticsDetail(ExamId,PaperId));
 
-                System.out.println(newZjyApi.getPaperStructure(PaperId));
-
-                //System.out.println(newZjyApi.getPaperStructureForPreview(PaperId));
-                //break;
-            }
-
-
-
-
-
-            vExamWorks = getExam_list_data_t(CourseId);
-
-
-            for (ExamWork vExamWork : vExamWorks) {
-
-                //String ExamId="4028813884ea68b20184f9ec6a39673d";
-
-                String ExamId = vExamWork.getExamId();
-                String Exam_num = vExamWork.getExam_num();
-                String ExamName = vExamWork.getExamName();
-                String ExamStatus = vExamWork.getExamStatus();
-
-                ret = newZjyApi.getConfirmPagePaperStructure(ExamId);
-                ExamWorkInfo vExamWorkInfo = parseExamInfo(ret, ExamId);
-                String PaperId = vExamWorkInfo.getPaperId();
-
-                System.out.println("\n" + "测验" + ExamId + " * " + Exam_num + "\n" + PaperId + " * " + ExamName + " * " + ExamStatus + "\n");
 
                 // System.out.println(newZjyApi.getExamPaperStatisticsDetail(ExamId,PaperId));
 
                 //System.out.println(newZjyApi.getPaperStructure(PaperId));
+
                 //System.out.println(newZjyApi.getPaperStructureForPreview(PaperId));
-                //break;
-            }
-            System.exit(0);
-
-            vExamWorks = getExam_list_data_w(CourseId);
-
-
-            for (ExamWork vExamWork : vExamWorks) {
-
-                //String ExamId="4028813884ea68b20184f9ec6a39673d";
-
-                String ExamId = vExamWork.getExamId();
-                String Exam_num = vExamWork.getExam_num();
-                String ExamName = vExamWork.getExamName();
-                String ExamStatus = vExamWork.getExamStatus();
-
-                ret = newZjyApi.getConfirmPagePaperStructure(ExamId);
-                ExamWorkInfo vExamWorkInfo = parseExamInfo(ret, ExamId);
-                String PaperId = vExamWorkInfo.getPaperId();
-
-                System.out.println("作业 " + ExamId + " * " + Exam_num + "\n" + PaperId + " * " + ExamName + " * " + ExamStatus + "\n");
-                // System.out.println(newZjyApi.getExamPaperStatisticsDetail(ExamId,PaperId));
-
-                System.out.println(newZjyApi.getPaperStructure(PaperId));
-                System.out.println(newZjyApi.getPaperStructureForPreview(PaperId));
                 //break;
             }
 

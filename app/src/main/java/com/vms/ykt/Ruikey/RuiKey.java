@@ -101,7 +101,7 @@ public class RuiKey {
 
 
     static String versionname = "v1.0";//当前软件版本号
-    public static String maccode = "";//机器码
+    public static String maccode = "1213213";//机器码
 
 
     //此账号是测试的账号，已过期了。请您在验证平台手动注册一个，或者通过接口注册一个用来测试
@@ -122,8 +122,10 @@ public class RuiKey {
 
     public static void initRK(Context context) {
 
+
             RuiKey.RkInit = RuiKey.IniSoftInfo();
-            if (RuiKey.RkInit) {
+
+            if (!RuiKey.RkInit) {
 
                 ((Activity)context).runOnUiThread(() -> {
                     Tool.toast(context, "初始化失败请重初始化");
@@ -136,7 +138,9 @@ public class RuiKey {
     }
 
     public static String gxrz(){
-        if (NetworkVerHelp.iniSoftInfoData == null) return "null";
+        if (NetworkVerHelp.iniSoftInfoData == null) {
+            return "初始化失败";
+        }
         String Msg = "发现新版本：" + NetworkVerHelp.iniSoftInfoData.softInfo.newversionnum + "\n";
         Msg = Msg + "新版本下载地址:" + NetworkVerHelp.iniSoftInfoData.softInfo.networkdiskurl + "\n";
         Msg = Msg + "提取码:" + NetworkVerHelp.iniSoftInfoData.softInfo.diskpwd + "\n";

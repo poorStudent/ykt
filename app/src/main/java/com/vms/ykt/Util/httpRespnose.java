@@ -2,11 +2,15 @@ package com.vms.ykt.Util;
 
 import android.util.Pair;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.function.impl.ToString;
+
 import okhttp3.Cookie;
 import okhttp3.Headers;
 
 import java.lang.annotation.Retention;
 import java.net.ResponseCache;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +120,15 @@ public class httpRespnose {
         Resp = ParmsMResp;
     }
 
-
+    @Override
+    public String toString() {
+        return "httpRespnose{" +
+                ", Location='" + Location + '\'' +
+                ", mHearderFileds=" + JSONObject.toJSONString( mHearderFileds )+
+                ", code='" + code + '\'' +
+                ", Resp='" + Resp + '\'' +
+                '}';
+    }
 }
 
 interface mRespnose {

@@ -42,7 +42,6 @@ public class newzjy_examWork_Adapter extends baseRecyclerAdapter<newzjy_examWork
     private String typeName;
     public newzjy_examWork_Adapter(List<ExamWork> data) {
         this.mExamWorkList = data;
-
     }
 
     private void initData(){

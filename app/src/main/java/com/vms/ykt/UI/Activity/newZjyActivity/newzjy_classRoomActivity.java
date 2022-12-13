@@ -163,7 +163,7 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
                         mProgressBar.setVisibility(View.GONE);
                     }
                 });
-                newZjyApi.upHeader1();
+               // newZjyApi.upHeader1();
             }
         }).start();
 
@@ -231,5 +231,11 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
                     });
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        newZjyApi.upHeader1();
     }
 }

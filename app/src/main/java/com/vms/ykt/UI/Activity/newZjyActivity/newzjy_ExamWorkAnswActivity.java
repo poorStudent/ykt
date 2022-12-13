@@ -122,6 +122,14 @@ public class newzjy_ExamWorkAnswActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // if (AppStatus.getAll()==null||!AppStatus.getZjyzy().equals("zjyok"))return;
+                if (!newZjyMain.upUsersessionidm( newZjyUserDao.sNewZjyUser
+                        , newZjyUserDao.sNewZjyCourse.getCourseId()
+                        ,newZjyUserDao.sExamWork.getExam_num())){
+                    runOnUiThread(()->{
+                        Tool.toast(mContext, "请重试...");
+                    });
+                };
+
                 mExamAnsw = doWork();
                 Log.d(TAG, "run: " + mExamAnsw.getAnswStr());
                 runOnUiThread(new Runnable() {

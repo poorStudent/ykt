@@ -55,7 +55,7 @@ public class yktHeaders {
         //header.put("Sec-Fetch-Mode", "cors");
         //header.put("Accept", "application/json, text/javascript, */*; q=0.01");
         // header.put("Accept-Encoding", "gzip, deflate, br");
-        header.put("X-Requested-With", "XMLHttpRequest");
+       // header.put("X-Requested-With", "XMLHttpRequest");
         header.put("Host", host);
         return header;
     }

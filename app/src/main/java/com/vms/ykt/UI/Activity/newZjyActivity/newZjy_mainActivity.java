@@ -53,7 +53,7 @@ public class newZjy_mainActivity extends AppCompatActivity {
     private Activity mActivity;
     private newZjyUser mNewZjyUser;
     private List<newZjyCourse> mNewZjyCourseList;
-  //  private yktUserVM mUserVModel;
+    //  private yktUserVM mUserVModel;
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -100,7 +100,7 @@ public class newZjy_mainActivity extends AppCompatActivity {
             return true;
         });
 
-        mButton2.setOnClickListener((View v)-> {
+        mButton2.setOnClickListener((View v) -> {
             goClassRoom(1);
         });
 
@@ -120,7 +120,7 @@ public class newZjy_mainActivity extends AppCompatActivity {
 
     private void loadData() {
 
-        newZjyApi.upHeader1();
+        //newZjyApi.upHeader1();
         //mUserInfo=mUserVModel.getCqoocUser();
         if (mNewZjyUser == null || mNewZjyUser.getToken() == null) {
             mSwipeRefreshLayout.setRefreshing(false);
@@ -132,12 +132,23 @@ public class newZjy_mainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
+
                 mNewZjyCourseList = newZjyMain.getMyClassList(mNewZjyUser);
 
-                if (mNewZjyCourseList.size() !=0){
-                    /*new Thread(()->{
-                        newZjyMain.upUNTYXLCOOKIE(mNewZjyUser,mNewZjyCourseList.get(0).getCourseId());
-                    }).start();*/
+                newZjyMain.upAuthorization(mNewZjyUser);
+                newZjyMain.upUNTYXLCOOKIE(mNewZjyUser, "");
+                newZjyMain.upUsersessionidm(mNewZjyUser,"","");
+                //newZjyApi.getUsersessionidw2();
+                //newZjyApi.getUsersessionidw();
+                Log.d(TAG, "run: " + mNewZjyUser.getUserAccessToken());
+                Log.d(TAG, "run: " + mNewZjyUser.getUSERSESSIONID());
+                Log.d(TAG, "run: " + mNewZjyUser.getUNTYXLCOOKIE());
+
+                if (mNewZjyCourseList.size() != 0) {
+                    new Thread(() -> {
+                        //  newZjyMain.upUNTYXLCOOKIE(mNewZjyUser,mNewZjyCourseList.get(0).getCourseId());
+                        // newZjyMain.upUsersessionidm(mNewZjyUser,mNewZjyCourseList.get(0).getCourseId(),"");
+                    }).start();
                 }
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
@@ -283,7 +294,7 @@ public class newZjy_mainActivity extends AppCompatActivity {
 
             final CacheUs vCacheUs = new CacheUs(username, password);
             final String[] cache = vCacheUs.readCacheUs(mPreferences, "newzjy");
-            final String chck = cache[0] ;
+            final String chck = cache[0];
             Log.d(TAG, "loginDialog cache: " + chck);
             new Thread(new Runnable() {
                 @Override
@@ -293,11 +304,11 @@ public class newZjy_mainActivity extends AppCompatActivity {
 
                     } else {
 
-                        if (!chck.equals("null")&&!chck.isEmpty()) {
+                        if (!chck.equals("null") && !chck.isEmpty()) {
                             mNewZjyUser = JSONObject.parseObject(chck, newZjyUser.class);
-                            if(mNewZjyUser!=null) {
+                            if (mNewZjyUser != null) {
                                 if (!newZjyMain.isLogin(mNewZjyUser)) {
-                                    mNewZjyUser=null;
+                                    mNewZjyUser = null;
                                 }
                             }
                         }
@@ -321,17 +332,12 @@ public class newZjy_mainActivity extends AppCompatActivity {
                             }
                             Log.d(TAG, mNewZjyUser.getLoginId());
 
-                           // mUserVModel.setNewZjyUser(mNewZjyUser);
-                            newZjyUserDao.sNewZjyUser=mNewZjyUser;
-                            new Thread(()->{
-                                newZjyMain.upAuthorization(mNewZjyUser);
-                                newZjyMain.upUNTYXLCOOKIE(mNewZjyUser,"");
-                                newZjyMain.upUsersessionidm(mNewZjyUser,"","");
-                               // Log.d(TAG, "run: "+mNewZjyUser.getUserAccessToken());
-                            }).start();
+                            // mUserVModel.setNewZjyUser(mNewZjyUser);
+                            newZjyUserDao.sNewZjyUser = mNewZjyUser;
 
-                            String us=JSONObject.toJSONString(mNewZjyUser);
-                            vCacheUs.writeCacheUs(mEditor, "newzjy",  us,"null");
+
+                            String us = JSONObject.toJSONString(mNewZjyUser);
+                            vCacheUs.writeCacheUs(mEditor, "newzjy", us, "null");
 
                             Tool.toast(mActivity, "登录成功");
                             customAlert.dismiss();
@@ -346,11 +352,16 @@ public class newZjy_mainActivity extends AppCompatActivity {
         });
     }
 
-    private void goClassRoom(int type){
-        if (mNewZjyUser==null){
+    private void goClassRoom(int type) {
+        if (mNewZjyUser == null ) {
             Tool.toast(mActivity, "先登陆^_^...");
-            return ;
-        };
+            return;
+        }
+        if(mNewZjyUser.getUserAccessToken()==null || mNewZjyUser.getUserAccessToken().isEmpty()){
+            Tool.toast(mActivity, "初始化等下...");
+            return;
+        }
+        ;
 
         Intent intent = new Intent(this, newzjy_classRoomActivity.class);
         intent.putExtra("type", type);

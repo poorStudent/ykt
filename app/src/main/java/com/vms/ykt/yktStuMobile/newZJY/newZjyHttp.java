@@ -63,31 +63,30 @@ public class newZjyHttp {
     }
 
 
-
     public static void addCookie(String upCookie) {
 
         HashMap<String, Object> Header = getHeader();
 
-        if (Header != null && Header.containsKey("Cookie") ) {
+        if (Header != null && Header.containsKey("Cookie")) {
             if (!((String) Objects.requireNonNull(Header.get("Cookie"))).equals("")) {
                 HashMap<String, Object> nckMap = parseCookie(upCookie);
                 String ock = (String) Header.get("Cookie");
                 HashMap<String, Object> ockMap = parseCookie(ock);
-                for (String key:nckMap.keySet()){
+                for (String key : nckMap.keySet()) {
                     if (ockMap.containsKey(key)) {
                         //ockMap.remove(key);
                     }
                     ockMap.put(key, nckMap.get(key));
                 }
-                StringBuilder ck=new StringBuilder();
-                for (String key:ockMap.keySet()){
-                    String v=(String) ockMap.get(key);
+                StringBuilder ck = new StringBuilder();
+                for (String key : ockMap.keySet()) {
+                    String v = (String) ockMap.get(key);
                     ck.append(";");
                     ck.append(key);
                     ck.append("=");
                     ck.append(v);
                 }
-                upCookie=ck.toString().replaceFirst(";", "");
+                upCookie = ck.toString().replaceFirst(";", "");
             }
         }
         addHeader("Cookie", upCookie);
@@ -97,7 +96,8 @@ public class newZjyHttp {
 
     public static HashMap<String, Object> parseCookie(String resp) {
         HashMap<String, Object> cks = new HashMap<>();
-        String pattern = "([^=].+)=(\"?.+\"?);?\\s*";
+        //String pattern = "([^=].+?)=(\"??.*\"??);?";
+        String pattern = "([^=\\s;]+)=([^=\\s;]+)";
         // 创建 Pattern 对象
         Pattern r = Pattern.compile(pattern);
         // 现在创建 matcher 对象
@@ -105,15 +105,21 @@ public class newZjyHttp {
         while (m.find()) {
             cks.put(m.group(1), m.group(2));
         }
+
         return cks;
     }
 
-    public static void upCookie(String ck){
+    public static void upCookie(String ck) {
         HashMap<String, Object> Header = getHeader();
-        if (Header != null && Header.containsKey("Cookie") ) {
-            String upCookie=String.valueOf(Header.get("Cookie"))+";"+ck;
+        if (Header != null && Header.containsKey("Cookie")) {
+            String upCookie = String.valueOf(Header.get("Cookie")) + ";" + ck;
             addHeader("Cookie", upCookie);
         }
+    }
+
+    public static void restCookie(String ck) {
+        addHeader("Cookie", ck);
+
     }
 
     public static String get(String requestUrl) {

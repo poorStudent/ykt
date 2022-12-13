@@ -417,7 +417,7 @@ public class LoginActivity extends Activity {
                 String rt= init_cardnum(RuiKey.cardnum,RuiKey.maccode);
 
                 runOnUiThread(()->{
-                    yktrjxq.setText( RuiKey.gxrz());
+                    yktrjxq.setText(RuiKey.gxrz());
                     yktkmxq.setText(rt);
                 });
 

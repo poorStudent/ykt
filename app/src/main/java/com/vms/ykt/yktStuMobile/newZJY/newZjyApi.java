@@ -43,6 +43,7 @@ public class newZjyApi {
         newZjyHttp.addHeader("Host", "spoc-classroom.icve.com.cn");
         //System.out.println(JSONObject.toJSON(newZjyHttp.getHeader()));
     }
+
     //更新请求头
     public static void upHeader1() {
 
@@ -63,10 +64,12 @@ public class newZjyApi {
         newZjyHttp.addHeader("authorization", "Bearer " + authorization);
         //printHeader();
     }
+
     //更新UNTYXLCOOKIE
-    public static void upUNTYXLCOOKIE( String UNTYXLCOOKIE) {
+    public static void upUNTYXLCOOKIE(String UNTYXLCOOKIE) {
         newZjyHttp.addCookie(UNTYXLCOOKIE);
     }
+
     //更新rest_token cookie
     public static void upRest_token(String upCookie) {
         String nck = "rest_token=" + upCookie;
@@ -89,16 +92,16 @@ public class newZjyApi {
 
 
     //活动id
-    private static String NamespaceAndSiteCode="https://spoc-classroom.icve.com.cn/classroom-teaching-api/enumConst/getByNamespaceAndSiteCode";
+    private static String NamespaceAndSiteCode = "https://spoc-classroom.icve.com.cn/classroom-teaching-api/enumConst/getByNamespaceAndSiteCode";
 
     public static String getNamespaceAndSiteCode(String namespace) {
-        String data = "{\"params\":{\"namespace\":\""+namespace+"\"}}";
+        String data = "{\"params\":{\"namespace\":\"" + namespace + "\"}}";
         String resp = newZjyHttp.post(NamespaceAndSiteCode, data);
         return resp;
     }
 
     public static String getFlagClassroomType() {
-     return getNamespaceAndSiteCode("FlagClassroomType");
+        return getNamespaceAndSiteCode("FlagClassroomType");
     }
 
     public static String getFlagActivityType() {
@@ -119,44 +122,44 @@ public class newZjyApi {
     private static String saveActivity = "https://spoc-classroom.icve.com.cn/classroom-teaching-api/peClassroomActivity/teacher/saveActivity";
 
     //提问抢答
-    public static String getSaveActivityTw1(String classroomId, String courseId,String content,String studentCount) {
+    public static String getSaveActivityTw1(String classroomId, String courseId, String content, String studentCount) {
         String data = "{\"params\":{\"name\":\"提问\",\"activityType\":\"f7f3cef4fe3e11ebabc2fa346ba4cb00\"," +
-                "\"classroomId\":\""+classroomId+"\"," +
+                "\"classroomId\":\"" + classroomId + "\"," +
                 "\"flagClassroomType\":\"41828108a8f711eca8977c10c99ef73b\"," +
                 "\"status\":1,\"detailType\":\"f52334671f3e11ec99cf0c42a14757d6\"," +
                 "\"isFilter\":\"0\"," +
-                "\"content\":\""+content+"\"," +
+                "\"content\":\"" + content + "\"," +
                 "\"checkedStu\":[]," +
-                "\"studentCount\":"+studentCount+"," +
-                "\"courseId\":\""+courseId+"\"}}";
+                "\"studentCount\":" + studentCount + "," +
+                "\"courseId\":\"" + courseId + "\"}}";
         String resp = newZjyHttp.post(saveActivity, data);
         return resp;
     }
 
     //抽人提问
-    public static String getSaveActivityTw2(String classroomId, String courseId,String content,String checkedStu) {
+    public static String getSaveActivityTw2(String classroomId, String courseId, String content, String checkedStu) {
         String data = "{\"params\":{\"name\":\"提问\",\"activityType\":\"f7f3cef4fe3e11ebabc2fa346ba4cb00\"," +
-                "\"classroomId\":\""+classroomId+"\"," +
+                "\"classroomId\":\"" + classroomId + "\"," +
                 "\"flagClassroomType\":\"41828108a8f711eca8977c10c99ef73b\"," +
                 "\"status\":1,\"detailType\":\"f51be0711f3e11ec99cf0c42a14757d6\"," +
                 "\"isFilter\":\"0\"," +
-                "\"content\":\""+content+"\"," +
-                "\"checkedStu\":"+checkedStu+"," +
+                "\"content\":\"" + content + "\"," +
+                "\"checkedStu\":" + checkedStu + "," +
                 "\"studentCount\":null," +
-                "\"courseId\":\""+courseId+"\"}}";
+                "\"courseId\":\"" + courseId + "\"}}";
         String resp = newZjyHttp.post(saveActivity, data);
         return resp;
     }
 
     //讨论
-    public static String getSaveActivityTl(String classroomId, String courseId,String content) {
+    public static String getSaveActivityTl(String classroomId, String courseId, String content) {
         String data = "{\"params\":{\"name\":\"讨论\",\"activityType\":\"fd650823fe3e11ebabc2fa346ba4cb00\"," +
-                "\"classroomId\":\""+classroomId+"\"," +
+                "\"classroomId\":\"" + classroomId + "\"," +
                 "\"flagClassroomType\":\"41828108a8f711eca8977c10c99ef73b\"," +
                 "\"status\":1,\"detailType\":\"30ae0e1c2ff811ec99cf0c42a14757d6\"," +
-                "\"content\":\""+content+"\"" +
+                "\"content\":\"" + content + "\"" +
                 ",\"imgPathList\":[],\"deletePathList\":[]," +
-                "\"courseId\":\""+courseId+"\"}}";
+                "\"courseId\":\"" + courseId + "\"}}";
         String resp = newZjyHttp.post(saveActivity, data);
         return resp;
     }
@@ -176,12 +179,12 @@ public class newZjyApi {
     //创建分组讨论
     private static String createGroupActivity = "https://spoc-classroom.icve.com.cn/classroom-teaching-api/grouppk/createGroupActivity";
 
-    public static String getCreateGroupActivity(String classroomId, String courseId,String groupCount) {
+    public static String getCreateGroupActivity(String classroomId, String courseId, String groupCount) {
         String data = "{\"params\":{\"name\":\"小组PK\",\"activityType\":\"bde4bee12f5c11eda2b7fa346ba4cb00\"," +
-                "\"classroomId\":\""+classroomId+"\"," +
+                "\"classroomId\":\"" + classroomId + "\"," +
                 "\"flagClassroomType\":\"41828108a8f711eca8977c10c99ef73b\",\"status\":1," +
-                "\"courseId\":\""+courseId+"\"," +
-                "\"groupCount\":\""+groupCount+"\",\"isAutomaticAllocation\":1}}";
+                "\"courseId\":\"" + courseId + "\"," +
+                "\"groupCount\":\"" + groupCount + "\",\"isAutomaticAllocation\":1}}";
         String resp = newZjyHttp.post(createGroupActivity, data);
         return resp;
     }
@@ -189,8 +192,8 @@ public class newZjyApi {
     //讨论组打分
     private static String rateTheGroup = "https://spoc-classroom.icve.com.cn/classroom-teaching-api/grouppk/rateTheGroup";
 
-    public static String getRateTheGroup(String groupId,String score) {
-        String data = "{\"params\":{\"groupId\":\""+groupId+"\",\"score\":"+score+"}}";
+    public static String getRateTheGroup(String groupId, String score) {
+        String data = "{\"params\":{\"groupId\":\"" + groupId + "\",\"score\":" + score + "}}";
         String resp = newZjyHttp.post(rateTheGroup, data);
         return resp;
     }
@@ -203,7 +206,7 @@ public class newZjyApi {
     private static String GroupActivityAndStuInfo = "https://spoc-classroom.icve.com.cn/classroom-teaching-api/grouppk/getGroupActivityAndStuInfo";
 
     public static String getAllGroups(String activityId) {
-        String data = "{\"params\":{\"activityId\":\""+activityId+"\"}}";
+        String data = "{\"params\":{\"activityId\":\"" + activityId + "\"}}";
         String resp = newZjyHttp.post(GroupActivityAndStuInfo, data);
         return resp;
     }
@@ -212,7 +215,7 @@ public class newZjyApi {
     private static String GroupInfoByUser = "https://spoc-classroom.icve.com.cn/classroom-teaching-api/grouppk/getGroupInfoByUser";
 
     public static String getGroupInfoByUser(String activityId) {
-        String data = "{\"params\":{\"activityId\":\""+activityId+"\"}}";
+        String data = "{\"params\":{\"activityId\":\"" + activityId + "\"}}";
         String resp = newZjyHttp.post(GroupInfoByUser, data);
         return resp;
     }
@@ -222,7 +225,7 @@ public class newZjyApi {
     private static String StudentsQuestioned = "https://spoc-classroom.icve.com.cn/classroom-teaching-api/question/teacher/getStudentsQuestioned";
 
     public static String getStudentsQuestioned(String classroomId) {
-        String data = "{\"params\":{\"classroomId\":\""+classroomId+"\"," +
+        String data = "{\"params\":{\"classroomId\":\"" + classroomId + "\"," +
                 "\"isFilter\":\"0\",\"searchContent\":\"\"}}";
         String resp = newZjyHttp.post(StudentsQuestioned, data);
         return resp;
@@ -233,8 +236,8 @@ public class newZjyApi {
 
     public static String getDelActivity(String classroomId, String activityId) {
         String data = "{\"params\":{" +
-                "\"id\":\""+activityId+"\"," +
-                "\"classroomId\":\""+classroomId+"\"}}";
+                "\"id\":\"" + activityId + "\"," +
+                "\"classroomId\":\"" + classroomId + "\"}}";
         String resp = newZjyHttp.post(delActivity, data);
         return resp;
     }
@@ -253,25 +256,25 @@ public class newZjyApi {
     static String saveAssessment = "https://user.icve.com.cn/zhzj/zhzjTeacher_saveAssessment.action";
 
     public static String getSaveAssessment(String courseId, String classId
-            ,String learn_time,String learn_time_full, String node_rate,String node_rate_full
-            ,String effective_time,String effective_time_full,String test_rate,String test_rate_full
-            ,String work_rate ,String work_rate_full ,String pop_quiz_rate ,String pop_quiz_full
-            ,String exam_score_rate,String exam_score,String questions_rate,String questions_rate_full
-            ,String sign_num_rate ,String sign_num_full ,String discuss_rate ,String discuss_rate_full
-            ,String groupPK_rate,String groupPK_rate_full) {
+            , String learn_time, String learn_time_full, String node_rate, String node_rate_full
+            , String effective_time, String effective_time_full, String test_rate, String test_rate_full
+            , String work_rate, String work_rate_full, String pop_quiz_rate, String pop_quiz_full
+            , String exam_score_rate, String exam_score, String questions_rate, String questions_rate_full
+            , String sign_num_rate, String sign_num_full, String discuss_rate, String discuss_rate_full
+            , String groupPK_rate, String groupPK_rate_full) {
         String data = "token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q=&courseId=" + courseId +
                 "&classId=" + classId +
-                "&total_learn_time_rate="+learn_time+"&total_learn_time_full="+learn_time_full +
-                "&node_rate="+node_rate+"&node_rate_full=" +node_rate_full+
-                "&effective_time_rate="+effective_time+"&effective_time_full=" +effective_time_full+
-                "&test_rate="+test_rate+"&test_rate_full=" +test_rate_full+
-                "0&work_rate="+work_rate+"&work_rate_full=" +work_rate_full+
-                "&pop_quiz_rate="+pop_quiz_rate+"&pop_quiz_full=" +pop_quiz_full+
-                "&exam_score_rate="+exam_score_rate+"&exam_score="+exam_score +
-                "&questions_rate="+questions_rate+"&questions_rate_full=" +questions_rate_full+
-                "&sign_num_rate="+sign_num_rate+"&sign_num_full=" +sign_num_full+
-                "&discuss_rate="+discuss_rate+"&discuss_rate_full=" +discuss_rate_full+
-                "&groupPK_rate="+groupPK_rate+"&groupPK_rate_full="+groupPK_rate_full;
+                "&total_learn_time_rate=" + learn_time + "&total_learn_time_full=" + learn_time_full +
+                "&node_rate=" + node_rate + "&node_rate_full=" + node_rate_full +
+                "&effective_time_rate=" + effective_time + "&effective_time_full=" + effective_time_full +
+                "&test_rate=" + test_rate + "&test_rate_full=" + test_rate_full +
+                "0&work_rate=" + work_rate + "&work_rate_full=" + work_rate_full +
+                "&pop_quiz_rate=" + pop_quiz_rate + "&pop_quiz_full=" + pop_quiz_full +
+                "&exam_score_rate=" + exam_score_rate + "&exam_score=" + exam_score +
+                "&questions_rate=" + questions_rate + "&questions_rate_full=" + questions_rate_full +
+                "&sign_num_rate=" + sign_num_rate + "&sign_num_full=" + sign_num_full +
+                "&discuss_rate=" + discuss_rate + "&discuss_rate_full=" + discuss_rate_full +
+                "&groupPK_rate=" + groupPK_rate + "&groupPK_rate_full=" + groupPK_rate_full;
         String resp = newZjyHttp.post(saveAssessment, data);
         return resp;
     }
@@ -435,10 +438,12 @@ public class newZjyApi {
         String resp = newZjyHttp.post(saveStuDiscussAnswer, data);
         return resp;
     }
+
     //
-    private static String renewStuTopicInfo="https://spoc-classroom.icve.com.cn/classroom-teaching-api/discuss/renewStuTopicInfo";
-    public static String getRenewStuTopicInfo(String activityId,String recordId, String content) {
-        String data = "{\"params\":{\"id\":\"" + activityId + "\",\"recordId\":\""+recordId+"\"," +
+    private static String renewStuTopicInfo = "https://spoc-classroom.icve.com.cn/classroom-teaching-api/discuss/renewStuTopicInfo";
+
+    public static String getRenewStuTopicInfo(String activityId, String recordId, String content) {
+        String data = "{\"params\":{\"id\":\"" + activityId + "\",\"recordId\":\"" + recordId + "\"," +
                 "\"content\":\"" + content + "\",\"imgPathList\":[]}}";
         //{"params":{"activityId":"9d6e868a292611ed94150c42a164ae44","content":"1111111","imgPathList":[]}}
         String resp = newZjyHttp.post(renewStuTopicInfo, data);
@@ -531,7 +536,9 @@ public class newZjyApi {
                 "&loginId=" + loginId + "&siteCode=zhzj&domain=spoc.icve.com.cn";
         newZjyHttp.addHeader("Host", "course.icve.com.cn");
         httpRespnose ret = newZjyHttp.get(signLearn, null, data);
-        return JSONObject.toJSONString(ret.getHearderFileds());
+        //String UNTYXLCOOKIE=ret.getCookieV("UNTYXLCOOKIE");//.replace("\"", "");
+        String UNTYXLCOOKIE = ret.getSetCookie();
+        return UNTYXLCOOKIE;
     }
 
     //获取课件
@@ -695,26 +702,32 @@ public class newZjyApi {
 
     ///Usersessionidm
 
-    static String Usersessionidm="https://course.icve.com.cn/learnspace/course/exam/weixinCourseExamAction_examListGoExam.action";
+    static String Usersessionidm = "https://course.icve.com.cn/learnspace/course/exam/weixinCourseExamAction_examListGoExam.action";
 
-    public static String getUsersessionidm(String courseId,String examCode){
-        String data="params.appIntoType=examInfoConfirm" +
-                "&params.examCode=" +examCode+
-                "&params.courseId=" +courseId+
+    public static String getUsersessionidm(String courseId, String examCode) {
+        String data = "params.appIntoType=examInfoConfirm" +
+                "&params.examCode=" + examCode +
+                "&params.courseId=" + courseId +
                 "&params.intoDevice=weixin&params.filterType=all";
 
-        httpRespnose vHttpRespnose =  newZjyHttp.get(Usersessionidm,null,data);
+        httpRespnose vHttpRespnose = newZjyHttp.get(Usersessionidm, null, data);
         //printHeader(vHttpRespnose.getHearderFileds());
-        String Location=vHttpRespnose.getLocation();
+        String Location = vHttpRespnose.getLocation();
         //System.out.println(Location);
-        vHttpRespnose= newZjyHttp.get(Location,null,null);
-       // String ck=vHttpRespnose.getSetCookie();
-        String USERSESSIONID=vHttpRespnose.getCookieV("USERSESSIONID");
+        newZjyHttp.upCookie(vHttpRespnose.getSetCookie());
+        vHttpRespnose = newZjyHttp.get(Location, null, null);
+        //System.out.println(vHttpRespnose.toString());
+        // String ck=vHttpRespnose.getSetCookie();
+        // String USERSESSIONID=vHttpRespnose.getCookieV("USERSESSIONID");
+        String USERSESSIONID = vHttpRespnose.getSetCookie();
 
+        //printHeader();
         return USERSESSIONID;
-    };
+    }
 
-    public static void upUsersessionid(String Usersessionid){
+    ;
+
+    public static void upUsersessionid(String Usersessionid) {
         newZjyHttp.upCookie(Usersessionid);
     }
 
@@ -749,9 +762,10 @@ public class newZjyApi {
     }
 
     //附件作业
-    static String homework="https://course.icve.com.cn/homework-api/mobile/student/homework/list";
-    public static String getHomework(String courseId){
-        String data = "{\"params\":{\"groupId\":\""+courseId+"\"," +
+    static String homework = "https://course.icve.com.cn/homework-api/mobile/student/homework/list";
+
+    public static String getHomework(String courseId) {
+        String data = "{\"params\":{\"groupId\":\"" + courseId + "\"," +
                 "\"columnId\":\"1fb6d397336642eca759b285074fb63e\"}," +
                 "\"page\":{\"curPage\":1,\"pageSize\":100,\"totalCount\":0,\"totalPage\":0}}";
         String resp = newZjyHttp.post(homework, data);
@@ -759,62 +773,279 @@ public class newZjyApi {
     }
 
 
+    //batchId == examID
     //获取 考试 作业 测试 的id详情
-    static String ConfirmPagePaperStructure="https://spoc-exam.icve.com.cn/student/exam/studentExam_getConfirmPagePaperStructure.action";
+    static String ConfirmPagePaperStructure = "https://spoc-exam.icve.com.cn/student/exam/studentExam_getConfirmPagePaperStructure.action";
 
-    public static String getConfirmPagePaperStructure(String batchId){
-        String data="params.batchId="+batchId;
-        String resp = newZjyHttp.post(ConfirmPagePaperStructure,data);
+    public static String getConfirmPagePaperStructure(String batchId) {
+        String data = "params.batchId=" + batchId;
+        String resp = newZjyHttp.post(ConfirmPagePaperStructure, data);
         return resp;
     }
+
+    // get ORSESSIONID=7F65745C91698847A2535AE97AC8D653; Domain=spoc-exam.icve.com.cn; Path=/; SameSite=None; Secure
+
+    static String examflow_getStudentStatus = "https://spoc-exam.icve.com.cn/exam/examflow_getStudentStatus.action";
+
+    public static String getExamflow_getStudentStatus(String batchId) {
+        String data = "params.batchId=" + batchId;
+        String resp = newZjyHttp.post(examflow_getStudentStatus, data);
+        return resp;
+    }
+
+    //
+    static String examflow_beforeIndex = "https://spoc-exam.icve.com.cn/exam/examflow_beforeIndex.action";
+
+    public static String getExamflow_beforeIndex(String batchId) {
+        examflow_beforeIndex = examflow_beforeIndex + "?batchId=" + batchId + "&token=" + System.currentTimeMillis();
+        String resp = newZjyHttp.post(examflow_getStudentStatus, null);
+        return resp;
+    }
+
+    //
+    static String examFlow_loadingExam = "https://spoc-exam.icve.com.cn/mobile/examFlow_loadingExam.action";
+
+    public static String getExamFlow_loadingExam(String batchId) {
+        String data = "batchId=" + batchId;
+        String resp = newZjyHttp.post(examFlow_loadingExam, data);
+        return resp;
+    }
+
+    // get examRecordId=e7f30b7780a84644857773068b45d2ad
+
+    static String examFlow_intoExam = "https://spoc-exam.icve.com.cn/mobile/examFlow_intoExam.action";
+
+    public static String getExamFlow_intoExam(String batchId, String courseId) {
+        String data = "params.batchId=" + batchId +
+                "&params.courseId=" + courseId +
+                "&params.appIntoType=examInfoConfirm";
+        String resp = newZjyHttp.get(examFlow_intoExam, data);
+        return resp;
+    }
+
+    // 考生信息
+    static String examflow_getUserInfo = "https://spoc-exam.icve.com.cn/exam/examflow_getUserInfo.action";
+
+    public static String getExamflow_getUserInfo() {
+        String resp = newZjyHttp.post(examflow_getUserInfo, null);
+        return resp;
+    }
+
+    //已做记录
+    static String examflow_getExamRecord = "https://spoc-exam.icve.com.cn/exam/examflow_getExamRecord.action";
+
+    public static String getExamflow_getExamRecord(String examRecordId) {
+        String data = "examRecordId=" + examRecordId;
+        String resp = newZjyHttp.post(examflow_getExamRecord, data);
+        return resp;
+    }
+
+    //
+    static String examflow_getExamInfo = "https://spoc-exam.icve.com.cn/exam/examflow_getExamInfo.action";
+
+    public static String getExamflow_getExamInfo(String batchId) {
+        String data = "batchId=" + batchId;
+        String resp = newZjyHttp.post(examflow_getExamInfo, data);
+        return resp;
+    }
+
+    //全部题的id信息
+    static String examFlow_getExamPaperInfo = "https://spoc-exam.icve.com.cn/mobile/examFlow_getExamPaperInfo.action";
+
+    public static String getExamFlow_getExamPaperInfo(String examRecordId) {
+        String data = "examRecordId=" + examRecordId;
+        String resp = newZjyHttp.post(examFlow_getExamPaperInfo, data);
+        return resp;
+    }
+
+    //
+    static String examFlow_getPageData = "https://spoc-exam.icve.com.cn/mobile/examFlow_getPageData.action";
+
+    public static String getExamFlow_getPageData(String batchId) {
+        examFlow_getPageData = examFlow_getPageData + "?examRecordId=e7f30b7780a84644857773068b45d2ad" +
+                "&params.contentId=11540cffebd64092940de3701ddcaa69" +
+                "&params.questionSeq=1" +
+                "&params.contentQId=4243f48390cf49b29981154fced1dd37";
+        String resp = newZjyHttp.post(examFlow_getPageData, null);
+        return resp;
+    }
+
+    //保存用间
+    static String examflow_saveCountDown = "https://spoc-exam.icve.com.cn/exam/examflow_saveCountDown.action";
+
+    public static String getExamflow_saveCountDown(String countDown, String examRecordId) {
+        String data = "countDown=" + countDown +
+                "&examRecordId=" + examRecordId;
+        String resp = newZjyHttp.post(examflow_saveCountDown, data);
+        return resp;
+    }
+
+
+    //更改考试状态
+    static String examFlow_recordUserAction = "https://spoc-exam.icve.com.cn/mobile/examFlow_recordUserAction.action";
+
+    public static String getExamFlow_recordUserAction(String examRecordId, String status) {
+        String data = "params.recordId=" + examRecordId +
+                "&params.action=" + status;//resume pause
+        String resp = newZjyHttp.post(examFlow_recordUserAction, data);
+        return resp;
+    }
+
+
+    //是否被锁定
+    static String examflow_getPaperLockedStatus = "https://spoc-exam.icve.com.cn/exam/examflow_getPaperLockedStatus.action";
+
+    public static String getExamflow_getPaperLockedStatus(String examRecordId) {
+        String data = "examRecordId=" + examRecordId;
+        String resp = newZjyHttp.post(examflow_getPaperLockedStatus, data);
+        return resp;
+    }
+
+
+    //保存答案
+    static String examflow_sendManyAnswer = "https://spoc-exam.icve.com.cn/exam/examflow_sendManyAnswer.action";
+
+    public static String getExamflow_sendManyAnswer(String examRecordId, String studentAnswers, String countDown) {
+        String data = "examRecordId=" + examRecordId +
+                "studentAnswers=[{\"qSeq\":1,\"qId\":\"644ace139b4e4f84b7690c6c7e5a3311\",\"answer\":\"3\",\"saveStatus\":\"todo\"}]\n" +
+                "countDown=7056";
+        String resp = newZjyHttp.post(examflow_sendManyAnswer, data);
+        return resp;
+    }
+
+
+    //合并结果
+    static String examflow_getCompleteQuestionSeq = "https://spoc-exam.icve.com.cn/exam/examflow_getCompleteQuestionSeq.action";
+
+    public static String getExamflow_getCompleteQuestionSeq(String examRecordId, String batchId) {
+        String data = "examRecordId=" + examRecordId +
+                "&batchId=" + batchId;
+        String resp = newZjyHttp.post(examflow_getCompleteQuestionSeq, data);
+        return resp;
+    }
+
+    //提交
+    static String examflow_complete = "https://spoc-exam.icve.com.cn/exam/examflow_complete.action";
+
+    public static String getExamflow_complete(String examRecordId) {
+        /*
+        [{"qSeq":"1","qId":"4243f48390cf49b29981154fced1dd37","answer":"3","saveStatus":"todo"}
+        ,{"qSeq":"2","qId":"644ace139b4e4f84b7690c6c7e5a3311","answer":"2","saveStatus":"todo"}]
+        *                                                                                 */
+        String data = "examRecordId=" + examRecordId;
+        String resp = newZjyHttp.post(examflow_complete, data);
+        return resp;
+    }
+
 
     //web api
     // 学生api
 
-    //获取课件
-    static String courseware_index="https://course.icve.com.cn/learnspace/learn/learn/templateeight/courseware_index.action";
-    public static String getCourseware_index(String courseId){
-        String data="params.courseId="+courseId+"___";
-        String resp = newZjyHttp.get(courseware_index,data);
+    //获取课件 limitId
+    static String courseware_index = "https://course.icve.com.cn/learnspace/learn/learn/templateeight/courseware_index.action";
+
+    public static String getCourseware_index(String courseId) {
+        String data = "params.courseId=" + courseId + "___";
+        String resp = newZjyHttp.get(courseware_index, data);
         return resp;
     }
 
+    static String templateeight="https://course.icve.com.cn/learnspace/learn/learn/templateeight/index.action";
+    public static String getTemplateeight(String courseId) {
+      String data = "params.courseId="+courseId+"___" +
+              "&params.templateType=8&params.templateStyleType=0" +
+              "&params.template=templateeight&params.classId=&params.tplRoot=learn";
+      String resp = newZjyHttp.get(templateeight, data);
+      return resp;
+  }
+
+    //
+
+
+    static String statisticsLearningFrequency = "https://course.icve.com.cn/learnspace/learn/learnCourseItem/statisticsLearningFrequency.json";
+
+    public static String getStatisticsLearningFrequency(String courseId) {
+        String data = "params.courseId=" + courseId;
+        String resp = newZjyHttp.get(statisticsLearningFrequency, data);
+        return resp;
+    }
+
+    //未知
+    static String SingleItemCompleteCase = "https://course.icve.com.cn/learnspace/learn/learnCourseware/getSingleItemCompleteCase.json";
+
+    public static String getSingleItemCompleteCase(String courseId, String itemId) {
+        String data = "params.courseId=" + courseId + "___" +
+                "&params.itemId=" + itemId;
+        String resp = newZjyHttp.get(SingleItemCompleteCase, data);
+        return resp;
+    }
+
+
+    //保存课程学习时长
+    public static String getSaveLearningTime2(String courseId, String limitId, String studyTime) {
+        String data = "courseId=" + courseId + "___" +
+                "&studyTime=" + studyTime +
+                "&limitId=" + limitId;
+        String resp = newZjyHttp.get(saveLearningTime, data);
+        return resp;
+    }
+
+
+
+    /*    static String cloud_updateVideoTotalTime="https://course.icve.com.cn/learnspace/course/plugins/cloud_updateVideoTotalTime.action";
+     * itemId=8de8f1455b54434287da78c836d46954&videoTotalTime=00%3A04%3A43
+     *
+     * https://course.icve.com.cn/learnspace/learn/learn/templateeight/include/video_learn_record_detail.action
+     *params.courseId=39e272199dab487ba6f8f76115cbfd2c___&params.itemId=8de8f1455b54434287da78c836d46954&params.videoTotalTime=00%3A04%3A43
+     *  */
+
+
+    //web 保存视频进度
+    static String saveVideoLearnDetailRecord = "https://course.icve.com.cn/learnspace/course/study/learningTime_saveVideoLearnDetailRecord.action";
+
+    public static String getSaveVideoLearnDetailRecord(String studyRecord, String limitId) {
+        String data = "studyRecord=" + studyRecord +
+                "&limitId=" + limitId;
+        String resp = newZjyHttp.get(saveLearningTime, data);
+        return resp;
+    }
     // 考试 作业 测试
 
-    static String studentExam_studentExamListData="https://spoc-exam.icve.com.cn/student/exam/studentExam_studentExamListData.action?pager.pageSize=100&pager.curPage=1&pager.searchTotalSize=true";
-    public static String getExam_list_dataw(String courseId,String configTypeId){
-        String data="params.examName=&params.examType=" +
-                "&params.examConfigTypeId=2" +
-                "&params.courseId="+courseId +
-                "&params.configTypeId="+configTypeId;
+    static String studentExam_studentExamListData = "https://spoc-exam.icve.com.cn/student/exam/studentExam_studentExamListData.action?pager.pageSize=100&pager.curPage=1&pager.searchTotalSize=true";
+
+    public static String getExam_list_dataw(String courseId, String configTypeId,String ConfigTypeId) {
+        String data = "params.examName=&params.examType=" +
+                "&params.examConfigTypeId="+ConfigTypeId +
+                "&params.courseId=" + courseId +
+                "&params.configTypeId=" + configTypeId;
 
 
-        String resp = newZjyHttp.post(studentExam_studentExamListData,data);
+        String resp = newZjyHttp.post(studentExam_studentExamListData, data);
 
         return resp;
     }
 
     //测验
     public static String getExam_list_data_tw(String courseId) {
-        return getExam_list_dataw(courseId, "ed134338b38640aa89cd34497437a97d");
+        return getExam_list_dataw(courseId, "ed134338b38640aa89cd34497437a97d","3");
     }
 
     //作业
     public static String getExam_list_data_ww(String courseId) {
-        return getExam_list_dataw(courseId, "6049aaaac97845d1a8a790f397962b0a");
+        return getExam_list_dataw(courseId, "6049aaaac97845d1a8a790f397962b0a","2");
     }
 
     //考试
     public static String getExam_list_data_ew(String courseId) {
-        return getExam_list_dataw(courseId, "81805198bddb4cdc84afbc3a1774f576");
+        return getExam_list_dataw(courseId, "81805198bddb4cdc84afbc3a1774f576","1");
     }
 
 
     //附件
-    static String homeworkw="https://course.icve.com.cn/homework-api/student/homework/list";
+    static String homeworkw = "https://course.icve.com.cn/homework-api/student/homework/list";
 
-    public static String getHomeworkw(String courseId){
-        String data = "{\"params\":{\"groupId\":\""+courseId+"\"," +
+    public static String getHomeworkw(String courseId) {
+        String data = "{\"params\":{\"groupId\":\"" + courseId + "\"," +
                 "\"columnId\":\"1fb6d397336642eca759b285074fb63e\"}}";
         String resp = newZjyHttp.post(homeworkw, data);
         return resp;
@@ -822,45 +1053,56 @@ public class newZjyApi {
 
 
     //获取 考试 作业 测试 的id详情
-    private static String studentExam_getPaperStructure="https://spoc-exam.icve.com.cn/student/exam/studentExam_getPaperStructure.action";
+    private static String studentExam_getPaperStructure = "https://spoc-exam.icve.com.cn/student/exam/studentExam_getPaperStructure.action";
 
     public static String getExamPaperStructure(String examIds) {
 
         //{"retCode":"0","data":{"402883ab82fee62c0183204009171f77":{"isTemplatePaper":"0","courseNameAlias":"课程","courseName":"789456","examId":"402883ab82fee62c0183204009171f77","examScore":100,"structure":[{"id":"6d39be8eb4e447759ec62e8cf75d9389","name":"单选题","count":2,"total":100}],"paperId":"3960ed80fd384bf9a1ace9f7e23ddbd9"}}}
-        String data = "examIds="+examIds;
+        String data = "examIds=" + examIds;
         String resp = newZjyHttp.post(studentExam_getPaperStructure, data);
         return resp;
     }
 
-   //recoid获取
-    static String examflow_index="https://spoc-exam.icve.com.cn/exam/examflow_index.action";
-    public static String getExamflow_index(String batchId){
-        String data="batchId="+batchId;
+    //recoid获取
+    static String examflow_index = "https://spoc-exam.icve.com.cn/exam/examflow_index.action";
+
+    public static String getExamflow_index(String batchId) {
+        String data = "batchId=" + batchId;
         String resp = newZjyHttp.get(examflow_index, data);
         return resp;
     }
 
 
+    //题目id
+    static String examflow_getPaperStructureTree = "https://spoc-exam.icve.com.cn/exam/examflow_getPaperStructureTree.action";
+    //examRecordId=25940b9793ad476cb8ed8f48c485e560
+
+    //题详情
+    static String examflow_getPageHtml = "https://spoc-exam.icve.com.cn/exam/examflow_getPageHtml.action";
+    //examRecordId=25940b9793ad476cb8ed8f48c485e560&paperPageSeq=1
+
     //学习状况
-    static String zhzjStudent_checkAssess="https://user.icve.com.cn/zhzj/zhzjStudent_checkAssess.action";
-    public static String getZhzjStudent_checkAssess(){
+    static String zhzjStudent_checkAssess = "https://user.icve.com.cn/zhzj/zhzjStudent_checkAssess.action";
+
+    public static String getZhzjStudent_checkAssess() {
         String data = "token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q%3D&classId=957639a938cc4e63b0953e132e0df096&loginId=venomms";
         String resp = newZjyHttp.post(studentExam_getPaperStructure, data);
         return resp;
     }
 
     //进度详情
-    static String learnRecord_stuLearnRecord="https://course.icve.com.cn/learnspace/course/study/learnRecord_stuLearnRecord.action";
-    public static String getLearnRecord_stuLearnRecord(String courseId,String userId){
+    static String learnRecord_stuLearnRecord = "https://course.icve.com.cn/learnspace/course/study/learnRecord_stuLearnRecord.action";
 
-        String data="courseId="+courseId+"___" +
-                "&userId=" +userId+
+    public static String getLearnRecord_stuLearnRecord(String courseId, String userId) {
+
+        String data = "courseId=" + courseId + "___" +
+                "&userId=" + userId +
                 "&isShowHistory=1&templateType=8";
         String resp = newZjyHttp.get(learnRecord_stuLearnRecord, data);
         return resp;
     }
 
-    public static void upUseridHd(){
+    public static void upUseridHd() {
 
         String host = "spoc-exam.icve.com.cn";
         String Origin = "https://course.icve.com.cn";
@@ -870,7 +1112,7 @@ public class newZjyApi {
         HashMap<String, Object> header = new HashMap<>();
         header.put("Connection", "Keep-Alive");
         header.put("Content-Type", ctype);
-        header.put("Referer ","https://course.icve.com.cn/");
+        header.put("Referer ", "https://course.icve.com.cn/");
         header.put("Origin", Origin);
         header.put("User-Agent", defaultAgent);
         header.put("sec-ch-ua-platform", "Windows");
@@ -882,18 +1124,18 @@ public class newZjyApi {
         // header.put("Accept-Encoding", "gzip, deflate, br");
         //header.put("X-Requested-With", "XMLHttpRequest");
         header.put("Host", host);
-        header.put("sec-ch-ua","\"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"108\", \"Microsoft Edge\";v=\"108\"");
+        header.put("sec-ch-ua", "\"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"108\", \"Microsoft Edge\";v=\"108\"");
         newZjyHttp.addHeader(header);
     }
 
     //USERSESSIONID
-    static String usersessionid="https://spoc-exam.icve.com.cn/platformwebapi/student/exam/studentExam_studentExamInfoThird.action";
+    static String usersessionid = "https://spoc-exam.icve.com.cn/platformwebapi/student/exam/studentExam_studentExamInfoThird.action";
     //老师api
-    static String usersessionidt="https://spoc-exam.icve.com.cn/platformwebapi/college/exam/examBatch_intoExamListThird.action";
+    static String usersessionidt = "https://spoc-exam.icve.com.cn/platformwebapi/college/exam/examBatch_intoExamListThird.action";
 
-    public static String getUsersessionidw(){
+    public static String getUsersessionidw() {
 
-        String data="params.kckjToExamFlag=kckjToExamFlag" +
+        String data = "params.kckjToExamFlag=kckjToExamFlag" +
                 "&params.examCodes=" +
                 "&apiKey=zhzj_platform&_name=%E9%AD%8F%E6%B5%B7%E6%97%AD" +
                 "&params.configTypeId=6049aaaac97845d1a8a790f397962b0a" +
@@ -902,72 +1144,75 @@ public class newZjyApi {
                 "&Signature=MCwCFACqD5kSlZgNsuN1lm1VDbMC%2BsTEAhQICPiFnI15s0MtiBZKG9zOtuZ8Ng%3D%3D" +
                 "&params.courseId=39e272199dab487ba6f8f76115cbfd2c" +
                 "&_roleCode=student" +
-                "&timestamp="+System.currentTimeMillis()+"&";
+                "&timestamp=" + System.currentTimeMillis();
 
-        String ck="qBankId3960ed80fd384bf9a1ace9f7e23ddbd9=fc4103d4ff60426fb2fa8a9cff0eac7f; %26%2Fcollege%2Fexam%2FexamBatch_loadExamListData.action%262=null%26%26%2639e272199dab487ba6f8f76115cbfd2c%261%2610; %26%2Fcollege%2Fexam%2FexamBatch_loadExamListData.action%261=null%26%26%2639e272199dab487ba6f8f76115cbfd2c%261%2610; %26%2Fcollege%2Fexam%2FexamBatch_loadExamListData.action%263=null%26%26%2639e272199dab487ba6f8f76115cbfd2c%261%2610; qBankIdbcd8841d680946ddb1387e06cc61af6e=85c246a67da74212b0258efa12413552; ORSESSIONID=null; aliyungf_tc=7f6580f4828d7e0b46259aaf48766c14dd5bce820bac1c1cd46f3c88fa6e90b5; token=3dbd5841-caa0-4dec-ae96-991784191eb1; SERVERID=f7f48d88576f2594f65fbfc6df2be025|1670599271|1670594510; JSESSIONID=7FA9DD01EBDD4F045BAEC453FA6E943D; JSESSIONID=7FA9DD01EBDD4F045BAEC453FA6E943D; USERSESSIONID=402883ab82fee62c018307a26e3e1f1d#interface#20221110213841312314#attachData";
+        String ck = "qBankId3960ed80fd384bf9a1ace9f7e23ddbd9=fc4103d4ff60426fb2fa8a9cff0eac7f; %26%2Fcollege%2Fexam%2FexamBatch_loadExamListData.action%262=null%26%26%2639e272199dab487ba6f8f76115cbfd2c%261%2610; %26%2Fcollege%2Fexam%2FexamBatch_loadExamListData.action%261=null%26%26%2639e272199dab487ba6f8f76115cbfd2c%261%2610; %26%2Fcollege%2Fexam%2FexamBatch_loadExamListData.action%263=null%26%26%2639e272199dab487ba6f8f76115cbfd2c%261%2610; qBankIdbcd8841d680946ddb1387e06cc61af6e=85c246a67da74212b0258efa12413552; ORSESSIONID=null; aliyungf_tc=7f6580f4828d7e0b46259aaf48766c14dd5bce820bac1c1cd46f3c88fa6e90b5; token=3dbd5841-caa0-4dec-ae96-991784191eb1; SERVERID=f7f48d88576f2594f65fbfc6df2be025|1670599271|1670594510; JSESSIONID=7FA9DD01EBDD4F045BAEC453FA6E943D; JSESSIONID=7FA9DD01EBDD4F045BAEC453FA6E943D ";
 
-        newZjyHttp.addCookie(ck);
+        newZjyHttp.upCookie(ck);
 
 
         upUseridHd();
 
         //printHeader();
-        httpRespnose resp = newZjyHttp.post(usersessionid,data,null,null);
+        httpRespnose resp = newZjyHttp.post(usersessionid, data, null, null);
 
         newZjyHttp.addHeader(yktHeaders.getNewZjyMHeader());
 
-        printHeader(resp.getHearderFileds());
+        System.out.println(resp.toString());
 
 
-        String ret=resp.getSetCookie();
+        String ret = resp.getSetCookie();
         return ret;
 
 
     }
 
-    static String courseExamAction_stuIntoExamConfirm="https://course.icve.com.cn/learnspace/course/exam/courseExamAction_stuIntoExamConfirm.json";
-    public static String getUsersessionidw2(){
-        String data ="params.classId=" +
+    static String courseExamAction_stuIntoExamConfirm = "https://course.icve.com.cn/learnspace/course/exam/courseExamAction_stuIntoExamConfirm.json";
+
+    public static String getUsersessionidw2() {
+        String data = "params.classId=" +
                 "&params.courseId=a41689a28e5442a39410e348fce1bd71___" +
                 "&params.parentId=" +
                 "&params.itemId=&params.audit=" +
                 "&params.templateType=8&params.templateStyleType=0" +
-                "&params.kckjWinHeight=529&_t=2022-12-11%2000:01:31";
+                "&params.kckjWinHeight=529&_t=";
 
-        String ck="token=3dbd5841-caa0-4dec-ae96-991784191eb1; UNTYXLCOOKIE=\"dXNlci5pY3ZlLmNvbS5jbnx8NjUxN2ZkMjhlNTQxNWIxNzdjMzEwYzY0OTFiOGU0YTZ8fHZlbm9tbXN8fHpoemo=\"";
-        newZjyHttp.addCookie(ck);
+        String ck = "token=3dbd5841-caa0-4dec-ae96-991784191eb1";
+        newZjyHttp.upCookie(ck);
         //printHeader();
 
         upUseridHd();
 
-        httpRespnose resp = newZjyHttp.get(courseExamAction_stuIntoExamConfirm,null,data);
+        httpRespnose resp = newZjyHttp.get(courseExamAction_stuIntoExamConfirm, null, data);
 
-        printHeader(resp.getHearderFileds());
+        System.out.println(resp.toString());
 
         newZjyHttp.addHeader(yktHeaders.getNewZjyMHeader());
         return "";
     }
 
-    /**个人进度详情
-    get 请求
-    https://course.icve.com.cn/learnspace/course/study/learnRecord_stuLearnRecord.action
-    courseId=39e272199dab487ba6f8f76115cbfd2c___&userId=2w7jafiswazbrev468vb5q&isShowHistory=1&templateType=8
-
-
-     获取 Signature
-    <input type='hidden' name='_loginId' value='venomms' />
-           <input type='hidden' name='apiKey' value='zhzj_platform' />
-          <input type='hidden' name='_name' value='魏海旭' />
-          <input type='hidden' name='Signature' value='MCwCFFPxxgHGhly8mrUZEnP/Tm0kTqS4AhQZeJCKF394bKzePcKVgeybaBRu7Q==' />
+    /**
+     * 个人进度详情
+     * get 请求
+     * https://course.icve.com.cn/learnspace/course/study/learnRecord_stuLearnRecord.action
+     * courseId=39e272199dab487ba6f8f76115cbfd2c___&userId=2w7jafiswazbrev468vb5q&isShowHistory=1&templateType=8
+     * <p>
+     * <p>
+     * 获取 Signature
+     * <input type='hidden' name='_loginId' value='venomms' />
+     * <input type='hidden' name='apiKey' value='zhzj_platform' />
+     * <input type='hidden' name='_name' value='魏海旭' />
+     * <input type='hidden' name='Signature' value='MCwCFFPxxgHGhly8mrUZEnP/Tm0kTqS4AhQZeJCKF394bKzePcKVgeybaBRu7Q==' />
      */
 
     //获取 Signature name
-    static String courseExamAction="https://course.icve.com.cn/learnspace/course/exam/courseExamAction_intoCourseExamList.action";
-    public static String getCourseExamAction(String courseId,String columnTypeId){
-        String data="params.courseId="+courseId+"___" +
-                "&params.columnTypeId="+columnTypeId+
+    static String courseExamAction = "https://course.icve.com.cn/learnspace/course/exam/courseExamAction_intoCourseExamList.action";
+
+    public static String getCourseExamAction(String courseId, String columnTypeId) {
+        String data = "params.courseId=" + courseId + "___" +
+                "&params.columnTypeId=" + columnTypeId +
                 "&params.examConfigTypeId=20";
-        String resp = newZjyHttp.get(courseware_index,data);
+        String resp = newZjyHttp.get(courseware_index, data);
         return resp;
     }
 
@@ -975,29 +1220,29 @@ public class newZjyApi {
     //web登陆测试
     static String findUser = "https://user.icve.com.cn/patch/nlpx/findUser.action";
     static String auth = "https://spoc-sso.icve.com.cn/auth";
-    static String userLogin="https://sso.icve.com.cn/data/userLogin";
-    static String login_logout="https://user.icve.com.cn/learning/sso/login_logout.action";
-    static String cms="https://user.icve.com.cn/cms/";
+    static String userLogin = "https://sso.icve.com.cn/data/userLogin";
+    static String login_logout = "https://user.icve.com.cn/learning/sso/login_logout.action";
+    static String cms = "https://user.icve.com.cn/cms/";
 
     public static String webLogin() {
         String data = "{\"userName\":\"venomms\",\"password\":\"Poor2579988653\",\"type\":1}";
         //newZjyHttp.addCookie("whatysns=b9db789f2acaccfcdbfe216e44e16a70");
         httpRespnose resp = newZjyHttp.post(userLogin, data, null, null);
-        newZjyHttp.addCookie(resp.getSetCookie());
+        newZjyHttp.restCookie(resp.getSetCookie());
         printHeader();
         String tk = resp.getCookieV("token");
         System.out.println(tk);
-        data="token="+tk;
-        resp = newZjyHttp.get(login_logout, null,data);
-        newZjyHttp.addCookie(resp.getSetCookie());
+        data = tk;
+        resp = newZjyHttp.get(login_logout, null, data);
+        newZjyHttp.upCookie(resp.getSetCookie());
         printHeader();
-        String rt= newZjyHttp.get(cms);
+        String rt = newZjyHttp.get(cms);
         System.out.println(rt);
         //newZjyHttp.addHeader("Host", "spoc-sso.icve.com.cn");
         //newZjyHttp.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27");
         //data = "";
         //printHeader();
-       // resp = newZjyHttp.post(auth, data, null, null);
+        // resp = newZjyHttp.post(auth, data, null, null);
         //print(resp.getResp());
         //resp = newZjyHttp.post(resp.getLocation(), null, null, null);
         //printHeader(resp.getHearderFileds());
@@ -1021,9 +1266,10 @@ public class newZjyApi {
     }
 
 
-    private static String ExamUSERSESSIONID="https://spoc-exam.icve.com.cn/platformwebapi/student/exam/studentExam_studentExamInfoThird.action";
-    public static String ExamUSERSESSIONID(){
-        String data="params.kckjToExamFlag=kckjToExamFlag&params.examConfigTypeId=2&params.examCodes=20220903232323367559%2C2022100116441943245&_loginId=venomms&apiKey=zhzj_platform&_name=%E9%AD%8F%E6%B5%B7%E6%97%AD&Signature=MCwCFFPxxgHGhly8mrUZEnP%2FTm0kTqS4AhQZeJCKF394bKzePcKVgeybaBRu7Q%3D%3D&params.configTypeId=6049aaaac97845d1a8a790f397962b0a&params.courseId=39e272199dab487ba6f8f76115cbfd2c&_roleCode=student&timestamp=1665067551683";
+    private static String ExamUSERSESSIONID = "https://spoc-exam.icve.com.cn/platformwebapi/student/exam/studentExam_studentExamInfoThird.action";
+
+    public static String ExamUSERSESSIONID() {
+        String data = "params.kckjToExamFlag=kckjToExamFlag&params.examConfigTypeId=2&params.examCodes=20220903232323367559%2C2022100116441943245&_loginId=venomms&apiKey=zhzj_platform&_name=%E9%AD%8F%E6%B5%B7%E6%97%AD&Signature=MCwCFFPxxgHGhly8mrUZEnP%2FTm0kTqS4AhQZeJCKF394bKzePcKVgeybaBRu7Q%3D%3D&params.configTypeId=6049aaaac97845d1a8a790f397962b0a&params.courseId=39e272199dab487ba6f8f76115cbfd2c&_roleCode=student&timestamp=1665067551683";
         httpRespnose resp = newZjyHttp.post(ExamUSERSESSIONID, data, null, null);
         printHeader(resp.getHearderFileds());
         return "";
@@ -1035,10 +1281,10 @@ public class newZjyApi {
     //学生信息列表
     static String ClassTraineeList = "https://user.icve.com.cn/m/zhzjMobile_getClassTraineeList.action";
 
-    public static String getClassTraineeList(String classId,String token) {
+    public static String getClassTraineeList(String classId, String token) {
         //9b933b5e625e459ba9df0ea29e9e50ed
-        String data = "pageSize=500&curPage=1&token=" +token+
-                "&classId="+classId;
+        String data = "pageSize=500&curPage=1&token=" + token +
+                "&classId=" + classId;
         String resp = newZjyHttp.post(ClassTraineeList, data);
         return resp;
     }
@@ -1046,9 +1292,9 @@ public class newZjyApi {
     //审核管理相关
     static String ClassTraineeAuditList = "https://user.icve.com.cn/m/zhzjMobile_getClassTraineeAuditList.action";
 
-    public static String getClassTraineeAuditList(String classId,String token) {
-        String data = "pageSize=500&curPage=1&token=" +token+
-                "&classId="+classId;
+    public static String getClassTraineeAuditList(String classId, String token) {
+        String data = "pageSize=500&curPage=1&token=" + token +
+                "&classId=" + classId;
         String resp = newZjyHttp.post(ClassTraineeAuditList, data);
         return resp;
     }
@@ -1056,8 +1302,8 @@ public class newZjyApi {
     //
     static String ClassAuditStatus = "https://user.icve.com.cn/m/zhzjMobile_getClassAuditStatus.action";
 
-    public static String getClassAuditStatus(String classId,String token) {
-        String data = "token=" +token+ "&classId="+classId;
+    public static String getClassAuditStatus(String classId, String token) {
+        String data = "token=" + token + "&classId=" + classId;
         String resp = newZjyHttp.post(ClassAuditStatus, data);
         return resp;
     }
@@ -1067,7 +1313,7 @@ public class newZjyApi {
 
     public static String getQrCode(String classId) {
         String data = "url={\"code\":\"1001\",\"service\":\"enterClass\",\"param\":" +
-                "{\"url\":\"qrCodeResult.html?classId="+classId+"\"}}" +
+                "{\"url\":\"qrCodeResult.html?classId=" + classId + "\"}}" +
                 "&pic=";
         String resp = newZjyHttp.post(QrCode, data);
         return resp;
@@ -1076,12 +1322,12 @@ public class newZjyApi {
     //添加课堂
     static String saveClassroom = "https://user.icve.com.cn/t/m/zhzjPeMobileCourse_saveClassroom.action";
 
-    public static String getSaveClassroom(String courseId,String title,String tk) {
+    public static String getSaveClassroom(String courseId, String title, String tk) {
 
-        String classId=Tool.md5(title);
-        String data = "classId=" +classId+
-                "&courseId="+courseId+"&title=" +title+
-                "&startDate="+ Tool.getCurrentData() +"&token="+tk;
+        String classId = Tool.md5(title);
+        String data = "classId=" + classId +
+                "&courseId=" + courseId + "&title=" + title +
+                "&startDate=" + Tool.getCurrentData() + "&token=" + tk;
         String resp = newZjyHttp.post(saveClassroom, data);
         return resp;
     }
@@ -1129,7 +1375,7 @@ public class newZjyApi {
 
     public static String getBySqlCode(String courseId) {
         String data = "data=info&page.searchItem.queryId=getTeacherCLssTraineeListSPOC&" +
-                "page.searchItem.courseId="+courseId+"&" +
+                "page.searchItem.courseId=" + courseId + "&" +
                 "page.searchItem.keyname=&page.curPage=1&page.pageSize=10";
         String resp = newZjyHttp.post(BySqlCode, data);
         return resp;
@@ -1156,9 +1402,9 @@ public class newZjyApi {
     // 设置课程公告
     static String saveCourseNotice = "https://course.icve.com.cn/learnspace/learn/learnCourseNotice/saveCourseNotice.json";
 
-    public static String getSaveCourseNotice(String courseId,String title,String note) {
-        String data = "params.courseId="+courseId+"___&params.title=" +title+
-                "&params.note="+note+"&params.isTop=true";
+    public static String getSaveCourseNotice(String courseId, String title, String note) {
+        String data = "params.courseId=" + courseId + "___&params.title=" + title +
+                "&params.note=" + note + "&params.isTop=true";
         String resp = newZjyHttp.post(saveCourseNotice, data);
         return resp;
     }
@@ -1238,7 +1484,6 @@ public class newZjyApi {
     }
 
 
-
     //未阅的作业 考试 测验
     static String UnCheckPaperList = "https://spoc-exam.icve.com.cn/teacher/exampaper/papercheck_queryUnCheckPaperList.action?pager.pageSize=100&pager.curPage=1&pager.searchTotalSize=true";
 
@@ -1306,7 +1551,7 @@ public class newZjyApi {
     private static String PaperStructureForPreview = "https://spoc-exam.icve.com.cn/testpaper/paper_getPaperStructureForPreview.action";
 
     public static String getPaperStructureForPreview(String paperId) {
-        String data = "params.paperId="+paperId;
+        String data = "params.paperId=" + paperId;
         String resp = newZjyHttp.post(PaperStructureForPreview, data);
         return resp;
     }
@@ -1315,7 +1560,7 @@ public class newZjyApi {
     static String PaperStructure = "https://spoc-exam.icve.com.cn/exam/statistics/examPaperContentStatistics_getPaperStructure.action";
 
     public static String getPaperStructure(String paperId) {
-        String data = "paperId="+ paperId;
+        String data = "paperId=" + paperId;
         //newZjyHttp.addCookie("USERSESSIONID=402883e682f4d8ea0182f7123f521677#interface#batchCode#attachData;");
         String resp = newZjyHttp.post(PaperStructure, data);
         return resp;
@@ -1324,9 +1569,9 @@ public class newZjyApi {
     //
     static String ExamPaperStatisticsDetail = "https://spoc-exam.icve.com.cn/exam/statistics/examPaperContentStatistics_getExamPaperStatisticsDetail.action";
 
-    public static String getExamPaperStatisticsDetail(String examId,String paperId) {
-        String data = "examId="+examId +
-                "&paperId="+paperId;
+    public static String getExamPaperStatisticsDetail(String examId, String paperId) {
+        String data = "examId=" + examId +
+                "&paperId=" + paperId;
         String resp = newZjyHttp.post(ExamPaperStatisticsDetail, data);
         return resp;
     }
@@ -1344,9 +1589,10 @@ public class newZjyApi {
     }
 
     //附件作业改分
-    static String saveCheckHomework="https://course.icve.com.cn/homework-api/teacher/saveCheckHomework";
-    public static String getSaveCheckHomework(){
-        String data="\n" +
+    static String saveCheckHomework = "https://course.icve.com.cn/homework-api/teacher/saveCheckHomework";
+
+    public static String getSaveCheckHomework() {
+        String data = "\n" +
                 "{\"params\":{\"isRecommend\":\"0\",\"isTeacherRecommend\":\"0\"," +
                 "\"homeworkStuId\":\"402883e6837a403f01837dab80de28ee\"," +
                 "\"comments\":\"\",\"homeworkScore\":100}}";
