@@ -4,6 +4,7 @@ package com.vms.ykt.yktUtil;
 import com.vms.ykt.Util.Tool;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class yktHeaders {
 
@@ -38,7 +39,7 @@ public class yktHeaders {
         return header;
     }
 
-    public static HashMap<String, Object> getNewZjyMHeader() {
+    public static Map<String, Object> getNewZjyMHeader() {
 
         String host = "user.icve.com.cn";
         String Origin = "https://user.icve.com.cn";

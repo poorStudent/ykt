@@ -17,12 +17,12 @@ public class Http {
     private static String userCookie = "";
 
 
-    public static httpRespnose get(String url, HashMap<String, Object> header, String referer, String body) {
+    public static httpRespnose get(String url, Map<String, Object> header, String referer, String body) {
 
         return get(url, header, null, referer, body, 2);
     }
 
-    public static httpRespnose get(String requestUrl, HashMap<String, Object> header, Map<String, Object> query, String referer, String body, int tp) {
+    public static httpRespnose get(String requestUrl, Map<String, Object> header, Map<String, Object> query, String referer, String body, int tp) {
 
 
         if (!getUserCookie().isEmpty()) {
@@ -47,11 +47,11 @@ public class Http {
     }
 
 
-    public static httpRespnose post(String requestUrl, HashMap<String, Object> header, String body, String referer, String userAgent, String origin) {
+    public static httpRespnose post(String requestUrl,Map<String, Object> header, String body, String referer, String userAgent, String origin) {
       return   post(requestUrl,  header,  body, referer,  userAgent, origin,2);
     }
 
-    public static httpRespnose post(String requestUrl, HashMap<String, Object> header, String body, String referer, String userAgent, String origin, int tp) {
+    public static httpRespnose post(String requestUrl, Map<String, Object> header, String body, String referer, String userAgent, String origin, int tp) {
 
         httpRespnose ret = null;
         String resp = "";

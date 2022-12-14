@@ -7,13 +7,14 @@ import com.vms.ykt.yktUtil.yktHeaders;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class newZjyHttp {
 
-    static HashMap<String, Object> header;
+    static Map<String, Object> header;
     private static String userCookie = "";
 
     static {
@@ -30,11 +31,11 @@ public class newZjyHttp {
         header.put("Cookie", userCookies);
     }
 
-    public static HashMap<String, Object> getHeader() {
+    public static Map<String, Object> getHeader() {
         return header;
     }
 
-    public static void setHeader(HashMap<String, Object> ParmsHeader) {
+    public static void setHeader(Map<String, Object> ParmsHeader) {
         header = ParmsHeader;
     }
 
@@ -55,7 +56,7 @@ public class newZjyHttp {
         header.put(key, v);
     }
 
-    public static void addHeader(HashMap<String, Object> Header) {
+    public static void addHeader(Map<String, Object> Header) {
         if (Header == null) return;
         for (String key : Header.keySet()) {
             header.put(key, Header.get(key));
@@ -65,7 +66,7 @@ public class newZjyHttp {
 
     public static void addCookie(String upCookie) {
 
-        HashMap<String, Object> Header = getHeader();
+        Map<String, Object> Header = getHeader();
 
         if (Header != null && Header.containsKey("Cookie")) {
             if (!((String) Objects.requireNonNull(Header.get("Cookie"))).equals("")) {
@@ -110,7 +111,7 @@ public class newZjyHttp {
     }
 
     public static void upCookie(String ck) {
-        HashMap<String, Object> Header = getHeader();
+        Map<String, Object> Header = getHeader();
         if (Header != null && Header.containsKey("Cookie")) {
             String upCookie = String.valueOf(Header.get("Cookie")) + ";" + ck;
             addHeader("Cookie", upCookie);
