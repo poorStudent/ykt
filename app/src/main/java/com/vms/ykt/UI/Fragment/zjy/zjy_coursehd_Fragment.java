@@ -24,6 +24,7 @@ import com.vms.ykt.UI.Activity.zjyActivity.zjy_courseHdActivity;
 import com.vms.ykt.UI.Adapter.zjyAdapter.zjy_courseHDAdapter;
 import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyCouresActivitInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyMain;
 import com.vms.ykt.yktStuMobile.zjy.zjyTeachInfo;
@@ -58,9 +59,7 @@ public class zjy_coursehd_Fragment extends baseFragment {
 
     private zjyTeachInfo mZjyTeachInfo;
 
-    private zjyHttpW mZjyHttpW;
-    private zjyApiW mZjyApiW;
-    private zjyMainW mZjyMainW;
+
 
     private int flag;
 
@@ -68,16 +67,11 @@ public class zjy_coursehd_Fragment extends baseFragment {
         this.flag = flag;
     }
 
-    public void setData(zjyUser zjyUser, zjyTeachInfo zjyTeachInfo) {
+    public void setData(zjyUser zjyUser) {
         if (zjyUser == null) return;
-        this.mZjyTeachInfo = zjyTeachInfo;
-        this.mZjyUser = zjyUser;
-        this.mZjyHttpW = new zjyHttpW();
-        this.mZjyApiW = new zjyApiW();
-        this.mZjyMainW = new zjyMainW();
-        mZjyHttpW.setUserCookie(mZjyUser.getCookie());
-        mZjyApiW.setZjyHttpW(mZjyHttpW);
-        mZjyMainW.setZjyApiW(mZjyApiW);
+        this.mZjyTeachInfo = zjyUserDao.sZjyTeachInfo;
+        this.mZjyUser = zjyUserDao.sZjyUser;
+
     }
 
     private static String ARG_PARAM = "param_key";
@@ -160,7 +154,7 @@ public class zjy_coursehd_Fragment extends baseFragment {
 
                         if (mZjyCouresActivitInfos.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new zjy_courseHDAdapter(mZjyCouresActivitInfos, mZjyUser, mZjyTeachInfo);
+                                mRecyclerAdapter = new zjy_courseHDAdapter(mZjyCouresActivitInfos);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mZjyCouresActivitInfos);

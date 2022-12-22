@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.vms.ykt.R;
 import com.vms.ykt.Util.AppStatus;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.answerInfo;
 import com.vms.ykt.yktStuMobile.zjy.questionIfon;
 import com.vms.ykt.yktStuMobile.zjy.zjyApi;
@@ -46,9 +47,7 @@ public class zjy_testAnswActivity extends AppCompatActivity {
 
     private zjyTeachInfo mZjyTeachInfo;
     private zjyCouresActivitInfo mZjyCouresActivitInfo;
-    private zjyHttpW mZjyHttpW;
-    private zjyApiW mZjyApiW;
-    private zjyMainW mZjyMainW;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,17 +61,11 @@ public class zjy_testAnswActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = zjy_testAnswActivity.this;
-        this.mCourseIfno = (zjyCourseIfno) i.getSerializableExtra("Course");
-        this.mZjyTeachInfo = (zjyTeachInfo) i.getSerializableExtra("mZjyTeachInfo");
-        this.mZjyCouresActivitInfo = (zjyCouresActivitInfo) i.getSerializableExtra("vZjyCouresActivitInfo");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
+        this.mCourseIfno =zjyUserDao.sZjyCourseIfno ;
+        this.mZjyTeachInfo = zjyUserDao.sZjyTeachInfo ;
+        this.mZjyCouresActivitInfo =zjyUserDao.sZjyCouresActivitInfo;
+        this.mZjyUser =zjyUserDao.sZjyUser ;
         this.flag = (String) i.getSerializableExtra("flag");
-        this.mZjyHttpW=new zjyHttpW();
-        this.mZjyApiW=new zjyApiW();
-        this.mZjyMainW=new zjyMainW();
-        mZjyHttpW.setUserCookie(mZjyUser.getCookie());
-        mZjyApiW.setZjyHttpW(mZjyHttpW);
-        mZjyMainW.setZjyApiW(mZjyApiW);
         Log.d(TAG, "initData: " + mZjyUser.getUserId());
     }
 

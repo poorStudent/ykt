@@ -72,6 +72,8 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
         type = i.getIntExtra("type", 0);
         //mNewZjyCourse=(newZjyCourse)i.getSerializableExtra("newZjyCourse");
         mClassRoomList = new ArrayList<>();
+        newZjyApi.upContent2();
+        newZjyApi.upAuthorization(mNewZjyUser.getUserAccessToken());
          Log.d(TAG, "mNewZjyCourse: "+mNewZjyCourse.getCourseId());
 
     }
@@ -113,7 +115,7 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        newZjyApi.upHeader2();
+        newZjyApi.upContent2();
         if (mNewZjyUser == null || mNewZjyUser.getUserAccessToken() == null) {
             mSwipeRefreshLayout.setRefreshing(false);
             mProgressBar.setVisibility(View.GONE);
@@ -236,6 +238,6 @@ public class newzjy_classRoomActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        newZjyApi.upHeader1();
+        newZjyApi.upContent1();
     }
 }

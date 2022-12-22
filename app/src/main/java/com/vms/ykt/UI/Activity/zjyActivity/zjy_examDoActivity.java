@@ -31,8 +31,7 @@ public class zjy_examDoActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = zjy_examDoActivity.this;
-        this.mCourseIfno = (zjyCourseIfno) i.getSerializableExtra("Course");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
+
 
     }
 

@@ -23,6 +23,7 @@ import com.vms.ykt.UI.Activity.icveActivity.icve_shukeActivity;
 import com.vms.ykt.UI.Activity.icveActivity.icve_workExamActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
 import com.vms.ykt.UI.yktMainActivity;
+import com.vms.ykt.yktDao.icve.icveUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.icve.icveApiW;
 import com.vms.ykt.yktStuWeb.icve.icveCourseInfo;
@@ -39,11 +40,9 @@ public class icveRecyclerAdapter extends baseRecyclerAdapter<icveRecyclerAdapter
     List<icveCourseInfo> mIcveCourseInfos;
     private Context mContext;
     private yktMainActivity mActivity;
-    private zjyUser mZjyUser;
 
     private final String TAG = this.getClass().getSimpleName();
-    private icveMainW mIcveMainW;
-    private icveApiW mIcveApiW;
+
     private boolean isShowFt = false;
     /**
      * 事件回调监听
@@ -52,15 +51,8 @@ public class icveRecyclerAdapter extends baseRecyclerAdapter<icveRecyclerAdapter
 
     private icveRecyclerAdapter.initRcView mInitRcView;
 
-    public icveRecyclerAdapter(List<icveCourseInfo> data, zjyUser zjyUser) {
+    public icveRecyclerAdapter(List<icveCourseInfo> data) {
         this.mIcveCourseInfos = data;
-        this.mZjyUser = zjyUser;
-        icveHttpW mIcveHttpW = new icveHttpW();
-        mIcveHttpW.setUserCookie(mZjyUser.getCookie());
-        this.mIcveApiW = new icveApiW();
-        mIcveApiW.setIcveHttpW(mIcveHttpW);
-        this.mIcveMainW = new icveMainW();
-        mIcveMainW.setIcveApiW(mIcveApiW);
     }
 
     public void updateData(List<icveCourseInfo> data) {
@@ -181,9 +173,10 @@ public class icveRecyclerAdapter extends baseRecyclerAdapter<icveRecyclerAdapter
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-
-                showSetDialog(mIcveCourseInfos.get(position));
-
+                if (vIcveCourseInfo.getId() != null) {
+                    icveUserDao.sIcveCourseInfo=vIcveCourseInfo;
+                    showSetDialog(vIcveCourseInfo);
+                }
                 if (onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemClick(holder.itemView, pos);
@@ -241,18 +234,16 @@ public class icveRecyclerAdapter extends baseRecyclerAdapter<icveRecyclerAdapter
         // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
         //设置自定义界面的点击事件逻辑
         but_shuake.setOnClickListener((View view) -> {
-            if (CourseIfno.getId() != null) {
+
                 Intent i = new Intent(mActivity, icve_shukeActivity.class);
-                i.putExtra("Course", CourseIfno);
-                i.putExtra("mZjyUser", mZjyUser);
+
                 mActivity.startActivity(i);
 
-            }
         });
 
         but_wkpj.setOnClickListener((View view) -> {
             new Thread(() -> {
-                String resp = mIcveApiW.getMicrosAddComment(CourseIfno.getId());
+                String resp = icveApiW.getMicrosAddComment(CourseIfno.getId());
                 mActivity.runOnUiThread(() -> {
                     Tool.toast(mContext, resp);
                 });
@@ -261,22 +252,15 @@ public class icveRecyclerAdapter extends baseRecyclerAdapter<icveRecyclerAdapter
         });
 
         Intent i = new Intent(mActivity, icve_workExamActivity.class);
-        i.putExtra("Course", CourseIfno);
-        i.putExtra("mZjyUser", mZjyUser);
 
         but_zy.setOnClickListener((View view) -> {
-            if (CourseIfno.getId() != null) {
 
                 mActivity.startActivity(i);
 
-            }
         });
+
         but_ks.setOnClickListener((View view) -> {
-            if (CourseIfno.getId() != null) {
-
                 mActivity.startActivity(i);
-
-            }
 
         });
     }

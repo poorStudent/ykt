@@ -18,7 +18,9 @@ import com.vms.ykt.UI.Activity.moocActivity.mooc_DoAnswActivity;
 import com.vms.ykt.UI.Activity.moocActivity.mooc_examActivity;
 
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
+import com.vms.ykt.yktDao.mooc.moocUserDao;
 import com.vms.ykt.yktStuMobile.mooc.moocCourseInfo;
+import com.vms.ykt.yktStuMobile.zjy.HomeworkInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.mooc.WorkExamList;
 
@@ -28,9 +30,7 @@ import java.util.Objects;
 
 public class mooc_examAdapter extends baseRecyclerAdapter<mooc_examAdapter.ViewHolder1> {
 
-    private moocCourseInfo mCourseIfno;
     List<WorkExamList> mWorkExamLists;
-    private zjyUser mZjyUser;
     private mooc_examActivity mActivity;
 
     private String TAG = this.getClass().getSimpleName();
@@ -41,10 +41,8 @@ public class mooc_examAdapter extends baseRecyclerAdapter<mooc_examAdapter.ViewH
 
     private mooc_examAdapter.initRcView mInitRcView;
 
-    public mooc_examAdapter(List<WorkExamList> data, zjyUser zjyUsers, moocCourseInfo courseIfno) {
+    public mooc_examAdapter(List<WorkExamList> data) {
         this.mWorkExamLists = data;
-        this.mCourseIfno = courseIfno;
-        this.mZjyUser = zjyUsers;
     }
 
     public void updateData(List<WorkExamList> data) {
@@ -131,7 +129,10 @@ public class mooc_examAdapter extends baseRecyclerAdapter<mooc_examAdapter.ViewH
             @Override
             public void onClick(final View v) {
 
-                showSetDialog(mWorkExamLists.get(position));
+                if (vWorkExamList.getId() != null) {
+                    moocUserDao.sWorkExamList = vWorkExamList;
+                    showSetDialog(vWorkExamList);
+                }
                 if (onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemClick(holder.itemView, pos);
@@ -184,9 +185,6 @@ public class mooc_examAdapter extends baseRecyclerAdapter<mooc_examAdapter.ViewH
 
         but_sjd.setOnClickListener((View view) -> {
             Intent i = new Intent(mActivity, mooc_AnswActivity.class);
-            i.putExtra("Course", mCourseIfno);
-            i.putExtra("ZjyUser", mZjyUser);
-            i.putExtra("HomeworkInfo", HomeworkInfo);
             i.putExtra("flag", "1");
             i.putExtra("Workflag", "2");
             mActivity.startActivity(i);
@@ -195,9 +193,6 @@ public class mooc_examAdapter extends baseRecyclerAdapter<mooc_examAdapter.ViewH
 
         but_ks.setOnClickListener((View view) -> {
             Intent i = new Intent(mActivity, mooc_DoAnswActivity.class);
-            i.putExtra("Course", mCourseIfno);
-            i.putExtra("ZjyUser", mZjyUser);
-            i.putExtra("HomeworkInfo", HomeworkInfo);
             i.putExtra("flag", "1");
             i.putExtra("Workflag", "2");
             mActivity.startActivity(i);

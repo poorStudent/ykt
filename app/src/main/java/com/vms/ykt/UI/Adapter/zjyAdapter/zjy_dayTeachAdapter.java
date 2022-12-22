@@ -13,6 +13,7 @@ import com.vms.ykt.R;
 import com.vms.ykt.UI.Activity.zjyActivity.zjy_DayTeachActivity;
 import com.vms.ykt.UI.Activity.zjyActivity.zjy_courseHdActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
 import com.vms.ykt.yktStuMobile.zjy.zjyTeachInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
@@ -23,8 +24,6 @@ import java.util.List;
 public class zjy_dayTeachAdapter extends baseRecyclerAdapter<zjy_dayTeachAdapter.ViewHolder1> {
 
     List<zjyTeachInfo> mDayTeachInfo;
-    zjyCourseIfno mCourseIfno;
-    private zjyUser mZjyUser;
     private zjy_DayTeachActivity mActivity;
 
     private String TAG=this.getClass().getSimpleName();
@@ -35,10 +34,8 @@ public class zjy_dayTeachAdapter extends baseRecyclerAdapter<zjy_dayTeachAdapter
 
     private zjy_dayTeachAdapter.initRcView mInitRcView;
 
-    public zjy_dayTeachAdapter(List<zjyTeachInfo> data, zjyUser zjyUsers, zjyCourseIfno courseIfno) {
+    public zjy_dayTeachAdapter(List<zjyTeachInfo> data) {
         this.mDayTeachInfo = data;
-        this.mZjyUser=zjyUsers;
-        this.mCourseIfno=courseIfno;
     }
 
     public void updateData(List<zjyTeachInfo> data) {
@@ -111,11 +108,11 @@ public class zjy_dayTeachAdapter extends baseRecyclerAdapter<zjy_dayTeachAdapter
             @Override
             public void onClick(final View v) {
 
-                Intent i = new Intent(mActivity, zjy_courseHdActivity.class);
-                i.putExtra("Course", mCourseIfno);
-                i.putExtra("ZjyUser", mZjyUser);
-                i.putExtra("zjyTeachInfo", mDayTeachInfo.get(position));
-                mActivity.startActivity(i);
+                if (vZjyTeachInfo.getId()!=null) {
+                    zjyUserDao.sZjyTeachInfo = vZjyTeachInfo;
+                    Intent i = new Intent(mActivity, zjy_courseHdActivity.class);
+                    mActivity.startActivity(i);
+                }
                 if(onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemClick(holder.itemView, pos);

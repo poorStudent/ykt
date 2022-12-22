@@ -28,7 +28,7 @@ import java.io.Serializable;
  "Gesture":"","DataType":"测验","SignType":0,"paperType":0,"CreatorId":"utbzaikuaovc89bj200x1a","Title":"2022-05-30  17:06的测验",
  "isAuthenticate":0,"ViewAnswer":2,"cellSort":0,"hkOrExamType":0,"cellType":0,"State":2,"Id":"leezaawur51kwhanoggga"}
  *  **/
-public class zjyCouresActivitInfo implements Serializable {
+public class zjyCouresActivitInfo  {
     private String Id;
     private String Title;
     private String CreatorId;

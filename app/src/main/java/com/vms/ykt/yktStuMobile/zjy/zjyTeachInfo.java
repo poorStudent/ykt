@@ -7,7 +7,7 @@ import java.io.Serializable;
  * "Title":"2022-04-14周四的课堂教学","openClassId":"mty7au2uq6hay0t4yghww",
  * "dateCreated":"2022-04-14 19:08",
  * "teachDate":"2022-04-14","classSection":"","Address":"","state":3},**/
-public class zjyTeachInfo implements Serializable {
+public class zjyTeachInfo  {
     private String dateCreated;
     private String courseOpenId;
     private String openClassId;

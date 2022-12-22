@@ -31,12 +31,18 @@ public class newZjyHttp {
         header.put("Cookie", userCookies);
     }
 
+
     public static Map<String, Object> getHeader() {
         return header;
     }
 
     public static void setHeader(Map<String, Object> ParmsHeader) {
         header = ParmsHeader;
+    }
+
+    // 重置请求头
+    public static void restHeader() {
+        newZjyHttp.setHeader(yktHeaders.getNewZjyMHeader());
     }
 
     public static void removeHeader(ArrayList<String> Header) {
@@ -63,8 +69,7 @@ public class newZjyHttp {
         }
     }
 
-
-    public static void addCookie(String upCookie) {
+    public static void upCookie(String upCookie) {
 
         Map<String, Object> Header = getHeader();
 
@@ -94,6 +99,18 @@ public class newZjyHttp {
         //System.out.println(JSONObject.toJSONString(Header));
     }
 
+    public static void addCookie(String ck) {
+        Map<String, Object> Header = getHeader();
+        if (Header != null && Header.containsKey("Cookie")) {
+            ck = Header.get("Cookie") + ";" + ck;
+        }
+        addHeader("Cookie", ck);
+    }
+
+    public static void restCookie(String ck) {
+        addHeader("Cookie", ck);
+
+    }
 
     public static HashMap<String, Object> parseCookie(String resp) {
         HashMap<String, Object> cks = new HashMap<>();
@@ -110,18 +127,7 @@ public class newZjyHttp {
         return cks;
     }
 
-    public static void upCookie(String ck) {
-        Map<String, Object> Header = getHeader();
-        if (Header != null && Header.containsKey("Cookie")) {
-            String upCookie = String.valueOf(Header.get("Cookie")) + ";" + ck;
-            addHeader("Cookie", upCookie);
-        }
-    }
 
-    public static void restCookie(String ck) {
-        addHeader("Cookie", ck);
-
-    }
 
     public static String get(String requestUrl) {
         return get(requestUrl, "");
@@ -159,6 +165,14 @@ public class newZjyHttp {
         ret = Http.post(requestUrl, header, body, referer, userAgent, null);
 
         return ret;
+    }
+
+    public static String postT(String requestUrl, String body) {
+        return postT(requestUrl, body, null,null).getResp();
+    }
+
+    public static httpRespnose postT(String requestUrl, String body, String referer, String userAgent) {
+        return Http.postT(requestUrl, header, body, referer, userAgent, null);
     }
 
 

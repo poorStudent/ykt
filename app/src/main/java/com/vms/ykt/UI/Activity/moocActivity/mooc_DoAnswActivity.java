@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.vms.ykt.R;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.mooc.moocUserDao;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.mooc.homeWorkAnswInfo;
 import com.vms.ykt.yktStuMobile.mooc.moocApi;
 import com.vms.ykt.yktStuMobile.mooc.moocCellInfo;
@@ -62,9 +64,9 @@ public class mooc_DoAnswActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = mooc_DoAnswActivity.this;
-        this.mCourseIfno = (moocCourseInfo) i.getSerializableExtra("Course");
-        this.mWorkExamList = (WorkExamList) i.getSerializableExtra("HomeworkInfo");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
+        this.mWorkExamList = moocUserDao.sWorkExamList;
+        this.mCourseIfno = moocUserDao.sMoocCourseInfo;
+        this.mZjyUser = zjyUserDao.sZjyUser;
         this.flag = (String) i.getSerializableExtra("flag");
         this.Workflag = (String) i.getSerializableExtra("Workflag");
 

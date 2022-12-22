@@ -22,7 +22,7 @@ import java.util.ArrayList;
  "assistTeacherName":"张雅琳","assistTeacherNum":"2022400002"}
 
  **/
-public class zjyCourseIfno implements Serializable
+public class zjyCourseIfno
 {
     private String thumbnail;
     private String process;

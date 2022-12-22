@@ -216,6 +216,7 @@ public class testActivity extends AppCompatActivity {
 
 
     }
+
     class nn{
         public void main(String[] args) throws Exception {
             System.out.println(byte.class.getName());
@@ -255,16 +256,12 @@ class b extends a {
 
     public void cqMian() {
         new Thread(() -> {
-            cqoocHttp vCqoocHttp = new cqoocHttp();
-            vCqoocHttp.setUserCookie("player=2; xsid=9846369FAFA564C");
-            cqApi vCqApi = new cqApi();
-            vCqApi.setCqoocHttp(vCqoocHttp);
-            cqoocMain vCqoocMain = new cqoocMain();
-            vCqoocMain.setCqApi(vCqApi);
-            userInfo vUserInfo = vCqoocMain.getUsreInfo("9846369FAFA564C");
-            String resp = vCqApi.getCourseInfo2(vUserInfo.getId());
+
+            cqoocHttp.setUserCookie("player=2; xsid=9846369FAFA564C");
+            userInfo vUserInfo = cqoocMain.getUsreInfo("9846369FAFA564C");
+            String resp = cqApi.getCourseInfo2(vUserInfo.getId());
             if (resp != null && resp.contains("data")) {
-                for (cqoocCourseInfo vCourseInfo : vCqoocMain.parseCourse(resp, 2)) {
+                for (cqoocCourseInfo vCourseInfo : cqoocMain.parseCourse(resp, 2)) {
                     if (vCourseInfo.getTitle().contains("网络舆情分析")) {
                         System.out.println(vCourseInfo.getCourseId());
                         System.out.println(vCourseInfo.getClassId());

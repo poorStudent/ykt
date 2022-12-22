@@ -28,6 +28,7 @@ import com.vms.ykt.UI.Activity.zjyActivity.zjy_DayTeachActivity;
 import com.vms.ykt.UI.Adapter.zjyAdapter.zjyRecyclerAdapter;
 import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.UI.yktMainActivity;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.*;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktStuWeb.zjy.zjyApiW;
@@ -69,9 +70,7 @@ public class zjyFragment extends baseFragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ProgressBar mProgressBar;
 
-    private zjyHttpW mZjyHttpW;
-    private zjyApiW mZjyApiW;
-    private zjyMainW mZjyMainW;
+
 
     public static Fragment newInstance(String parms) {
         if (sZjyFragment == null) {
@@ -83,13 +82,8 @@ public class zjyFragment extends baseFragment {
 
     public void setData(zjyUser zjyUser) {
         if (zjyUser==null)return;
-        this.mZjyUser = zjyUser;
-        this.mZjyHttpW=new zjyHttpW();
-        this.mZjyApiW=new zjyApiW();
-        this.mZjyMainW=new zjyMainW();
-        mZjyHttpW.setUserCookie(mZjyUser.getCookie());
-        mZjyApiW.setZjyHttpW(mZjyHttpW);
-        mZjyMainW.setZjyApiW(mZjyApiW);
+        mZjyUser=zjyUserDao.sZjyUser;
+        zjyHttpW.restCookie(mZjyUser.getCookie());
     }
 
     private static String ARG_PARAM = "param_key";
@@ -99,6 +93,7 @@ public class zjyFragment extends baseFragment {
         super.onAttach(context);
         mActivity = (yktMainActivity) context;
         mParam = getArguments().getString(ARG_PARAM);
+
     }
 
     @Override
@@ -158,7 +153,7 @@ public class zjyFragment extends baseFragment {
                 return ;
             }
             Intent i = new Intent(mActivity, zjy_DayTeachActivity.class);
-            i.putExtra("ZjyUser", mZjyUser);
+
             mActivity.startActivity(i);
         });
         mButton2.setOnLongClickListener((View v) -> {
@@ -188,7 +183,7 @@ public class zjyFragment extends baseFragment {
 
                     mZjyCourseIfnos = zjyMain.geAlltCoures(mZjyUser);
                     if (mZjyCourseIfnos.size() == 0) {
-                        mZjyCourseIfnos = mZjyMainW.getCoures();
+                        mZjyCourseIfnos = zjyMainW.getCoures();
                     }
 
                 mActivity.runOnUiThread(new Runnable() {
@@ -197,7 +192,7 @@ public class zjyFragment extends baseFragment {
 
                         if (mZjyCourseIfnos.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new zjyRecyclerAdapter(mZjyCourseIfnos, mZjyUser,mZjyMainW,mZjyApiW);
+                                mRecyclerAdapter = new zjyRecyclerAdapter(mZjyCourseIfnos);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mZjyCourseIfnos);
@@ -247,7 +242,7 @@ public class zjyFragment extends baseFragment {
         List<zjyTeachInfo> DayTeachInfo;//今日课堂列表
         DayTeachInfo = zjyMain.getDayTeachInfo(ZjyUser);
         if (DayTeachInfo.size()==0){
-            DayTeachInfo= mZjyMainW.getDayfaceTeachInfo();
+            DayTeachInfo= zjyMainW.getDayfaceTeachInfo();
         }
         for (zjyTeachInfo varZjyDayTeachInfo : DayTeachInfo) {
 
@@ -286,7 +281,7 @@ public class zjyFragment extends baseFragment {
             signOk.add(varActivitInfo.getId());
             ret="签到成功";
         }else {
-            String resp= mZjyApiW.getSaveSign(varActivitInfo.getId(), varActivitInfo.getGesture(), zjyUsers, zjyTeachInfos);
+            String resp= zjyApiW.getSaveSign(varActivitInfo.getId(), varActivitInfo.getGesture(), zjyUsers, zjyTeachInfos);
             if (resp!=null&&resp.contains("{\"code\":1}")){
                 signOk.add(varActivitInfo.getId());
                 ret="签到成功";

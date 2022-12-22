@@ -19,6 +19,7 @@ import com.vms.ykt.UI.Activity.cqoocActivity.cqooc_shuakeActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
 import com.vms.ykt.UI.yktMainActivity;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.cqooc.cqoocUserDao;
 import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocCourseInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocMain;
@@ -34,8 +35,6 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
     private Context mContext;
     private yktMainActivity mActivity;
     private userInfo mUserInfo;
-    private cqoocMain mCqoocMain;
-    private cqApi mCqApi;
     private String TAG = this.getClass().getSimpleName();
     /**
      * 事件回调监听
@@ -44,12 +43,10 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
 
     private cqoocRecyclerAdapter.initRcView mInitRcView;
 
-    public cqoocRecyclerAdapter(List<cqoocCourseInfo> data, userInfo userInfo, cqoocMain cqoocMain, cqApi cqApi) {
+    public cqoocRecyclerAdapter(List<cqoocCourseInfo> data) {
         this.mCqoocCourseInfo = data;
-        this.mUserInfo = userInfo;
-        this.mCqApi = cqApi;
-        this.mCqoocMain = cqoocMain;
-        Log.d(TAG, "cqoocRecyclerAdapter: " + userInfo.getStaytime());
+        this.mUserInfo = cqoocUserDao.sUserInfo;
+        Log.d(TAG, "cqoocRecyclerAdapter: " + mUserInfo.getStaytime());
     }
 
     public void updateData(List<cqoocCourseInfo> data) {
@@ -141,19 +138,19 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
         // 绑定数据
 
         if (holder.getItemViewType() > 10) {
-            String tag="";
+            String tag = "";
             switch (holder.getItemViewType()) {
                 case 11:
-                     tag="-----公开课-----";
+                    tag = "-----公开课-----";
                     break;
                 case 22:
-                    tag="-----在线课-----";
+                    tag = "-----在线课-----";
                     break;
                 case 33:
-                    tag="-----spoc课-----";
+                    tag = "-----spoc课-----";
                     break;
                 case 44:
-                    tag="-----独立云班课-----";
+                    tag = "-----独立云班课-----";
                     break;
                 default:
                     break;
@@ -163,8 +160,7 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
         }
 
 
-
-      final ViewHolder1 vHolder1 = (cqoocRecyclerAdapter.ViewHolder1) holder;
+        final ViewHolder1 vHolder1 = (cqoocRecyclerAdapter.ViewHolder1) holder;
 
         cqoocCourseInfo vCqoocCourseInfo = mCqoocCourseInfo.get(position);
         String kcmc = vCqoocCourseInfo.getTitle();
@@ -201,12 +197,16 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
             }
         }
         vHolder1.mTextView6.setText("结课时间: " + jksj);
-        if (holder.getItemViewType() !=2) return;
+        if (holder.getItemViewType() != 2) return;
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 //  if (holder.mTextView6.getText().toString().contains("已结束"))return;
-                showSetDialog(mCqoocCourseInfo.get(position));
+                if (vCqoocCourseInfo.getId() != null) {
+                    cqoocUserDao.sCqoocCourseInfo = vCqoocCourseInfo;
+                    showSetDialog(vCqoocCourseInfo);
+                }
+
                 if (onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemClick(holder.itemView, pos);
@@ -259,14 +259,9 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
         but_shuake.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getId() != null) {
-                    Intent i = new Intent(mActivity, cqooc_shuakeActivity.class);
-                    i.putExtra("Course", CourseIfno);
-                    i.putExtra("cqUser", mUserInfo);
-                    i.putExtra("mCqoocMain", mCqoocMain);
-                    i.putExtra("mCqApi", mCqApi);
-                    mActivity.startActivity(i);
-                }
+
+                Intent i = new Intent(mActivity, cqooc_shuakeActivity.class);
+                mActivity.startActivity(i);
             }
         });
         but_cy.setOnClickListener(new View.OnClickListener() {
@@ -288,6 +283,7 @@ public class cqoocRecyclerAdapter extends baseRecyclerAdapter<RecyclerView.ViewH
             }
         });
     }
+
 
     public void initListener(final ViewHolder1 holder) {
 

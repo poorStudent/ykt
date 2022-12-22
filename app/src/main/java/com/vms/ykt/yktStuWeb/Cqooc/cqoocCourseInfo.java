@@ -23,7 +23,7 @@ import java.io.Serializable;
  * "scoreBody":null,"score2":"0","chooseTime":1653293922739,"dropTime":null,"type":"1",
  * "tusername":null,"tInfo":null},
  **/
-public class cqoocCourseInfo implements Serializable {
+public class cqoocCourseInfo  {
     private String id;
     private String signNum;
 

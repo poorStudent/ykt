@@ -22,6 +22,8 @@ import androidx.appcompat.widget.SwitchCompat;
 import com.alibaba.fastjson.JSONObject;
 import com.vms.ykt.R;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.mooc.moocUserDao;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.mooc.homeWorkAnswInfo;
 import com.vms.ykt.yktStuMobile.mooc.moocApi;
 import com.vms.ykt.yktStuMobile.mooc.moocCellInfo;
@@ -65,8 +67,6 @@ public class mooc_shuakeActivity extends AppCompatActivity {
     StringBuilder stringBuffer;
 
 
-    private moocApiW mMoocApiW;
-    private moocMianW mMoocMianW;
     private Thread mThread;
     private boolean isDowork = true;
 
@@ -84,17 +84,10 @@ public class mooc_shuakeActivity extends AppCompatActivity {
 
     private void initData() {
         Intent i = getIntent();
-        mCourseIfno = (moocCourseInfo) i.getSerializableExtra("Course");
-        mZjyUser = (zjyUser) i.getSerializableExtra("mZjyUser");
+        this.mCourseIfno = moocUserDao.sMoocCourseInfo;
+        this.mZjyUser = zjyUserDao.sZjyUser;
         mContext = mooc_shuakeActivity.this;
-
-        moocHttpW vMoocHttpW = new moocHttpW();
-        mMoocApiW = new moocApiW();
-        mMoocMianW = new moocMianW();
-        vMoocHttpW.setUserCookie(mZjyUser.getCookie());
-        mMoocApiW.setMoocHttpW(vMoocHttpW);
-        mMoocMianW.setMoocApiW(mMoocApiW);
-
+        
         mShuake_kjpj = new ArrayList<>();
         mShuake_qtkjpj = new ArrayList<>();
 
@@ -229,10 +222,10 @@ public class mooc_shuakeActivity extends AppCompatActivity {
 
             String ret = "";
             if (mooc_shuke_websk.isChecked()) {
-                ret = mMoocApiW.viewDirectory(mCourseIfno, varCellInfo);
+                ret = moocApiW.viewDirectory(mCourseIfno, varCellInfo);
                 String videoLong = Tool.parseJsonS(Tool.parseJsonS(ret, "courseCell"), "VideoTimeLong");
                 // stringBuffer.append("\n" + Tool.getCurrentData() + "刷课->" + ret);
-                ret = mMoocApiW.StuProcessCell(mCourseIfno, varCellInfo, videoLong + "");
+                ret = moocApiW.StuProcessCell(mCourseIfno, varCellInfo, videoLong + "");
             } else {
                 ret = moocApi.getStuProcessCell(mZjyUser, mCourseIfno, varCellInfo);
             }
@@ -345,7 +338,7 @@ public class mooc_shuakeActivity extends AppCompatActivity {
     private void GetDoTest() {
         if (mooc_shuke_zdcy.isChecked()) {
 
-            List<WorkExamList> mWorkExamLists = mMoocMianW.getAllTestWork(mCourseIfno.getCourseOpenId());
+            List<WorkExamList> mWorkExamLists = moocMianW.getAllTestWork(mCourseIfno.getCourseOpenId());
             GetDoTwe(mWorkExamLists, "1");
 
         }
@@ -354,7 +347,7 @@ public class mooc_shuakeActivity extends AppCompatActivity {
     private void GetDoWork() {
         if (mooc_shuke_zdzy.isChecked()) {
 
-            List<WorkExamList> mWorkExamLists = mMoocMianW.getAllhomeWork(mCourseIfno.getCourseOpenId());
+            List<WorkExamList> mWorkExamLists = moocMianW.getAllhomeWork(mCourseIfno.getCourseOpenId());
 
             GetDoTwe(mWorkExamLists, "0");
 
@@ -363,7 +356,7 @@ public class mooc_shuakeActivity extends AppCompatActivity {
 
     private void GetDoExam() {
         if (mooc_shuke_zdks.isChecked()) {
-            List<WorkExamList> mWorkExamLists = mMoocMianW.getAllonlineExam(mCourseIfno.getCourseOpenId());
+            List<WorkExamList> mWorkExamLists = moocMianW.getAllonlineExam(mCourseIfno.getCourseOpenId());
             GetDoTwe(mWorkExamLists, "2");
         }
     }

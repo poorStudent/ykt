@@ -35,6 +35,7 @@ import com.vms.ykt.yktStuWeb.icve.icveHttpW;
 import com.vms.ykt.yktStuWeb.icve.icveMainW;
 import com.vms.ykt.yktStuWeb.icve.knowlegeInfo;
 import com.vms.ykt.yktStuWeb.icve.workExamListInfo;
+
 import com.vms.ykt.yktUtil.zjy.zjyMobileLogin;
 
 import java.io.File;
@@ -197,111 +198,46 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
         stringBuffer.append("\n" + Tool.getCurrentData() + " " + username + " ->登录成功");
         mHandler.sendEmptyMessage(100);
 
-        final icveHttpW mIcveHttpW = new icveHttpW();
-        final icveApiW mIcveApiW = new icveApiW();
-        final icveMainW mIcveMainW = new icveMainW();
-        mIcveHttpW.setUserCookie(mZjyUser.getCookie());
-        mIcveApiW.setIcveHttpW(mIcveHttpW);
-        mIcveMainW.setIcveApiW(mIcveApiW);
 
-        for (icveCourseInfo vIcveCourseInfo : mIcveMainW.getMyCourseList(mZjyUser)) {
-            if (vIcveCourseInfo.getType() == 2) continue;
+        synchronized (this) {
+            icveHttpW.restCookie("");
+            icveHttpW.restCookie(mZjyUser.getCookie());
+            for (icveCourseInfo vIcveCourseInfo : icveMainW.getMyCourseList(mZjyUser)) {
+                if (vIcveCourseInfo.getType() == 2) continue;
 
-            if (course.contains(vIcveCourseInfo.getTitle())) {
+                if (course.contains(vIcveCourseInfo.getTitle())) {
 
-                doWork(mZjyUser, vIcveCourseInfo, mIcveApiW, mIcveMainW);
+                    doWork(mZjyUser, vIcveCourseInfo);
 
+                }
             }
-        }
-        String jd="账号个数: "+yszhs+"/"+zhzs;
-        runOnUiThread(()->mooc_shuake_jd.setText(jd));
-
-    }
-
-    private void doWorkWk(zjyUser zjyUser, icveCourseInfo courseIfno, icveApiW mIcveApiW, icveMainW mIcveMainW) {
-        List<cellInfo> vCellInfoList = mIcveMainW.getWkCellsList(courseIfno.getId());
-        for (cellInfo vCellInfo : vCellInfoList) {
-            Log.d(TAG, "doWorkWk: " + "----" + vCellInfo.getTitle() + "*" + vCellInfo.getCellType());
-
-        }
-        int curCt = 0;
-        int pageCt = 0;
-        pageCt = vCellInfoList.size();
-        for (cellInfo vCellInfo : vCellInfoList) {
-            if (isShuake_zt) {
-                Log.d(TAG, "shuake: " + isShuake_zt);
-                stringBuffer.append("\n" + Tool.getCurrentData() + " ->已停止");
-                mHandler.sendEmptyMessage(100);
-                return;
-            }
-            if (mThread.isInterrupted()) {
-                return;
-            }
-
-            curCt++;
-
-            shukeWk(zjyUser, courseIfno, vCellInfo, mIcveApiW, mIcveMainW);
-
-            stringBuffer.append("进度: " + curCt + "/" + pageCt);
+            String jd = "账号个数: " + yszhs + "/" + zhzs;
+            runOnUiThread(() -> mooc_shuake_jd.setText(jd));
         }
     }
 
-    private void shukeWk(zjyUser zjyUser, icveCourseInfo CourseInfo, cellInfo varCellInfo, icveApiW mIcveApiW, icveMainW mIcveMainW) {
-        String kjmc = "\n----" + varCellInfo.getTitle() + " *" + varCellInfo.getCellType();
-        stringBuffer.append(kjmc);
-        Log.d(TAG, "shuke: " + kjmc);
-        mHandler.sendEmptyMessage(100);
-        if (mooc_shuke_sk.isChecked()) {
 
-            ViewInfo vMicroView = mIcveMainW.getMicroView(varCellInfo.getId());
-            if (vMicroView == null) {
-                stringBuffer.append("\n未知异常->跳过");
-                mHandler.sendEmptyMessage(100);
-                return;
-            }
-            stringBuffer.append("\n刷课->" + vMicroView.getWorks());
-            mHandler.sendEmptyMessage(100);
-            if (varCellInfo.getCellType().contains("video")) {
-                Tool.waitTime(mShuake_spkjys);
-                String resp = mIcveApiW.getMicroUpdateStatus(varCellInfo.getId());
-                stringBuffer.append("\n刷课->" + resp);
-                mHandler.sendEmptyMessage(100);
-            }
 
-            if (varCellInfo.getCellType().contains("discuss")) {
-
-            }
-
-            if (varCellInfo.getCellType().contains("question")) {
-
-            }
-
-        } else {
-            stringBuffer.append("\n刷课->跳过");
-            mHandler.sendEmptyMessage(100);
-        }
-    }
-
-    private void doWork(zjyUser zjyUser, icveCourseInfo mCourseIfno, icveApiW mIcveApiW, icveMainW mIcveMainW) {
+    private void doWork(zjyUser zjyUser, icveCourseInfo mCourseIfno ) {
         List<cellInfo> vCellInfoList = new ArrayList<>();
         if (mCourseIfno.getType() == 0) {
             //正常课
-            for (SectionInfo vSectionInfo : mIcveMainW.getSectionList(mCourseIfno)) {
+            for (SectionInfo vSectionInfo : icveMainW.getSectionList(mCourseIfno)) {
                 if (!mooc_shuke_sk.isChecked())break;
-                for (chapterInfo vChapterInfo : mIcveMainW.getChaptersList(vSectionInfo.getChapters())) {
+                for (chapterInfo vChapterInfo : icveMainW.getChaptersList(vSectionInfo.getChapters())) {
                     if (!vChapterInfo.getResId().isEmpty()) {
 
                     }
-                    vCellInfoList.addAll(mIcveMainW.getCellsList(vChapterInfo.getCells()));
-                    for (knowlegeInfo vKnowlegeInfo : mIcveMainW.getKnowlegesList(vChapterInfo.getKnowleges())) {
-                        vCellInfoList.addAll(mIcveMainW.getCellsList(vKnowlegeInfo.getCells()));
+                    vCellInfoList.addAll(icveMainW.getCellsList(vChapterInfo.getCells()));
+                    for (knowlegeInfo vKnowlegeInfo : icveMainW.getKnowlegesList(vChapterInfo.getKnowleges())) {
+                        vCellInfoList.addAll(icveMainW.getCellsList(vKnowlegeInfo.getCells()));
                     }
                 }
             }
         } else {
             //微课
             if (mooc_shuke_sk.isChecked())
-                vCellInfoList=mIcveMainW.getWkCellsList(mCourseIfno.getId());
+                vCellInfoList=icveMainW.getWkCellsList(mCourseIfno.getId());
         }
         int pageCt = vCellInfoList.size();
         int curCt = 0;
@@ -321,18 +257,18 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
             stringBuffer.append("进度: " + curCt + "/" + pageCt);
             mHandler.sendEmptyMessage(100);
             if (stringBuffer.length()==1000) stringBuffer.delete(0,stringBuffer.length());
-            shuke(zjyUser, mCourseIfno, vCellInfo, mIcveApiW, mIcveMainW);
+            shuke(zjyUser, mCourseIfno, vCellInfo);
         }
 
         if (mCourseIfno.getType() == 0) {
 
-            GetDoWork( mCourseIfno, mIcveApiW, mIcveMainW);
+            GetDoWork( mCourseIfno);
 
-            GetDoExam( mCourseIfno, mIcveApiW, mIcveMainW);
+            GetDoExam( mCourseIfno);
         }
     }
 
-    private void shuke(zjyUser zjyUser, icveCourseInfo mCourseIfno, cellInfo varCellInfo, icveApiW mIcveApiW, icveMainW mIcveMainW) {
+    private void shuke(zjyUser zjyUser, icveCourseInfo mCourseIfno, cellInfo varCellInfo ) {
 
         String kjmc;
         if (mCourseIfno.getType() == 0) {
@@ -361,10 +297,10 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
             ViewInfo vViewInfo = null;
             if (mCourseIfno.getType() == 0) {
                 //正常课
-                vViewInfo = mIcveMainW.getView(mCourseIfno.getId(), varCellInfo.getId());
+                vViewInfo = icveMainW.getView(mCourseIfno.getId(), varCellInfo.getId());
             } else {
                 //微课
-                vViewInfo = mIcveMainW.getMicroView(varCellInfo.getId());
+                vViewInfo = icveMainW.getMicroView(varCellInfo.getId());
             }
             if (vViewInfo == null) {
                 stringBuffer.append("\n未知异常->跳过");
@@ -378,10 +314,10 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
                 String resp;
                 if (mCourseIfno.getType() == 0) {
                     //正常课
-                    resp = mIcveApiW.getUpdateStatus(varCellInfo.getId());
+                    resp = icveApiW.getUpdateStatus(varCellInfo.getId());
                 } else {
                     //微课
-                    resp = mIcveApiW.getMicroUpdateStatus(varCellInfo.getId());
+                    resp = icveApiW.getMicroUpdateStatus(varCellInfo.getId());
                     if (resp.isEmpty()) {
                         resp = "---ok";
                     }
@@ -392,12 +328,12 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
 
             if (varCellInfo.getCellType().contains("discuss")) {
                 if (varCellInfo.getStatus()==null||varCellInfo.getStatus().contains("0"))
-                doDiscuss(zjyUser, mCourseIfno, mIcveApiW, mIcveMainW, vViewInfo, varCellInfo);
+                doDiscuss(zjyUser, mCourseIfno, vViewInfo, varCellInfo);
             }
 
             if (varCellInfo.getCellType().contains("question")) {
                 if (varCellInfo.getStatus()==null||varCellInfo.getStatus().contains("0"))
-                doTest(mCourseIfno, mIcveApiW, mIcveMainW, vViewInfo);
+                doTest(mCourseIfno, vViewInfo);
             }
 
 
@@ -407,24 +343,24 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
         }
     }
 
-    private void doDiscuss(zjyUser zjyUser, icveCourseInfo mCourseIfno, icveApiW mIcveApiW, icveMainW mIcveMainW, ViewInfo viewInfo, cellInfo varCellInfo) {
+    private void doDiscuss(zjyUser zjyUser, icveCourseInfo mCourseIfno , ViewInfo viewInfo, cellInfo varCellInfo) {
         if (icve_shuke_zdtl.isChecked()) {
             String resp = "";
             String ct = Tool.getRandomStr(mShuake_tl);
             if (mCourseIfno.getType() == 0) {
-                String cts = mIcveApiW.getReplyContext(mCourseIfno.getId(), varCellInfo.getResId());
+                String cts = icveApiW.getReplyContext(mCourseIfno.getId(), varCellInfo.getResId());
                 Log.d(TAG, "doDiscuss: " + cts);
-                System.out.println(mIcveApiW.addReply(mCourseIfno.getId(), varCellInfo.getResId(), cts.isEmpty() ? ct : cts));
+                System.out.println(icveApiW.addReply(mCourseIfno.getId(), varCellInfo.getResId(), cts.isEmpty() ? ct : cts));
             } else {
                 String ResId = Tool.parseJsonS(viewInfo.getCell(), "ResId");
-                resp = mIcveApiW.getMicroAddReply(ResId, ct);
+                resp = icveApiW.getMicroAddReply(ResId, ct);
             }
             stringBuffer.append("\n 讨论->" + resp);
             mHandler.sendEmptyMessage(100);
         }
     }
 
-    private void doTest(icveCourseInfo mCourseIfno, icveApiW mIcveApiW, icveMainW mIcveMainW, ViewInfo viewInfo) {
+    private void doTest(icveCourseInfo mCourseIfno , ViewInfo viewInfo) {
 
 
         if (mooc_shuke_zdcy.isChecked()) {
@@ -446,9 +382,9 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
             if (mCourseIfno.getType() == 0) {
                 //正常课
 
-                List<AnswersInfo> vAnswersInfoList = mIcveMainW.getAnswPapers(data);
+                List<AnswersInfo> vAnswersInfoList = icveMainW.getAnswPapers(data);
                 if (vAnswersInfoList.size() == 0) {
-                    vAnswersInfoList = mIcveMainW.getAnswArrays(data);
+                    vAnswersInfoList = icveMainW.getAnswArrays(data);
                 }
                 if (vAnswersInfoList.size() == 0) {
                     return;
@@ -460,19 +396,19 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
                     Log.d(TAG, ans.getContentText());
                     for (String answ : ans.getAnswersList()) {
                         Log.d(TAG, "doTest: " + answ);
-                        resp = mIcveApiW.answerpaper(worksId, id, answ);
+                        resp = icveApiW.answerpaper(worksId, id, answ);
                         stringBuffer.append("\n " + id + "->" + resp);
                         mHandler.sendEmptyMessage(100);
                     }
                 }
-                resp = mIcveApiW.subPaper(worksId);
+                resp = icveApiW.subPaper(worksId);
 
             } else {
                 //微课
 
-                List<AnswersInfo> vAnswersInfoList = mIcveMainW.getAnswPaper(data);
+                List<AnswersInfo> vAnswersInfoList = icveMainW.getAnswPaper(data);
                 if (vAnswersInfoList.size() == 0) {
-                    vAnswersInfoList = mIcveMainW.getAnswArray(data);
+                    vAnswersInfoList = icveMainW.getAnswArray(data);
                 }
                 if (vAnswersInfoList.size() == 0) {
                     return;
@@ -487,7 +423,7 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
                 }
                 String asnwJson = JSONArray.toJSONString(answList);
                 Log.d(TAG, "doTest: " + asnwJson);
-                resp = mIcveApiW.getMicroSubPaper(worksId, asnwJson);
+                resp = icveApiW.getMicroSubPaper(worksId, asnwJson);
 
             }
 
@@ -497,11 +433,10 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
 
     }
 
-
-    private void GetDoWork(icveCourseInfo mCourseIfno, icveApiW mIcveApiW, icveMainW mIcveMainW) {
+    private void GetDoWork(icveCourseInfo mCourseIfno ) {
         if (mooc_shuke_zdzy.isChecked()) {
             if (stringBuffer.length()==1000) stringBuffer.delete(0,stringBuffer.length());
-            List<workExamListInfo> WorkList = mIcveMainW.getWorksList(mCourseIfno.getId());
+            List<workExamListInfo> WorkList = icveMainW.getWorksList(mCourseIfno.getId());
             int curCt = 0;
             int pageCt = WorkList.size();
             for (workExamListInfo WorkInfo : WorkList) {
@@ -520,15 +455,15 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
                 stringBuffer.append("作业进度: " + curCt + "/" + pageCt);
                 mHandler.sendEmptyMessage(100);
                 if (WorkInfo.getStatus().contains("0"))
-                DoWork(mCourseIfno, mIcveApiW, mIcveMainW, WorkInfo);
+                DoWork(mCourseIfno, WorkInfo);
             }
         }
     }
 
-    private void DoWork(icveCourseInfo mCourseIfno, icveApiW mIcveApiW, icveMainW mIcveMainW, workExamListInfo WorkInfo) {
+    private void DoWork(icveCourseInfo mCourseIfno , workExamListInfo WorkInfo) {
         Log.d(TAG, "DoExam: " + WorkInfo.getTitle() + " *" + WorkInfo.getId());
 
-        String data = mIcveApiW.getWorkPerview(mCourseIfno.getId(), WorkInfo.getId());
+        String data = icveApiW.getWorkPerview(mCourseIfno.getId(), WorkInfo.getId());
         String answerId = JSONObject.parseObject(data).getJSONObject("answer").getString("Id");
         if (answerId == null || answerId.isEmpty()) {
             stringBuffer.append("\n 作业->获取id失败 跳过");
@@ -538,9 +473,9 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
         if (data == null || data.isEmpty()) {
             return;
         }
-        List<AnswersInfo> vAnswersInfoList = mIcveMainW.getAnswPapers(data);
+        List<AnswersInfo> vAnswersInfoList = icveMainW.getAnswPapers(data);
         if (vAnswersInfoList.size() == 0) {
-            vAnswersInfoList = mIcveMainW.getAnswArrays(data);
+            vAnswersInfoList = icveMainW.getAnswArrays(data);
         }
         if (vAnswersInfoList.size() == 0) {
             return;
@@ -554,15 +489,15 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
         }
         String asnwJson = JSONArray.toJSONString(answList);
         Log.d(TAG, "doTest: " + asnwJson);
-        String resp = mIcveApiW.getAnswerOnlineWorks(answerId, asnwJson);
+        String resp = icveApiW.getAnswerOnlineWorks(answerId, asnwJson);
         stringBuffer.append("\n 作业->" + resp);
         mHandler.sendEmptyMessage(100);
     }
 
-    private void GetDoExam(icveCourseInfo mCourseIfno, icveApiW mIcveApiW, icveMainW mIcveMainW) {
+    private void GetDoExam(icveCourseInfo mCourseIfno ) {
         if (mooc_shuke_zdks.isChecked()) {
             if (stringBuffer.length()==1000) stringBuffer.delete(0,stringBuffer.length());
-            List<workExamListInfo> ExamLis = mIcveMainW.getExamList(mCourseIfno.getId());
+            List<workExamListInfo> ExamLis = icveMainW.getExamList(mCourseIfno.getId());
             int curCt = 0;
             int pageCt = ExamLis.size();
             for (workExamListInfo ExamInfo : ExamLis) {
@@ -581,15 +516,15 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
                 stringBuffer.append("考试进度: " + curCt + "/" + pageCt);
                 mHandler.sendEmptyMessage(100);
                 if (ExamInfo.getStatus().contains("0"))
-                DoExam(mCourseIfno, mIcveApiW, mIcveMainW, ExamInfo);
+                DoExam(mCourseIfno, ExamInfo);
             }
         }
     }
 
-    private void DoExam(icveCourseInfo mCourseIfno, icveApiW mIcveApiW, icveMainW mIcveMainW, workExamListInfo WorkInfo) {
+    private void DoExam(icveCourseInfo mCourseIfno , workExamListInfo WorkInfo) {
         Log.d(TAG, "DoExam: " + WorkInfo.getTitle() + " *" + WorkInfo.getId());
 
-        String data = mIcveApiW.getExamPerview(mCourseIfno.getId(), WorkInfo.getId());
+        String data = icveApiW.getExamPerview(mCourseIfno.getId(), WorkInfo.getId());
         String answerId = JSONObject.parseObject(data).getJSONObject("answer").getString("Id");
         if (answerId == null || answerId.isEmpty()) {
             stringBuffer.append("\n 作业->获取id失败 跳过");
@@ -599,9 +534,9 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
         if (data == null || data.isEmpty()) {
             return;
         }
-        List<AnswersInfo> vAnswersInfoList = mIcveMainW.getAnswPapers(data);
+        List<AnswersInfo> vAnswersInfoList = icveMainW.getAnswPapers(data);
         if (vAnswersInfoList.size() == 0) {
-            vAnswersInfoList = mIcveMainW.getAnswArrays(data);
+            vAnswersInfoList = icveMainW.getAnswArrays(data);
         }
         if (vAnswersInfoList.size() == 0) {
             return;
@@ -615,28 +550,91 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
         }
         String asnwJson = JSONArray.toJSONString(answList);
         Log.d(TAG, "doTest: " + asnwJson);
-        String resp = mIcveApiW.getAnswerExam(answerId, asnwJson);
+        String resp = icveApiW.getAnswerExam(answerId, asnwJson);
         stringBuffer.append("\n 作业->" + resp);
         mHandler.sendEmptyMessage(100);
     }
 
 
+    private void doWorkWk(zjyUser zjyUser, icveCourseInfo courseIfno ) {
+        List<cellInfo> vCellInfoList = icveMainW.getWkCellsList(courseIfno.getId());
+        for (cellInfo vCellInfo : vCellInfoList) {
+            Log.d(TAG, "doWorkWk: " + "----" + vCellInfo.getTitle() + "*" + vCellInfo.getCellType());
 
-    private void GetDoWorks(icveCourseInfo mCourseIfno,icveMainW mIcveMainW,icveApiW mIcveApiW) {
+        }
+        int curCt = 0;
+        int pageCt = 0;
+        pageCt = vCellInfoList.size();
+        for (cellInfo vCellInfo : vCellInfoList) {
+            if (isShuake_zt) {
+                Log.d(TAG, "shuake: " + isShuake_zt);
+                stringBuffer.append("\n" + Tool.getCurrentData() + " ->已停止");
+                mHandler.sendEmptyMessage(100);
+                return;
+            }
+            if (mThread.isInterrupted()) {
+                return;
+            }
+
+            curCt++;
+
+            shukeWk(zjyUser, courseIfno, vCellInfo);
+
+            stringBuffer.append("进度: " + curCt + "/" + pageCt);
+        }
+    }
+
+    private void shukeWk(zjyUser zjyUser, icveCourseInfo CourseInfo, cellInfo varCellInfo ) {
+        String kjmc = "\n----" + varCellInfo.getTitle() + " *" + varCellInfo.getCellType();
+        stringBuffer.append(kjmc);
+        Log.d(TAG, "shuke: " + kjmc);
+        mHandler.sendEmptyMessage(100);
+        if (mooc_shuke_sk.isChecked()) {
+
+            ViewInfo vMicroView = icveMainW.getMicroView(varCellInfo.getId());
+            if (vMicroView == null) {
+                stringBuffer.append("\n未知异常->跳过");
+                mHandler.sendEmptyMessage(100);
+                return;
+            }
+            stringBuffer.append("\n刷课->" + vMicroView.getWorks());
+            mHandler.sendEmptyMessage(100);
+            if (varCellInfo.getCellType().contains("video")) {
+                Tool.waitTime(mShuake_spkjys);
+                String resp = icveApiW.getMicroUpdateStatus(varCellInfo.getId());
+                stringBuffer.append("\n刷课->" + resp);
+                mHandler.sendEmptyMessage(100);
+            }
+
+            if (varCellInfo.getCellType().contains("discuss")) {
+
+            }
+
+            if (varCellInfo.getCellType().contains("question")) {
+
+            }
+
+        } else {
+            stringBuffer.append("\n刷课->跳过");
+            mHandler.sendEmptyMessage(100);
+        }
+    }
+
+    private void GetDoWorks(icveCourseInfo mCourseIfno,icveMainW icveMainW,icveApiW icveApiW) {
         if (mooc_shuke_zdzy.isChecked()) {
-            List<workExamListInfo> WorkList = mIcveMainW.getWorksList(mCourseIfno.getId());
-            GetDoEw(WorkList, "作业", mCourseIfno,mIcveMainW, mIcveApiW);
+            List<workExamListInfo> WorkList = icveMainW.getWorksList(mCourseIfno.getId());
+            GetDoEw(WorkList, "作业", mCourseIfno   );
         }
     }
 
-    private void GetDoExams(icveCourseInfo mCourseIfno,icveMainW mIcveMainW, icveApiW mIcveApiW) {
+    private void GetDoExams(icveCourseInfo mCourseIfno  ) {
         if (mooc_shuke_zdks.isChecked()) {
-            List<workExamListInfo> ExamLis = mIcveMainW.getExamList(mCourseIfno.getId());
-            GetDoEw(ExamLis, "考试", mCourseIfno, mIcveMainW,mIcveApiW);
+            List<workExamListInfo> ExamLis = icveMainW.getExamList(mCourseIfno.getId());
+            GetDoEw(ExamLis, "考试", mCourseIfno   );
         }
     }
 
-    private void GetDoEw(List<workExamListInfo> WorkList, String tn,icveCourseInfo mCourseIfno,icveMainW mIcveMainW, icveApiW mIcveApiW) {
+    private void GetDoEw(List<workExamListInfo> WorkList, String tn,icveCourseInfo mCourseIfno  ) {
         if (stringBuffer.length() == 1000) stringBuffer.delete(0, stringBuffer.length());
         int curCt = 0;
         int pageCt = WorkList.size();
@@ -656,17 +654,17 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
             String jd = tn + "进度: " + curCt + "/" + pageCt;
             stringBuffer.append(jd);
             mHandler.sendEmptyMessage(100);
-            GetDoEws(tn, WorkInfo, mCourseIfno, mIcveMainW, mIcveApiW);
+            GetDoEws(tn, WorkInfo, mCourseIfno  );
         }
     }
 
-    private void GetDoEws(String tn, workExamListInfo workInfo, icveCourseInfo mCourseIfno,icveMainW mIcveMainW, icveApiW mIcveApiW) {
+    private void GetDoEws(String tn, workExamListInfo workInfo, icveCourseInfo mCourseIfno  ) {
 
         if (workInfo.getStatus().contains("0")) {
             if (tn.contains("作业")) {
-                DoWorks(workInfo, mCourseIfno, mIcveMainW, mIcveApiW);
+                DoWorks(workInfo, mCourseIfno  );
             } else {
-                DoExams(workInfo, mCourseIfno, mIcveMainW, mIcveApiW);
+                DoExams(workInfo, mCourseIfno  );
             }
             return;
         }
@@ -675,25 +673,25 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
 
     }
 
-    private void DoWorks(workExamListInfo WorkInfo, icveCourseInfo mCourseIfno,icveMainW mIcveMainW, icveApiW mIcveApiW) {
+    private void DoWorks(workExamListInfo WorkInfo, icveCourseInfo mCourseIfno  ) {
         Log.d(TAG, "DoExam: " + WorkInfo.getTitle() + " *" + WorkInfo.getId());
         stringBuffer.append("\n 作业->----");
         stringBuffer.append(WorkInfo.getTitle());
         mHandler.sendEmptyMessage(100);
-        String data = mIcveApiW.getWorkPerview(mCourseIfno.getId(), WorkInfo.getId());
-        DoEw(data, mIcveMainW, mIcveApiW);
+        String data = icveApiW.getWorkPerview(mCourseIfno.getId(), WorkInfo.getId());
+        DoEw(data  );
     }
 
-    private void DoExams(workExamListInfo WorkInfo, icveCourseInfo mCourseIfno,icveMainW mIcveMainW, icveApiW mIcveApiW) {
+    private void DoExams(workExamListInfo WorkInfo, icveCourseInfo mCourseIfno  ) {
         Log.d(TAG, "DoExam: " + WorkInfo.getTitle() + " *" + WorkInfo.getId());
         stringBuffer.append("\n 考试->----");
         stringBuffer.append(WorkInfo.getTitle());
         mHandler.sendEmptyMessage(100);
-        String data = mIcveApiW.getExamPerview(mCourseIfno.getId(), WorkInfo.getId());
-        DoEw(data, mIcveMainW, mIcveApiW);
+        String data = icveApiW.getExamPerview(mCourseIfno.getId(), WorkInfo.getId());
+        DoEw(data  );
     }
 
-    private void DoEw(String data,icveMainW mIcveMainW, icveApiW mIcveApiW) {
+    private void DoEw(String data) {
         if (data == null || !data.contains("answer")) {
             stringBuffer.append("\n ->");
             stringBuffer.append(data);
@@ -706,9 +704,9 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
             mHandler.sendEmptyMessage(100);
             return;
         }
-        List<AnswersInfo> vAnswersInfoList = mIcveMainW.getAnswPapers(data);
+        List<AnswersInfo> vAnswersInfoList = icveMainW.getAnswPapers(data);
         if (vAnswersInfoList.size() == 0) {
-            vAnswersInfoList = mIcveMainW.getAnswArrays(data);
+            vAnswersInfoList = icveMainW.getAnswArrays(data);
         }
         if (vAnswersInfoList.size() == 0) {
             return;
@@ -722,10 +720,11 @@ public class icve_moreUserSkActivity extends AppCompatActivity {
         }
         String asnwJson = JSONArray.toJSONString(answList);
         Log.d(TAG, "doTest: " + asnwJson);
-        String resp = mIcveApiW.getAnswerExam(answerId, asnwJson);
+        String resp = icveApiW.getAnswerExam(answerId, asnwJson);
         stringBuffer.append("\n ->" + resp);
         mHandler.sendEmptyMessage(100);
     }
+    
 
     private final Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override

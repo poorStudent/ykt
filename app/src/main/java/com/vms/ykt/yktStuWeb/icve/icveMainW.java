@@ -12,41 +12,34 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class icveMainW implements Serializable {
+ public class icveMainW  {
 
-    public com.vms.ykt.yktStuWeb.icve.icveApiW getIcveApiW() {
-        return mIcveApiW;
-    }
 
-    public void setIcveApiW(com.vms.ykt.yktStuWeb.icve.icveApiW icveApiW) {
-        this.mIcveApiW = icveApiW;
-    }
 
-    private icveApiW mIcveApiW;
 
-    private final String TAG = icveMainW.class.getSimpleName();
+    private static  final String TAG = icveMainW.class.getSimpleName();
 
-    public List<icveCourseInfo> getMyCourseList(zjyUser zjyUser) {
+     public static  List<icveCourseInfo> getMyCourseList(zjyUser zjyUser) {
         List<icveCourseInfo> varCourseInfos = new ArrayList<>();
 
-        String resp = mIcveApiW.getStudingCourse(zjyUser);
+        String resp = icveApiW.getStudingCourse(zjyUser);
         varCourseInfos.addAll(parseCourse(resp, 0));
-        resp = mIcveApiW.getFinishCourse(zjyUser);
+        resp = icveApiW.getFinishCourse(zjyUser);
         varCourseInfos.addAll(parseCourse(resp, 0));
 
         icveCourseInfo footview = new icveCourseInfo();
         footview.setType(2);
         varCourseInfos.add(footview);
 
-        resp = mIcveApiW.getStudingSmallCourse();
+        resp = icveApiW.getStudingSmallCourse();
         varCourseInfos.addAll(parseCourse(resp, 1));
-        resp = mIcveApiW.getFinishSmallCCourse();
+        resp = icveApiW.getFinishSmallCCourse();
         varCourseInfos.addAll(parseCourse(resp, 1));
 
         return varCourseInfos;
     }
 
-    private List<icveCourseInfo> parseCourse(String resp, int type) {
+    private static  List<icveCourseInfo> parseCourse(String resp, int type) {
         List<icveCourseInfo> varCourseInfos = new ArrayList<>();
         if (resp != null) {
             if (resp.contains("list")) {
@@ -62,9 +55,9 @@ public class icveMainW implements Serializable {
         return varCourseInfos;
     }
 
-    public List<SectionInfo> getSectionList(icveCourseInfo CourseInfo) {
+     public static  List<SectionInfo> getSectionList(icveCourseInfo CourseInfo) {
         List<SectionInfo> varSectionInfos = new ArrayList<>();
-        String resp = mIcveApiW.getdirectoryList(CourseInfo);
+        String resp = icveApiW.getdirectoryList(CourseInfo);
         if (resp == null || !resp.contains("directory")) return varSectionInfos;
         JSONObject json = JSONObject.parseObject(resp);
         JSONArray varJSONArray = json.getJSONArray("directory");
@@ -84,7 +77,7 @@ public class icveMainW implements Serializable {
         return varSectionInfos;
     }
 
-    public List<chapterInfo> getChaptersList(String resp) {
+     public static  List<chapterInfo> getChaptersList(String resp) {
 
         List<chapterInfo> vChapterInfoList = new ArrayList<>();
         if (resp.isEmpty()) return vChapterInfoList;
@@ -109,7 +102,7 @@ public class icveMainW implements Serializable {
         return vChapterInfoList;
     }
 
-    public List<knowlegeInfo> getKnowlegesList(String resp) {
+     public static  List<knowlegeInfo> getKnowlegesList(String resp) {
         List<knowlegeInfo> vKnowlegeInfoList = new ArrayList<>();
         if (resp.isEmpty()) return vKnowlegeInfoList;
         JSONArray varJSONArray = JSONArray.parseArray(resp);
@@ -128,7 +121,7 @@ public class icveMainW implements Serializable {
         return vKnowlegeInfoList;
     }
 
-    public List<cellInfo> getCellsList(String resp) {
+     public static  List<cellInfo> getCellsList(String resp) {
         List<cellInfo> varCellInfoList = new ArrayList<>();
 
         if (resp.isEmpty()) return varCellInfoList;
@@ -149,7 +142,7 @@ public class icveMainW implements Serializable {
         return varCellInfoList;
     }
 
-    public chapterInfo getChapterInfo(String resp) {
+     public static  chapterInfo getChapterInfo(String resp) {
 
         chapterInfo varChapterInfo = new chapterInfo();
         if (resp.isEmpty()) return varChapterInfo;
@@ -159,7 +152,7 @@ public class icveMainW implements Serializable {
         return varChapterInfo;
     }
 
-    public knowlegeInfo getknowlegeInfo(String resp) {
+     public static  knowlegeInfo getknowlegeInfo(String resp) {
         knowlegeInfo varKnowlegeInfo = new knowlegeInfo();
         if (resp.isEmpty()) return varKnowlegeInfo;
         varKnowlegeInfo = JSONObject.parseObject(resp, knowlegeInfo.class);
@@ -167,20 +160,20 @@ public class icveMainW implements Serializable {
         return varKnowlegeInfo;
     }
 
-    public ViewInfo getView(String courseId, String cellId) {
+     public static  ViewInfo getView(String courseId, String cellId) {
         //刷课
         String resp = "";
-        resp = mIcveApiW.getView(courseId, cellId);
+        resp = icveApiW.getView(courseId, cellId);
         if (resp == null || !resp.contains("works")) return null;
         ViewInfo viewInfos = JSONObject.parseObject(resp, ViewInfo.class);
         return viewInfos;
     }
 
-    public void updateStatus(cellInfo CellInfo, icveCourseInfo CourseInfo) {
+     public static  void updateStatus(cellInfo CellInfo, icveCourseInfo CourseInfo) {
         String type = CellInfo.getCellType();
         if (CellInfo.getStatus().equals("1")) return;
 
-        String view = mIcveApiW.getView(CourseInfo.getId(), CellInfo.getId());//其他类型课件打开即可
+        String view = icveApiW.getView(CourseInfo.getId(), CellInfo.getId());//其他类型课件打开即可
         System.out.println(view);
 
         if (type.contains("discuss")) {
@@ -191,18 +184,18 @@ public class icveMainW implements Serializable {
 
         } else if (type.contains("video")) {
 
-            System.out.println(mIcveApiW.getUpdateStatus(CellInfo.getId()));//视频
+            System.out.println(icveApiW.getUpdateStatus(CellInfo.getId()));//视频
         }
     }
 
-    public void tl(String CourseId, String topicId) {
+     public static  void tl(String CourseId, String topicId) {
         String ct;
-        ct = mIcveApiW.getReplyContext(CourseId, topicId);
+        ct = icveApiW.getReplyContext(CourseId, topicId);
         System.out.println(ct);
-        System.out.println(mIcveApiW.addReply(CourseId, topicId, ct));
+        System.out.println(icveApiW.addReply(CourseId, topicId, ct));
     }
 
-    public void doWork(String view) {
+     public static  void doWork(String view) {
         if (view.isEmpty()) return;
         JSONObject json = JSONObject.parseObject(view);
         String works = json.getJSONObject("works").getString("Id");
@@ -219,7 +212,7 @@ public class icveMainW implements Serializable {
                 } catch (Exception e) {
 
                 }
-                System.out.println(mIcveApiW.answerpaper(works, id, answ));
+                System.out.println(icveApiW.answerpaper(works, id, answ));
             }
         }
         try {
@@ -227,26 +220,26 @@ public class icveMainW implements Serializable {
         } catch (Exception e) {
 
         }
-        System.out.println(mIcveApiW.subPaper(works));
+        System.out.println(icveApiW.subPaper(works));
     }
 
-    public List<workExamListInfo> getWorksList(String courseId) {
+     public static  List<workExamListInfo> getWorksList(String courseId) {
         //获取所有作业
         List<workExamListInfo> WorksList;
-        String resp = mIcveApiW.getWorkseInfo(courseId);
+        String resp = icveApiW.getWorkseInfo(courseId);
         WorksList = parseWorkExam(resp,1);
         return WorksList;
     }
 
-    public List<workExamListInfo> getExamList(String courseId) {
+     public static  List<workExamListInfo> getExamList(String courseId) {
         //获取所有考试
         List<workExamListInfo> ExamList;
-        String resp = mIcveApiW.getExam(courseId);
+        String resp = icveApiW.getExam(courseId);
         ExamList = parseWorkExam(resp,2);
         return ExamList;
     }
 
-    public List<workExamListInfo> parseWorkExam(String resp,int type) {
+     public static  List<workExamListInfo> parseWorkExam(String resp,int type) {
         List<workExamListInfo> workExamList = new ArrayList<>();
         if (resp == null || !resp.contains("list")) return workExamList;
         JSONArray vJSONArray = Tool.parseJsonA(resp, "list");
@@ -259,7 +252,7 @@ public class icveMainW implements Serializable {
         return workExamList;
     }
 
-    public ArrayList<AnswersInfo> getAnswPaper(String data) {
+     public static  ArrayList<AnswersInfo> getAnswPaper(String data) {
 
         ArrayList<AnswersInfo> vArrayList = new ArrayList<>();
         JSONArray vJSONArray = JSONObject.parseArray(data);
@@ -273,7 +266,7 @@ public class icveMainW implements Serializable {
         return vArrayList;
     }
 
-    public ArrayList<AnswersInfo> getAnswArray(String data) {
+     public static  ArrayList<AnswersInfo> getAnswArray(String data) {
         ArrayList<AnswersInfo> answ = new ArrayList();
         if (data == null || !data.contains("array")) return answ;
         JSONArray vJSONArray = JSONObject.parseArray(data);
@@ -290,7 +283,7 @@ public class icveMainW implements Serializable {
         return answ;
     }
 
-    public ArrayList<AnswersInfo> getAnswPapers(String data) {
+     public static  ArrayList<AnswersInfo> getAnswPapers(String data) {
 
         ArrayList<AnswersInfo> vArrayList = new ArrayList<>();
         if (data == null || !data.contains("paper")) return vArrayList;
@@ -301,7 +294,7 @@ public class icveMainW implements Serializable {
         return vArrayList;
     }
 
-    public ArrayList<AnswersInfo> getAnswArrays(String data) {
+     public static  ArrayList<AnswersInfo> getAnswArrays(String data) {
         ArrayList<AnswersInfo> answ = new ArrayList();
         if (data == null || !data.contains("array")) return answ;
         String json = JSONObject.parseObject(data).getString("array");
@@ -314,7 +307,7 @@ public class icveMainW implements Serializable {
         return answ;
     }
 
-    private ArrayList<AnswersInfo> paserAnsw(String data) {
+    private static  ArrayList<AnswersInfo> paserAnsw(String data) {
 
         ArrayList<AnswersInfo> answ = new ArrayList();
         JSONArray varJSONArray = JSONObject.parseArray(data);
@@ -333,7 +326,7 @@ public class icveMainW implements Serializable {
         return answ;
     }
 
-    public String paserAnsw(List<AnswersInfo> data) {
+     public static  String paserAnsw(List<AnswersInfo> data) {
         StringBuilder vStringBuilder = new StringBuilder();
         List<String> pd=new ArrayList<>();
         pd.add(0, "");
@@ -373,9 +366,9 @@ public class icveMainW implements Serializable {
     }
 
     //微课
-    public List<cellInfo> getWkCellsList(String course) {
+     public static  List<cellInfo> getWkCellsList(String course) {
         List<cellInfo> vCellInfoList = new ArrayList<>();
-        String resp = mIcveApiW.getMicroHeadInfo(course);
+        String resp = icveApiW.getMicroHeadInfo(course);
         if (resp == null || !resp.contains("cells")) return vCellInfoList;
         JSONArray vJSONArray = Tool.parseJsonA(resp, "cells");
         if (vJSONArray.size() == 0) return vCellInfoList;
@@ -383,17 +376,17 @@ public class icveMainW implements Serializable {
         return vCellInfoList;
     }
 
-    public ViewInfo getMicroView(String cellId) {
+     public static  ViewInfo getMicroView(String cellId) {
         //刷课
         String resp = "";
-        resp = mIcveApiW.getMicroView(cellId);
+        resp = icveApiW.getMicroView(cellId);
         if (resp == null || !resp.contains("works")) return null;
         ViewInfo viewInfos = JSONObject.parseObject(resp, ViewInfo.class);
         return viewInfos;
     }
 
-    public void getJcInfo(zjyUser zjyUser) {
-        String resp = mIcveApiW.getJcInfo(zjyUser);
+     public static  void getJcInfo(zjyUser zjyUser) {
+        String resp = icveApiW.getJcInfo(zjyUser);
         System.out.println(resp);
     }
 

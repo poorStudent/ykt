@@ -24,6 +24,7 @@ import com.vms.ykt.UI.Activity.moocActivity.mooc_moreUserSkActivity;
 import com.vms.ykt.UI.Adapter.moocAdapter.moocRecyclerAdapter;
 import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.UI.yktMainActivity;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.mooc.*;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.Util.Tool;
@@ -56,9 +57,6 @@ public class moocFragment extends baseFragment {
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private moocHttpW mMoocHttpW;
-    private moocApiW mMoocApiW;
-    private moocMianW mMoocMianW;
 
     public static Fragment newInstance(String mooc) {
         moocFragment vMoocFragment = new moocFragment();
@@ -67,13 +65,9 @@ public class moocFragment extends baseFragment {
 
     public void setData(zjyUser zjyUser) {
         if (zjyUser == null) return;
-        this.mZjyUser = zjyUser;
-        this.mMoocHttpW = new moocHttpW();
-        this.mMoocApiW = new moocApiW();
-        this.mMoocMianW = new moocMianW();
-        mMoocHttpW.setUserCookie(zjyUser.getCookie());
-        mMoocApiW.setMoocHttpW(mMoocHttpW);
-        mMoocMianW.setMoocApiW(mMoocApiW);
+        this.mZjyUser = zjyUserDao.sZjyUser;
+        moocHttpW.restCookie(mZjyUser.getCookie());
+
 
     }
 
@@ -161,9 +155,9 @@ public class moocFragment extends baseFragment {
             @Override
             public void run() {
                 mMoocCourseInfos = moocMianM.getMyCourseList(mZjyUser);
-                mForTeachList = mMoocApiW.getCourseForTeach();
+                mForTeachList = moocApiW.getCourseForTeach();
                 if (mMoocCourseInfos.size() == 0) {
-                    mMoocCourseInfos = mMoocMianW.getMyCourseList(mZjyUser);
+                    mMoocCourseInfos = moocMianW.getMyCourseList(mZjyUser);
 
                 }
 
@@ -172,7 +166,7 @@ public class moocFragment extends baseFragment {
                     public void run() {
                         if (mMoocCourseInfos.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new moocRecyclerAdapter(mForTeachList, mMoocCourseInfos, mZjyUser);
+                                mRecyclerAdapter = new moocRecyclerAdapter(mForTeachList, mMoocCourseInfos);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mMoocCourseInfos);

@@ -2,6 +2,9 @@ package com.vms.ykt.UI.Adapter.newzjyAdapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_ExamWorkActivity;
+import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_HomeWorkActivity;
 import com.vms.ykt.UI.Activity.newZjyActivity.newzjy_classRoomActivity;
 import com.vms.ykt.UI.Activity.newZjyActivity.newZjy_mainActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
@@ -34,15 +38,13 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
 
 
     private List<newZjyCourse> mNewZjyCourseList;
-    private newZjyUser mNewZjyUser;
     private Context mContext;
     private newZjy_mainActivity mActivity;
     private String TAG = this.getClass().getSimpleName();
 
 
-    public newzjy_main_Adapter(List<newZjyCourse> data, newZjyUser userInfo) {
+    public newzjy_main_Adapter(List<newZjyCourse> data) {
         this.mNewZjyCourseList = data;
-        this.mNewZjyUser = userInfo;
     }
 
     public void updateData(List<newZjyCourse> data) {
@@ -156,7 +158,7 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
 
 
         zjy_bt_jkxq.setOnClickListener((View view) -> {
-
+            ModifyClassAuditStatus(vNewZjyCourse);
         });
 
 
@@ -185,11 +187,14 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
 
 
         zjy_bt_fjzy.setOnClickListener((View view) -> {
+            Intent i = new Intent(mActivity, newzjy_HomeWorkActivity.class);
+            mActivity.startActivity(i);
 
         });
 
 
     }
+
 
     private void SaveAssessment(){
         View dialogView=Tool.creatDialog(mContext,R.layout.newzjy_main_cjzb_dialog);
@@ -219,7 +224,7 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
         View dialogView=Tool.creatDialog(mContext,R.layout.newzjy_main_jkxq_dialog);
         Button newzjy_bt_yxjk = dialogView.findViewById(R.id.newzjy_bt_yxjk);
         Button newzjy_bt_jzjk = dialogView.findViewById(R.id.newzjy_bt_jzjk);
-        Button newzjy_img_jkm = dialogView.findViewById(R.id.newzjy_img_jkm);
+        ImageView newzjy_img_jkm = dialogView.findViewById(R.id.newzjy_img_jkm);
         newzjy_bt_yxjk.setOnClickListener((view)->{
             new Thread(()->{
                 String resp=newZjyApi.getModifyClassAuditStatus(vNewZjyCourse.getClassId(),"1","0");//允许
@@ -238,9 +243,18 @@ public class newzjy_main_Adapter extends baseRecyclerAdapter<newzjy_main_Adapter
         });
         new Thread(()->{
             String resp=newZjyApi.getQrCode(vNewZjyCourse.getClassId());
+            if(resp!=null){
+                byte[] img=Base64.decode(resp,Base64.DEFAULT);
+                Bitmap vBitmap=BitmapFactory.decodeByteArray(img, 0, img.length);
+                mActivity.runOnUiThread(()->{
+                    newzjy_img_jkm.setImageBitmap(vBitmap);
+                });
+
+            }
         }).start();
 
     }
+
 
     public void pauseRequests() {
         Glide.with(mContext).pauseRequests();

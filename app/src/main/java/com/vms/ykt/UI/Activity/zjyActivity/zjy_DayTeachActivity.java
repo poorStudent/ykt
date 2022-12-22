@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Adapter.zjyAdapter.zjy_dayTeachAdapter;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
 import com.vms.ykt.yktStuMobile.zjy.zjyMain;
 import com.vms.ykt.yktStuMobile.zjy.zjyTeachInfo;
@@ -54,22 +55,11 @@ public class zjy_DayTeachActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: ");
     }
 
-    private zjyHttpW mZjyHttpW;
-    private zjyApiW mZjyApiW;
-    private zjyMainW mZjyMainW;
 
     private void initData() {
         Intent i = getIntent();
         this.mContext = zjy_DayTeachActivity.this;
-
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
-
-        this.mZjyHttpW = new zjyHttpW();
-        this.mZjyApiW = new zjyApiW();
-        this.mZjyMainW = new zjyMainW();
-        mZjyHttpW.setUserCookie(mZjyUser.getCookie());
-        mZjyApiW.setZjyHttpW(mZjyHttpW);
-        mZjyMainW.setZjyApiW(mZjyApiW);
+        this.mZjyUser = zjyUserDao.sZjyUser;
         Log.d(TAG, "initData: " + mZjyUser.getUserId());
     }
 
@@ -117,7 +107,7 @@ public class zjy_DayTeachActivity extends AppCompatActivity {
 
                 mDayTeachInfo = zjyMain.getDayTeachInfo(mZjyUser);
                 if (mDayTeachInfo.size() == 0) {
-                    mZjyMainW.getDayfaceTeachInfo();
+                    zjyMainW.getDayfaceTeachInfo();
                 }
 
                 runOnUiThread(new Runnable() {
@@ -126,7 +116,7 @@ public class zjy_DayTeachActivity extends AppCompatActivity {
 
                         if (mDayTeachInfo.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new zjy_dayTeachAdapter(mDayTeachInfo, mZjyUser, mCourseIfno);
+                                mRecyclerAdapter = new zjy_dayTeachAdapter(mDayTeachInfo);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mDayTeachInfo);

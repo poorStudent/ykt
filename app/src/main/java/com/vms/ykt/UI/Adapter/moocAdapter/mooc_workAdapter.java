@@ -16,7 +16,9 @@ import com.vms.ykt.UI.Activity.moocActivity.mooc_AnswActivity;
 import com.vms.ykt.UI.Activity.moocActivity.mooc_DoAnswActivity;
 import com.vms.ykt.UI.Activity.moocActivity.mooc_workActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
+import com.vms.ykt.yktDao.mooc.moocUserDao;
 import com.vms.ykt.yktStuMobile.mooc.moocCourseInfo;
+import com.vms.ykt.yktStuMobile.zjy.HomeworkInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.mooc.WorkExamList;
 
@@ -26,12 +28,11 @@ import java.util.Objects;
 
 public class mooc_workAdapter extends baseRecyclerAdapter<mooc_workAdapter.ViewHolder1> {
 
-    private moocCourseInfo mCourseIfno;
     List<WorkExamList> mWorkExamLists;
-    private zjyUser mZjyUser;
+
     private mooc_workActivity mActivity;
 
-    private String TAG=this.getClass().getSimpleName();
+    private String TAG = this.getClass().getSimpleName();
     /**
      * 事件回调监听
      */
@@ -39,19 +40,17 @@ public class mooc_workAdapter extends baseRecyclerAdapter<mooc_workAdapter.ViewH
 
     private mooc_workAdapter.initRcView mInitRcView;
 
-    public mooc_workAdapter(List<WorkExamList> data, zjyUser zjyUsers, moocCourseInfo courseIfno) {
+    public mooc_workAdapter(List<WorkExamList> data) {
         this.mWorkExamLists = data;
-        this.mCourseIfno=courseIfno;
-        this.mZjyUser=zjyUsers;
     }
 
     public void updateData(List<WorkExamList> data) {
 
-        if (mWorkExamLists !=null){
+        if (mWorkExamLists != null) {
             mWorkExamLists.clear();
             mWorkExamLists.addAll(data);
-        }else {
-            mWorkExamLists =new ArrayList<>();
+        } else {
+            mWorkExamLists = new ArrayList<>();
             mWorkExamLists.addAll(data);
         }
 
@@ -62,10 +61,10 @@ public class mooc_workAdapter extends baseRecyclerAdapter<mooc_workAdapter.ViewH
      * 添加新的Item
      */
     public void addNewItem(WorkExamList HomeworkInfo, int position) {
-        if(mWorkExamLists == null) {
-            mWorkExamLists =new ArrayList<>();
+        if (mWorkExamLists == null) {
+            mWorkExamLists = new ArrayList<>();
         }
-        mWorkExamLists.add(position,HomeworkInfo);
+        mWorkExamLists.add(position, HomeworkInfo);
         notifyItemInserted(position);
     }
 
@@ -73,7 +72,7 @@ public class mooc_workAdapter extends baseRecyclerAdapter<mooc_workAdapter.ViewH
      * 删除Item
      */
     public void deleteItem(int position) {
-        if(mWorkExamLists == null || mWorkExamLists.isEmpty()) {
+        if (mWorkExamLists == null || mWorkExamLists.isEmpty()) {
             return;
         }
         mWorkExamLists.remove(position);
@@ -101,8 +100,8 @@ public class mooc_workAdapter extends baseRecyclerAdapter<mooc_workAdapter.ViewH
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.mooc_work_recycler_item, parent, false);
         // 实例化viewholder
 
-if (mActivity==null)
-        mActivity=(mooc_workActivity) parent.getContext();
+        if (mActivity == null)
+            mActivity = (mooc_workActivity) parent.getContext();
 
         ViewHolder1 viewHolder = new ViewHolder1(v);
         Log.d(TAG, "onCreateViewHolder: ");
@@ -110,27 +109,29 @@ if (mActivity==null)
     }
 
     @Override
-    public void onBindViewHolder (final ViewHolder1 holder, int position) {
+    public void onBindViewHolder(final ViewHolder1 holder, int position) {
         // 绑定数据
 
         WorkExamList vWorkExamList = mWorkExamLists.get(position);
-        String zymc=vWorkExamList.getTitle();
+        String zymc = vWorkExamList.getTitle();
         holder.mTextView0.setText(zymc);
-        String zysj=vWorkExamList.getStartTime()+"-"+ vWorkExamList.getEndTime();
-        holder.mTextView1.setText("描述："+vWorkExamList.getRemark());
-        holder.mTextView2.setText("时间："+zysj);
-        holder.mTextView3.setText("次数："+vWorkExamList.getReplyCount()+" 状态："+vWorkExamList.getState());
-        String zylx="LT:"+vWorkExamList.getLimitTime()+" IsB:"+vWorkExamList.getIsButton()+" IsD:"+vWorkExamList.getIsDoExam()
-                +" IsO:"+vWorkExamList.getIsOver()+" MtR:"+vWorkExamList.getMutualResult()+" OMt:"+vWorkExamList.getIsOpenMutual();
-        holder.mTextView4.setText("其他："+zylx);
+        String zysj = vWorkExamList.getStartTime() + "-" + vWorkExamList.getEndTime();
+        holder.mTextView1.setText("描述：" + vWorkExamList.getRemark());
+        holder.mTextView2.setText("时间：" + zysj);
+        holder.mTextView3.setText("次数：" + vWorkExamList.getReplyCount() + " 状态：" + vWorkExamList.getState());
+        String zylx = "LT:" + vWorkExamList.getLimitTime() + " IsB:" + vWorkExamList.getIsButton() + " IsD:" + vWorkExamList.getIsDoExam()
+                + " IsO:" + vWorkExamList.getIsOver() + " MtR:" + vWorkExamList.getMutualResult() + " OMt:" + vWorkExamList.getIsOpenMutual();
+        holder.mTextView4.setText("其他：" + zylx);
         holder.mTextView5.setText(vWorkExamList.getGetScore());
         Log.d(TAG, "onBindViewHolder: ");
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-
-                showSetDialog(mWorkExamLists.get(position));
-                if(onItemClickListener != null) {
+                if (vWorkExamList.getId() != null) {
+                    moocUserDao.sWorkExamList = vWorkExamList;
+                    showSetDialog(vWorkExamList);
+                }
+                if (onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemClick(holder.itemView, pos);
                 }
@@ -142,7 +143,7 @@ if (mActivity==null)
             @Override
             public boolean onLongClick(View v) {
 
-                if(onItemClickListener != null) {
+                if (onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemLongClick(holder.itemView, pos);
                 }
@@ -173,40 +174,31 @@ if (mActivity==null)
         //设置AlertDiaLog宽高属性
         WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
         params.width = 900;
-        params.height = 850 ;
+        params.height = 850;
         customAlert.getWindow().setAttributes(params);
         // 移除dialog的decorview背景色
         // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
         //设置自定义界面的点击事件逻辑
-        but_ks.setOnClickListener((View view)-> {
+        but_ks.setOnClickListener((View view) -> {
             Intent i = new Intent(mActivity, mooc_DoAnswActivity.class);
-            i.putExtra("Course", mCourseIfno);
-            i.putExtra("ZjyUser", mZjyUser);
-            i.putExtra("HomeworkInfo", HomeworkInfo);
             i.putExtra("flag", "1");
             i.putExtra("Workflag", "0");
             mActivity.startActivity(i);
 
         });
-        but_sjd.setOnClickListener((View view)-> {
+        but_sjd.setOnClickListener((View view) -> {
             Intent i = new Intent(mActivity, mooc_AnswActivity.class);
-            i.putExtra("Course", mCourseIfno);
-            i.putExtra("ZjyUser", mZjyUser);
-            i.putExtra("HomeworkInfo", HomeworkInfo);
             i.putExtra("flag", "1");
             i.putExtra("Workflag", "0");
             mActivity.startActivity(i);
 
         });
-
-
 
 
     }
 
 
-
-    public void initListener(final ViewHolder1 holder){
+    public void initListener(final ViewHolder1 holder) {
 
     }
 
@@ -218,33 +210,36 @@ if (mActivity==null)
 
     public static class ViewHolder1 extends RecyclerView.ViewHolder {
 
-        TextView mTextView0, mTextView1,mTextView2,mTextView3,mTextView4,mTextView5;
+        TextView mTextView0, mTextView1, mTextView2, mTextView3, mTextView4, mTextView5;
 
 
         public ViewHolder1(View itemView) {
             super(itemView);
-            mTextView0=itemView.findViewById(R.id.zjy_work_zymc);
-            mTextView1=itemView.findViewById(R.id.zjy_work_zyms);
-            mTextView2=itemView.findViewById(R.id.zjy_work_zysj);
-            mTextView3=itemView.findViewById(R.id.zjy_work_zycs);
-            mTextView4=itemView.findViewById(R.id.zjy_work_zylx);
-            mTextView5=itemView.findViewById(R.id.zjy_work_zyzt);
+            mTextView0 = itemView.findViewById(R.id.zjy_work_zymc);
+            mTextView1 = itemView.findViewById(R.id.zjy_work_zyms);
+            mTextView2 = itemView.findViewById(R.id.zjy_work_zysj);
+            mTextView3 = itemView.findViewById(R.id.zjy_work_zycs);
+            mTextView4 = itemView.findViewById(R.id.zjy_work_zylx);
+            mTextView5 = itemView.findViewById(R.id.zjy_work_zyzt);
 
         }
     }
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
+
         void onItemLongClick(View view, int position);
     }
 
-    public interface initRcView{
+    public interface initRcView {
         String getTitle(int position);
+
         String getCourseId(int position);
+
         String getEndTime(int position);
+
         String getParentId(int position);
     }
-
 
 
 }

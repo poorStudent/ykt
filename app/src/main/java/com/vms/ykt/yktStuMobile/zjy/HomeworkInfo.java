@@ -11,7 +11,7 @@ import java.io.Serializable;
  * "IsGrouped":0,"paperType":2,"isShowStuEva":0},
  * {"homeworkId":"xthjawauk6niks2qhqsmdg","homeworkTermTimeId":"92nkawau965cih7sofow7w","title":"汇编指令","homeworkType":4,"ztWay":3,"remark":"","startDate":"2022-03-28 00:00","endDate":"2022-03-31 19:00","readStuCount":0,"unReadStuCount":0,"unSubmitCount":0,"replyCount":1,"stuAnwerHomeworkCount":1,"stuHomeworkState":"80.00","isTakeHomework":true,"isSetTime":1,"isForbid":0,"IsGrouped":0,"paperType":2,"isShowStuEva":0},{"homeworkId":"budhavguxrplnpnz6bntaw","homeworkTermTimeId":"m3hhavguakfbfvxkbh26vw","title":"40页13题","homeworkType":4,"ztWay":3,"remark":"","startDate":"2022-03-07 19:52","endDate":"2022-03-07 20:54","readStuCount":0,"unReadStuCount":0,"unSubmitCount":0,"replyCount":1,"stuAnwerHomeworkCount":1,"stuHomeworkState":"95.00","isTakeHomework":true,"isSetTime":1,"isForbid":0,"IsGrouped":0,"paperType":2,"isShowStuEva":0}],
  * "hkPageSize":3}**/
-public class HomeworkInfo implements Serializable {
+public class HomeworkInfo  {
     private String homeworkId;
     private String homeworkTermTimeId;
     private String title;

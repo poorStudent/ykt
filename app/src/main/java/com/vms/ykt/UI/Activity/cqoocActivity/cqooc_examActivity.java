@@ -103,7 +103,6 @@ public class cqooc_examActivity extends AppCompatActivity {
             public void run() {
 
 
-                mExamInfoList = zjyMain.getAllExamWork(mZjyUser,mCourseIfno);
                 if (mExamInfoList.size() == 0) {
                 }
 
@@ -113,7 +112,6 @@ public class cqooc_examActivity extends AppCompatActivity {
 
                         if (mExamInfoList.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new zjy_examAdapter(mExamInfoList,mZjyUser,mCourseIfno);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mExamInfoList);

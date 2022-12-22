@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Adapter.zjyAdapter.zjy_examAdapter;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.ExamInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
 import com.vms.ykt.yktStuMobile.zjy.zjyMain;
@@ -54,8 +55,8 @@ public class zjy_examActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = zjy_examActivity.this;
-        this.mCourseIfno = (zjyCourseIfno) i.getSerializableExtra("Course");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
+        this.mCourseIfno = zjyUserDao.sZjyCourseIfno;
+        this.mZjyUser = zjyUserDao.sZjyUser;
 
         Log.d(TAG, "initData: " + mCourseIfno.getCourseName());
         Log.d(TAG, "initData: " + mZjyUser.getUserId());
@@ -113,7 +114,7 @@ public class zjy_examActivity extends AppCompatActivity {
 
                         if (mExamInfoList.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new zjy_examAdapter(mExamInfoList,mZjyUser,mCourseIfno);
+                                mRecyclerAdapter = new zjy_examAdapter(mExamInfoList);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mExamInfoList);

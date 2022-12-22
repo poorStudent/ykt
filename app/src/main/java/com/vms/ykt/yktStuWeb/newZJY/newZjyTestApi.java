@@ -1,9 +1,7 @@
 package com.vms.ykt.yktStuWeb.newZJY;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.android.material.circularreveal.CircularRevealHelper;
 import com.vms.ykt.Util.httpRespnose;
-import com.vms.ykt.Util.httpTool;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +43,7 @@ public class newZjyTestApi {
         System.out.println(ret.getResp());
 
         printHeader(ret.getHearderFileds());
-        // httpTool.toLocationJ(newZjyHttp.getHeader() ,url,ret.getHearderFileds().get("Set-Cookie"), data, 1);
+        // HttpTool.toLocationJ(newZjyHttp.getHeader() ,url,ret.getHearderFileds().get("Set-Cookie"), data, 1);
         // resp =resp+"\n"+ret.getCode()+"\n";
         // resp=resp+JSONObject.toJSONString(ret.getmHearderFileds( ));
         return resp;
@@ -73,9 +71,9 @@ public class newZjyTestApi {
         // header.put("Origin","https://spoc-classroom.icve.com.cn");
         header.put("Authorization", Authorization);
         header.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 Edg/104.0.1293.70");
-        newZjyHttp.updataHeader(header);
+        newZjyHttp.setHeader(header);
         String ck = "JSESSIONID=16178FBA45AF39990A7F62E8BD24DE00; misdaxquxb5pt3hsoubywpageSize=10; _abfpc=9b6cd6e4c38694deae327b088006c0027cfb49a6_2.0; cna=b34aadbed4ecc0ab4ae724f1f68cbd54; token=s7vnaaovx6zbfy5y7veema; ssxmod_itna=eqmxgDymD=0QeDKGHLhCDjx5h7i=DBDbQD3POCx0yGveGzDAxn40iDto=XDtPrBx4Yef49B4hYf0D4qLxdYSxwxaiW1nPGLDmKDyzir4GGUxBYDQxAYDGDDPDogPD1D3qDkD7h6CMy1qGWDm4kDGeDe2IODY5DhxDC20PDwx0Cj6xej1YHdFymuc0hqQDkD7HpDlp5EfgwfR3eM1AAm3A3Ix0kg40Oya5sz=oDUlFsBoBodA4xdYhNIBxd=W+xdDrq7BQoKn04TP2rqG0imwxeo1hSTDxDi=DeFG2P4D; ssxmod_itna2=eqmxgDymD=0QeDKGHLhCDjx5h7i=DBDbQD3PODnF3rw5DsG=DLiCQHx4Z4n4=njxYSZdBisuDIh7bwZYnCoNA32nkinwW1t=MuAFMfWLH2xqXaYu2Q2fKOcXUrHIIMw7OkF3=AXuua8BaKGdxei7DRdPZ2dqWm8rQTHr4Rm9OPxFRqKvZR4D2q4tonm/=mxzgx7dSaAUxR4XmIan0u4tOL1qhdvzUfAVtgfpBBmyZRLzzBQGQeFlGp=YG2DMnDKD1DUzQexDMxU6B7vy+aqR4a0mml2dNufdiiN+wQNE+1i3RwpteeQrqYdYaPqop0TrkK1b=8M1uOFUuqMD7en3w38YkTNRoWnTpkhNLo8D+Dx1mnokEx=07YuNg+aw4OeuTE+=13tBbo33vz+FHEoU7DZ7a2o7ol=Z8HQ2GhoEx8bBS=HQIFx75W=qYEv8FkbqzfxkROSkrh=fc47YiEyG5z7hFgG/0b7aH+wDEDDwoeeAYL=wKDx6EbwjH51tDHqxkGa9HtWwkQGUOG4Hwac+A9+yf6jfXtgxqDwxY6=H+tx4QDGcDG7iiDD=; acw_tc=0a5cc91a16621900573257943e0178e2a4bdf6ef85b2893f1a7da093f80bd6; SERVERID=ca3b10f72b71088690a228c06badbb39|1662191317|1662190057";
-        newZjyHttp.setUserCookie(ck);
+        newZjyHttp.restCookie(ck);
         String data = "{\"params\":{\"id\":\"0f4bec3d29ac11ed8cb21c34da7acf94\"}}";
         String resp = newZjyHttp.post(getActivityStudentCount, data);
         return resp;

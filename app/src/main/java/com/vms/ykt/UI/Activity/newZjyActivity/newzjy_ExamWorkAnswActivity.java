@@ -2,9 +2,13 @@ package com.vms.ykt.UI.Activity.newZjyActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +19,9 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,6 +41,7 @@ import com.vms.ykt.yktStuMobile.newZJY.newZjyUser;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class newzjy_ExamWorkAnswActivity extends AppCompatActivity {
@@ -72,6 +79,7 @@ public class newzjy_ExamWorkAnswActivity extends AppCompatActivity {
         this.type = i.getIntExtra("type", 0);
         this.mExamWork = newZjyUserDao.sExamWork;
         this.mNewZjyUser = newZjyUserDao.sNewZjyUser;
+        this.mNewZjyCourse = newZjyUserDao.sNewZjyCourse;
         Log.d(TAG, "initData: " + mExamWork.getExamName());
         Log.d(TAG, "initData: " + mExamWork.getExamId());
 
@@ -84,6 +92,7 @@ public class newzjy_ExamWorkAnswActivity extends AppCompatActivity {
         zjy_exam_answ = findViewById(R.id.zjy_exam_answ);
         zjy_bt_html = findViewById(R.id.zjy_bt_html);
         zjy_bt_zdzd = findViewById(R.id.zjy_bt_zdzd);
+        zjy_bt_zdzd.setEnabled(false);
 
     }
 
@@ -122,6 +131,7 @@ public class newzjy_ExamWorkAnswActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // if (AppStatus.getAll()==null||!AppStatus.getZjyzy().equals("zjyok"))return;
+                /*
                 if (!newZjyMain.upUsersessionidm( newZjyUserDao.sNewZjyUser
                         , newZjyUserDao.sNewZjyCourse.getCourseId()
                         ,newZjyUserDao.sExamWork.getExam_num())){
@@ -129,15 +139,17 @@ public class newzjy_ExamWorkAnswActivity extends AppCompatActivity {
                         Tool.toast(mContext, "请重试...");
                     });
                 };
+                */
 
                 mExamAnsw = doWork();
-                Log.d(TAG, "run: " + mExamAnsw.getAnswStr());
+                //Log.d(TAG, "run: " + mExamAnsw.getAnswStr());
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         String answ = mExamAnsw.getAnswStr();
                         if (mExamAnsw != null && answ != null && !answ.isEmpty()) {
                             zjy_exam_answ.setText(answ);
+                            zjy_bt_zdzd.setEnabled(true);
                             mButton.setVisibility(View.GONE);
                         } else {
                             Tool.toast(mContext, "获取失败...");
@@ -164,6 +176,75 @@ public class newzjy_ExamWorkAnswActivity extends AppCompatActivity {
         return null;
     }
 
+
+    private void autoDoWork() {
+
+        Map<String, String> vAnswMap = mExamAnsw.getAnswMap();
+        if (vAnswMap == null || vAnswMap.size() == 0) {
+            Tool.toast(mContext, "获取失败...");
+            return;
+        }
+        new Thread(() -> {
+            String ExamId=mExamWork.getExamId();
+            String CourseId = mNewZjyCourse.getCourseId();
+            ExamWorkInfo vExamWorkInfo = newZjyMain.getExamConfirm(ExamId);
+            String PaperId = vExamWorkInfo.getPaperId();
+            String examRecordId = newZjyMain.getExamFlow_intoExam(ExamId, CourseId);
+            if (PaperId==null || examRecordId.isEmpty())return;
+
+
+           final String resp = newZjyMain.CompleteAnsw1(vAnswMap);
+
+
+            runOnUiThread(()->{
+                zjy_exam_answ.setText(resp);
+            });
+
+            final String resp1 = newZjyMain.getExamflow_sendManyAnswer(examRecordId, resp, "100000");
+
+            runOnUiThread(()->{
+                zjy_exam_answ.append("\n");
+                zjy_exam_answ.append(resp);
+            });
+
+
+
+
+            final String  resp2 = newZjyMain.getExamflow_getCompleteQuestionSeq(examRecordId, ExamId);
+            runOnUiThread(()->{
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setCancelable(true);
+                builder.setTitle("一共"+vAnswMap.size()+"道");
+                builder.setMessage("已做题目\n  "+resp2+"\n");
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                builder.setPositiveButton("交卷",(DialogInterface dialogInterface, int i)-> {
+                    new Thread(()->{
+                        complete(examRecordId);
+                    }).start();
+                });
+                builder.setNegativeButton("取消", (DialogInterface dialogInterface, int i)-> {
+                    dialog.cancel();
+                });
+
+
+
+            });
+
+        }).start();
+    }
+
+
+    private void complete(String examRecordId){
+        final String resp3 = newZjyMain.getExamflow_complete(examRecordId);
+        runOnUiThread(()->{
+            Tool.toast(mContext,"ok");
+            zjy_exam_answ.append("\n");
+            zjy_exam_answ.append(resp3);
+        });
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private void showHtml(String answHtml) {
         AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mContext);
@@ -181,8 +262,8 @@ public class newzjy_ExamWorkAnswActivity extends AppCompatActivity {
         final AlertDialog customAlert = setDeBugDialog.show();
         //设置AlertDiaLog宽高属性
         WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
-        params.width = 900;
-        params.height = 850;
+        params.width = 1000;
+        params.height = 1000;
         customAlert.getWindow().setAttributes(params);
 
         //初始化控件

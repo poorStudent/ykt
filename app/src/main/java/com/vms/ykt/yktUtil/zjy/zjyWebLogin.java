@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.Util.httpRespnose;
-import com.vms.ykt.Util.httpTool;
+import com.vms.ykt.Util.HttpTool;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ public class zjyWebLogin {
 
     public static String getVerifycode() {
         String resp = "";
-        resp = httpTool.downPic(verifycodeUrl,"test.jpg");
+        resp = HttpTool.downPic(verifycodeUrl,"test.jpg");
         return resp.replaceFirst(" path=(.*)","");
     }
 
@@ -53,7 +53,7 @@ public class zjyWebLogin {
         postParam.append("verifyCode="+verifyCode);
         String postParams = postParam.toString();
 
-       httpRespnose resp = httpTool.postT(loginWeb,header, postParams);
+       httpRespnose resp = HttpTool.postT(loginWeb,header, postParams);
         return resp;
     }
 

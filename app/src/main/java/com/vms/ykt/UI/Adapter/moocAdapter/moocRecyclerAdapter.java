@@ -23,6 +23,8 @@ import com.vms.ykt.UI.Activity.moocActivity.mooc_testActivity;
 import com.vms.ykt.UI.Activity.moocActivity.mooc_workActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
 import com.vms.ykt.UI.yktMainActivity;
+import com.vms.ykt.yktDao.mooc.moocUserDao;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.mooc.DiscussInfo;
 import com.vms.ykt.yktStuMobile.mooc.DiscussTopInfo;
 import com.vms.ykt.yktStuMobile.mooc.courseInfoForTeach;
@@ -52,10 +54,10 @@ public class moocRecyclerAdapter extends baseRecyclerAdapter<moocRecyclerAdapter
 
     private moocRecyclerAdapter.initRcView mInitRcView;
 
-    public moocRecyclerAdapter(List<courseInfoForTeach> forTeachList, List<moocCourseInfo> data, zjyUser zjyUsers) {
+    public moocRecyclerAdapter(List<courseInfoForTeach> forTeachList, List<moocCourseInfo> data) {
         this.mMoocCourseInfos = data;
-        this.mZjyUser = zjyUsers;
         this.mForTeachList = forTeachList;
+        this.mZjyUser = zjyUserDao.sZjyUser;
     }
 
     public void updateData(List<moocCourseInfo> data) {
@@ -152,8 +154,10 @@ public class moocRecyclerAdapter extends baseRecyclerAdapter<moocRecyclerAdapter
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-
-                showSetDialog(mMoocCourseInfos.get(position));
+                if (vMoocCourseInfo.getCourseOpenId()!= null) {
+                    moocUserDao.sMoocCourseInfo=vMoocCourseInfo;
+                    showSetDialog(vMoocCourseInfo);
+                }
                 if (onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemClick(holder.itemView, pos);
@@ -207,62 +211,47 @@ public class moocRecyclerAdapter extends baseRecyclerAdapter<moocRecyclerAdapter
         but_shuake.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getCourseOpenId() != null) {
                     Intent i = new Intent(mActivity, mooc_shuakeActivity.class);
-                    i.putExtra("Course", CourseIfno);
-                    i.putExtra("mZjyUser", mZjyUser);
                     mActivity.startActivity(i);
-                }
             }
         });
         but_khpj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getCourseOpenId() != null) {
                     new Thread(() -> {
                         tlqpl(mZjyUser, CourseIfno);
                     }).start();
 
-                }
             }
         });
         but_cy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getCourseOpenId() != null) {
+
                     Intent i = new Intent(mActivity, mooc_testActivity.class);
-                    i.putExtra("Course", CourseIfno);
-                    i.putExtra("mZjyUser", mZjyUser);
                     Log.d(TAG, "onClick: " + mZjyUser.getCookie());
                     mActivity.startActivity(i);
-                }
-
             }
         });
         but_zy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getCourseOpenId() != null) {
+
                     Intent i = new Intent(mActivity, mooc_workActivity.class);
-                    i.putExtra("Course", CourseIfno);
-                    i.putExtra("mZjyUser", mZjyUser);
                     mActivity.startActivity(i);
-                }
 
             }
         });
         but_ks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getCourseOpenId() != null) {
+
                     Intent i = new Intent(mActivity, mooc_examActivity.class);
-                    i.putExtra("Course", CourseIfno);
-                    i.putExtra("mZjyUser", mZjyUser);
                     mActivity.startActivity(i);
-                }
             }
         });
     }
+
 
     private void tlqpl(zjyUser zjyUser, moocCourseInfo CourseInfo) {
         ArrayList<DiscussInfo> varDiscusslist = moocApi.getDiscuss(zjyUser, CourseInfo);

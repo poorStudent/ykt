@@ -24,6 +24,7 @@ import com.vms.ykt.UI.Activity.icveActivity.icve_moreUserSkActivity;
 import com.vms.ykt.UI.Adapter.icveAdapter.icveRecyclerAdapter;
 import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.UI.yktMainActivity;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.icve.icveApiW;
 import com.vms.ykt.yktStuWeb.icve.icveCourseInfo;
@@ -54,9 +55,6 @@ public class icveFragment extends baseFragment {
     private icveRecyclerAdapter mRecyclerAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private icveHttpW mIcveHttpW;
-    private icveMainW mIcveMainW;
-    private icveApiW mIcveApiW;
 
     public static Fragment newInstance(String icve) {
         icveFragment vIcveFragment =new icveFragment();
@@ -65,13 +63,8 @@ public class icveFragment extends baseFragment {
 
     public void setData(zjyUser zjyUser) {
         if (zjyUser==null)return;
-        this.mZjyUser = zjyUser;
-        this.mIcveMainW=new icveMainW();
-        this.mIcveHttpW=new icveHttpW();
-        this.mIcveApiW=new icveApiW();
-        mIcveHttpW.setUserCookie(mZjyUser.getCookie());
-        mIcveApiW.setIcveHttpW(mIcveHttpW);
-        mIcveMainW.setIcveApiW(mIcveApiW);
+        mZjyUser= zjyUserDao.sZjyUser;
+        icveHttpW.restCookie(mZjyUser.getCookie());
     }
 
 
@@ -158,14 +151,14 @@ public class icveFragment extends baseFragment {
             @Override
             public void run() {
 
-                List<icveCourseInfo> vCourseList = mIcveMainW.getMyCourseList(mZjyUser);
+                List<icveCourseInfo> vCourseList = icveMainW.getMyCourseList(mZjyUser);
 
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if ( vCourseList.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new icveRecyclerAdapter(vCourseList,mZjyUser);
+                                mRecyclerAdapter = new icveRecyclerAdapter(vCourseList);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(vCourseList);

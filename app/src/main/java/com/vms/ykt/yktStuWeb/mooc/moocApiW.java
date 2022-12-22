@@ -17,16 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class moocApiW implements Serializable {
-    public moocHttpW getMoocHttpW() {
-        return mMoocHttpW;
-    }
+public  class moocApiW {
 
-    public void setMoocHttpW(moocHttpW moocHttpW) {
-        mMoocHttpW = moocHttpW;
-    }
 
-    private moocHttpW mMoocHttpW;
     static String getCourseOpenList = "https://moocapp.icve.com.cn/portal/course/getCourseOpenList";
     static String getMyCourse = "https://moocapp.icve.com.cn/portal/Course/getMyCourse";
     static String getUserInf = "https://moocapp.icve.com.cn/portal/LoginMooc/getUserInf";
@@ -34,7 +27,7 @@ public class moocApiW implements Serializable {
 
     static String addStuView = "https://moocapp.icve.com.cn/study/discussion/addStuViewTopicRemember";
 
-    public void login() {
+    public static  void login() {
         /*
         验证码
         GET https://mooc.icve.com.cn/portal/LoginMooc/getVerifyCode?ts=1655544067388 HTTP/1.1
@@ -44,89 +37,89 @@ public class moocApiW implements Serializable {
         */
     }
 
-    public String getUserInf() {
+    public static  String getUserInf() {
         String resp = "";
-        resp = mMoocHttpW.get(getUserInf);
+        resp = moocHttpW.get(getUserInf);
         return resp;
     }
 
-    public String getMyInfo() {
+    public static  String getMyInfo() {
         String resp = "";
-        resp = mMoocHttpW.get(getMyInfo);
+        resp = moocHttpW.get(getMyInfo);
         return resp;
     }
 
-    public String getCourseOpenList() {
+    public static  String getCourseOpenList() {
         String resp = "";
         String ref = "https://moocapp.icve.com.cn/profile.html";
-        resp = mMoocHttpW.get(getCourseOpenList, ref);
+        resp = moocHttpW.get(getCourseOpenList, ref);
         return resp;
     }
 
-    public String getMyCourse(String isFinished, String page) {
+    public static  String getMyCourse(String isFinished, String page) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("isFinished=" + isFinished + "&");
         postParam.append("page=" + page + "&");
         postParam.append("pageSize=15");
         String postParams = postParam.toString();
-        resp = mMoocHttpW.get(getMyCourse, postParams);
+        resp = moocHttpW.get(getMyCourse, postParams);
         return resp;
     }
 
-    public String getaddStuView(String courseOpenId, String topicId) {
+    public static  String getaddStuView(String courseOpenId, String topicId) {
         //courseOpenId=6sg2ag6tfzzgek2os3uaog&topicId=saqasiukrffm1azjxjvag
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseOpenId=" + courseOpenId + "&");
         postParam.append("topicId=" + topicId);
         String postParams = postParam.toString();
-        resp = mMoocHttpW.get(addStuView, postParams);
+        resp = moocHttpW.get(addStuView, postParams);
         return resp;
     }
 
     //获取所有模块
     private static String getProcessList = "https://mooc.icve.com.cn/study/learn/getProcessList";
 
-    public String getProcessList(moocCourseInfo moocCourseInfo) {
+    public static  String getProcessList(moocCourseInfo moocCourseInfo) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseOpenId=" + moocCourseInfo.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mMoocHttpW.post(getProcessList, postParams, null);
+        resp = moocHttpW.post(getProcessList, postParams);
         return resp;
     }
 
     //获取所有章节
     private static String getTopicByModuleId = "https://mooc.icve.com.cn/study/learn/getTopicByModuleId";
 
-    public String getTopicByModuleId(moocCourseInfo moocCourseInfo, moocModInfo modInfo) {
+    public static  String getTopicByModuleId(moocCourseInfo moocCourseInfo, moocModInfo modInfo) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("moduleId=" + modInfo.getId() + "&");
         postParam.append("courseOpenId=" + moocCourseInfo.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mMoocHttpW.post(getTopicByModuleId, postParams, null);
+        resp = moocHttpW.post(getTopicByModuleId, postParams  );
         return resp;
     }
 
     //获取所有课件
     private static String getCellByTopicId = "https://mooc.icve.com.cn/study/learn/getCellByTopicId";
 
-    public String getCellByTopicId(moocCourseInfo moocCourseInfo, moocTopicInfo topicInfo) {
+    public static  String getCellByTopicId(moocCourseInfo moocCourseInfo, moocTopicInfo topicInfo) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("topicId=" + topicInfo.getId() + "&");
         postParam.append("courseOpenId=" + moocCourseInfo.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mMoocHttpW.post(getCellByTopicId, postParams, null);
+        resp = moocHttpW.post(getCellByTopicId, postParams );
         return resp;
     }
 
     //获取课件详情
     private static String viewDirectory = "https://mooc.icve.com.cn/study/learn/viewDirectory";
 
-    public String viewDirectory(moocCourseInfo moocCourseInfo, moocCellInfo moocCellInfo) {
+    public static  String viewDirectory(moocCourseInfo moocCourseInfo, moocCellInfo moocCellInfo) {
 
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -135,14 +128,14 @@ public class moocApiW implements Serializable {
         postParam.append("fromType=stu&");
         postParam.append("courseOpenId=" + moocCourseInfo.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mMoocHttpW.post(viewDirectory, postParams, null);
+        resp = moocHttpW.post(viewDirectory, postParams );
         return resp;
     }
 
     //刷课件
     private static String StuProcessCell = "https://mooc.icve.com.cn/study/learn/statStuProcessCellLogAndTimeLong";
 
-    public String StuProcessCell(moocCourseInfo moocCourseInfo, moocCellInfo moocCellInfo, String videoLong) {
+    public static  String StuProcessCell(moocCourseInfo moocCourseInfo, moocCellInfo moocCellInfo, String videoLong) {
 
         //courseId:
         //courseOpenId: j7fbabaurl5ocrj9ibrfxw
@@ -166,7 +159,7 @@ public class moocApiW implements Serializable {
         //postParam.append("sourceForm=1030&");
         postParam.append("courseOpenId=" + moocCourseInfo.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mMoocHttpW.post(StuProcessCell, postParams, null);
+        resp = moocHttpW.post(StuProcessCell, postParams );
         return resp;
     }
 
@@ -174,7 +167,7 @@ public class moocApiW implements Serializable {
     //获取评论区详情
     private static String getCellCommentData = "https://mooc.icve.com.cn/study/learn/getCellCommentData";
 
-    public String getCellCommentData(moocCourseInfo moocCourseInfo, moocCellInfo moocCellInfo, String dType) {
+    public static  String getCellCommentData(moocCourseInfo moocCourseInfo, moocCellInfo moocCellInfo, String dType) {
 
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -182,7 +175,7 @@ public class moocApiW implements Serializable {
         postParam.append("dType=" + dType + "&");
         postParam.append("courseOpenId=" + moocCourseInfo.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mMoocHttpW.post(getCellCommentData, postParams, null);
+        resp = moocHttpW.post(getCellCommentData, postParams );
         return resp;
     }
 
@@ -190,7 +183,7 @@ public class moocApiW implements Serializable {
     //课件评论
     private static String saveAllReply = "https://mooc.icve.com.cn/study/learn/saveAllReply";
 
-    public String saveAllReply(moocCourseInfo moocCourseInfo, moocCellInfo moocCellInfo, String SignType, String CategoryId, String Content) {
+    public static  String saveAllReply(moocCourseInfo moocCourseInfo, moocCellInfo moocCellInfo, String SignType, String CategoryId, String Content) {
 
         //replyData: {"ResId":"","replyToUserId":"","replyToDisplayName":"","Content":"<p>哦哦哦呕噢噢</p>",
         // "CourseOpenId":"j7fbabaurl5ocrj9ibrfxw","CategoryId":"bbszhtlq-j7fbabaurl5ocrj9ibrfxw",
@@ -214,7 +207,7 @@ public class moocApiW implements Serializable {
         postParams.append("replyData=" + json + "&");
         postParams.append("urlList=[]");
         String postParamss = postParams.toString();
-        resp = mMoocHttpW.post(saveAllReply, postParamss, null);
+        resp = moocHttpW.post(saveAllReply, postParamss );
         return resp;
     }
 
@@ -222,19 +215,19 @@ public class moocApiW implements Serializable {
     //讨论区所有板块
     private static String getCourseCategory = "https://mooc.icve.com.cn/study/discussion/getCourseCategory";
 
-    public String getCourseCategory(moocCourseInfo moocCourseInfo) {
+    public static  String getCourseCategory(moocCourseInfo moocCourseInfo) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseOpenId=" + moocCourseInfo.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mMoocHttpW.post(getCourseCategory, postParams, null);
+        resp = moocHttpW.post(getCourseCategory, postParams );
         return resp;
     }
 
     //获取 测验 作业 考试
     static String WorkExamList = "https://mooc.icve.com.cn/study/workExam/getWorkExamList";
 
-    public String getWorkExamList(String courseOpenId, String page, String Type) {
+    public static  String getWorkExamList(String courseOpenId, String page, String Type) {
         //workExamType=0&courseOpenId=gisjat6ujjljmrruz461sg
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -242,7 +235,7 @@ public class moocApiW implements Serializable {
         postParam.append("courseOpenId=" + courseOpenId + "&");
         postParam.append("page=" + page);
         String postParams = postParam.toString();
-        resp = mMoocHttpW.get(WorkExamList, postParams);
+        resp = moocHttpW.get(WorkExamList, postParams);
         return resp;
     }
 
@@ -271,7 +264,7 @@ public class moocApiW implements Serializable {
         //postParam.append("userId=" + userId + "&");
         postParam.append("uniqueId=" + uniqueId);
         String postParams = postParam.toString();
-        resp = mMoocHttpW.post(onlineHomeworkAnswer, postParams, null);
+        resp = moocHttpW.post(onlineHomeworkAnswer, postParams );
         return resp;
     }
 
@@ -293,24 +286,24 @@ public class moocApiW implements Serializable {
         // postParam.append("paperStructUnique=" + paperStructUnique + "&");
         postParam.append("useTime=" + useTime);
         String postParams = postParam.toString();
-        resp = mMoocHttpW.post(workExamSave, postParams, null);
+        resp = moocHttpW.post(workExamSave, postParams);
         return resp;
     }
 
     //获取老师id
     static String recommendCourseToMe = "https://moocapp.icve.com.cn/portal/Course/recommendCourseToMe";
 
-    private String getCourseToMe(int page) {
+    private static String getCourseToMe(int page) {
 
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("page=" + page + "&pageSize=15");
         String postParams = postParam.toString();
-        resp = mMoocHttpW.get(recommendCourseToMe, postParams);
+        resp = moocHttpW.get(recommendCourseToMe, postParams);
         return resp;
     }
 
-    public List<courseInfoForTeach> getCourseForTeach() {
+    public static  List<courseInfoForTeach> getCourseForTeach() {
         List<courseInfoForTeach> varForTeachList = new ArrayList<>();
         int page = 1;
         while (true) {

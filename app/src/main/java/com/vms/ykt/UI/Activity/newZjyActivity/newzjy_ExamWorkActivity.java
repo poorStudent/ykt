@@ -25,6 +25,7 @@ import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktDao.newZjy.newZjyUserDao;
 import com.vms.ykt.yktStuMobile.newZJY.ClassRoom;
 import com.vms.ykt.yktStuMobile.newZJY.ExamWork;
+import com.vms.ykt.yktStuMobile.newZJY.Homework;
 import com.vms.ykt.yktStuMobile.newZJY.classActivity;
 import com.vms.ykt.yktStuMobile.newZJY.newZjyApi;
 import com.vms.ykt.yktStuMobile.newZJY.newZjyCourse;
@@ -180,39 +181,6 @@ public class newzjy_ExamWorkActivity extends AppCompatActivity {
     }
 
     private void showSetDialog() {
-        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mContext);
-        //获取界面
-        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.newzjy_classroom_tool_dialog, null);
-        //将界面填充到AlertDiaLog容器并去除边框
-        setDeBugDialog.setView(dialogView);
-        //初始化控件
-        Button newzjy_bt_qd = dialogView.findViewById(R.id.newzjy_bt_qd);
-        Button newzjy_bt_sckt = dialogView.findViewById(R.id.newzjy_bt_sckt);
-        //取消点击外部消失弹窗
-        setDeBugDialog.setCancelable(true);
-        //创建AlertDiaLog
-        setDeBugDialog.create();
-        //AlertDiaLog显示
-        final AlertDialog customAlert = setDeBugDialog.show();
-        //设置AlertDiaLog宽高属性
-        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
-        params.width = 900;
-        params.height = 850;
-        customAlert.getWindow().setAttributes(params);
-        // 移除dialog的decorview背景色
-        // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
-        //设置自定义界面的点击事件逻辑
-
-        newzjy_bt_qd.setOnClickListener((View view) -> {
-            new Thread(() -> {
-
-            }).start();
-        });
-        newzjy_bt_sckt.setOnClickListener((View view) -> {
-            new Thread(() -> {
-
-            }).start();
-        });
 
     }
 

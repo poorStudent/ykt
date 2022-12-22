@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Adapter.moocAdapter.mooc_testAdapter;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.mooc.moocUserDao;
 import com.vms.ykt.yktStuMobile.mooc.moocCourseInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.mooc.WorkExamList;
@@ -31,7 +32,6 @@ import java.util.List;
 public class mooc_testActivity extends AppCompatActivity {
     private static final String TAG = mooc_testActivity.class.getSimpleName();
     private Context mContext;
-    private zjyUser mZjyUser;
     private moocCourseInfo mCourseIfno;
 
     private View root = null;
@@ -42,9 +42,6 @@ public class mooc_testActivity extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ProgressBar mProgressBar;
     List<WorkExamList> mWorkExamLists =new ArrayList<>();
-
-    private moocApiW mMoocApiW;
-    private moocMianW mMoocMianW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,19 +56,9 @@ public class mooc_testActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = mooc_testActivity.this;
-        this.mCourseIfno = (moocCourseInfo) i.getSerializableExtra("Course");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("mZjyUser");
+        this.mCourseIfno = moocUserDao.sMoocCourseInfo ;
         Log.d(TAG, "initData: " + mCourseIfno.getCourseName());
-        Log.d(TAG, "initData: " + mZjyUser.getUserId());
-        Log.d(TAG, "initData: " + mZjyUser.getUserId());
-        Log.d(TAG, "initData: " + mZjyUser.getCookie());
-        moocHttpW vMoocHttpW = new moocHttpW();
-        mMoocApiW = new moocApiW();
-        mMoocMianW = new moocMianW();
-       // vMoocHttpW.setUserCookie(mZjyUser.getCookie());
-        mMoocApiW.setMoocHttpW(vMoocHttpW);
-        mMoocMianW.setMoocApiW(mMoocApiW);
-
+       
     }
 
     private void initView() {
@@ -116,7 +103,7 @@ public class mooc_testActivity extends AppCompatActivity {
             public void run() {
 
 
-                mWorkExamLists = mMoocMianW.getAllTestWork(mCourseIfno.getCourseOpenId());
+                mWorkExamLists = moocMianW.getAllTestWork(mCourseIfno.getCourseOpenId());
                 if (mWorkExamLists.size() == 0) {
                 }
 
@@ -126,7 +113,7 @@ public class mooc_testActivity extends AppCompatActivity {
 
                         if (mWorkExamLists.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new mooc_testAdapter(mWorkExamLists,mZjyUser,mCourseIfno);
+                                mRecyclerAdapter = new mooc_testAdapter(mWorkExamLists);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mWorkExamLists);

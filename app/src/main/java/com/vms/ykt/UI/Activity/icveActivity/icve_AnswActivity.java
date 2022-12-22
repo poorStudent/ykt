@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.vms.ykt.R;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.icve.icveUserDao;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.icve.AnswersInfo;
 import com.vms.ykt.yktStuWeb.icve.icveApiW;
@@ -39,8 +41,6 @@ public class icve_AnswActivity extends AppCompatActivity {
     private Thread mThread;
     private boolean isDoWork = true;
 
-    private icveMainW mIcveMainW;
-    private icveApiW mIcveApiW;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,17 +54,12 @@ public class icve_AnswActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = icve_AnswActivity.this;
-        this.mCourseIfno = (icveCourseInfo) i.getSerializableExtra("Course");
-        this.mWorkExamListInfo = (workExamListInfo) i.getSerializableExtra("vWorkExamListInfo");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
+        mCourseIfno = icveUserDao.sIcveCourseInfo;
+        mZjyUser = zjyUserDao.sZjyUser;
+        this.mWorkExamListInfo =icveUserDao.sWorkExamListInfo ;
         this.flag = (String) i.getSerializableExtra("flag");
         this.Workflag = (String) i.getSerializableExtra("Workflag");
-        icveHttpW mIcveHttpW = new icveHttpW();
-        mIcveHttpW.setUserCookie(mZjyUser.getCookie());
-        this.mIcveApiW = new icveApiW();
-        mIcveApiW.setIcveHttpW(mIcveHttpW);
-        this.mIcveMainW = new icveMainW();
-        mIcveMainW.setIcveApiW(mIcveApiW);
+
         Log.d(TAG, "initData: " + mCourseIfno.getTitle());
         Log.d(TAG, "initData: " + mZjyUser.getUserId());
 
@@ -136,31 +131,31 @@ public class icve_AnswActivity extends AppCompatActivity {
     private String doWorkM() {
 
         if (mWorkExamListInfo.getType()==1){
-            String data = mIcveApiW.getWorkPerview(mCourseIfno.getId(), mWorkExamListInfo.getId());
+            String data = icveApiW.getWorkPerview(mCourseIfno.getId(), mWorkExamListInfo.getId());
             if (data == null || data.isEmpty()) {
                 return data;
             }
-            List<AnswersInfo> vAnswersInfoList = mIcveMainW.getAnswPapers(data);
+            List<AnswersInfo> vAnswersInfoList = icveMainW.getAnswPapers(data);
             if (vAnswersInfoList.size() == 0) {
-                vAnswersInfoList = mIcveMainW.getAnswArrays(data);
+                vAnswersInfoList = icveMainW.getAnswArrays(data);
             }
             if (vAnswersInfoList.size() == 0) {
                 return data;
             }
-            return mIcveMainW.paserAnsw(vAnswersInfoList);
+            return icveMainW.paserAnsw(vAnswersInfoList);
         }else {
-            String data = mIcveApiW.getExamPerview(mCourseIfno.getId(),mWorkExamListInfo.getId());
+            String data = icveApiW.getExamPerview(mCourseIfno.getId(),mWorkExamListInfo.getId());
             if (data == null || data.isEmpty()) {
                 return data;
             }
-            List<AnswersInfo> vAnswersInfoList = mIcveMainW.getAnswPapers(data);
+            List<AnswersInfo> vAnswersInfoList = icveMainW.getAnswPapers(data);
             if (vAnswersInfoList.size() == 0) {
-                vAnswersInfoList = mIcveMainW.getAnswArrays(data);
+                vAnswersInfoList = icveMainW.getAnswArrays(data);
             }
             if (vAnswersInfoList.size() == 0) {
                 return data;
             }
-            return mIcveMainW.paserAnsw(vAnswersInfoList);
+            return icveMainW.paserAnsw(vAnswersInfoList);
         }
 
     }

@@ -6,7 +6,7 @@ import java.io.Serializable;
 "classPhoto":"https://user.icve.com.cn/learning/resbase/sites/zhzj/teacher/default/images/thumbs/3.png",
 "activityNum":"4","classroomNum":"3","className":"456",
 "courseId":"39e272199dab487ba6f8f76115cbfd2c","createDate":"2022-09-01"}*/
-public class newZjyCourse implements Serializable {
+public class newZjyCourse  {
     private String classId;
     private String courseName;
     private String classPhoto;

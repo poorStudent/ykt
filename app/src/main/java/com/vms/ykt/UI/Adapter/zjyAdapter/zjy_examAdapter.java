@@ -16,6 +16,7 @@ import com.vms.ykt.UI.Activity.zjyActivity.zjy_examActivity;
 import com.vms.ykt.UI.Activity.zjyActivity.zjy_examAnswActivity;
 import com.vms.ykt.UI.Activity.zjyActivity.zjy_examDoActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.ExamInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
@@ -27,8 +28,6 @@ import java.util.Objects;
 public class zjy_examAdapter extends baseRecyclerAdapter<zjy_examAdapter.ViewHolder1> {
 
     List<ExamInfo> mExamInfoList;
-    zjyCourseIfno mCourseIfno;
-    private zjyUser mZjyUser;
     private zjy_examActivity mActivity;
 
     private String TAG=this.getClass().getSimpleName();
@@ -39,10 +38,8 @@ public class zjy_examAdapter extends baseRecyclerAdapter<zjy_examAdapter.ViewHol
 
     private zjy_examAdapter.initRcView mInitRcView;
 
-    public zjy_examAdapter(List<ExamInfo> data, zjyUser zjyUsers, zjyCourseIfno courseIfno) {
+    public zjy_examAdapter(List<ExamInfo> data) {
         this.mExamInfoList = data;
-        this.mZjyUser=zjyUsers;
-        this.mCourseIfno=courseIfno;
     }
 
     public void updateData(List<ExamInfo> data) {
@@ -128,7 +125,10 @@ public class zjy_examAdapter extends baseRecyclerAdapter<zjy_examAdapter.ViewHol
             @Override
             public void onClick(final View v) {
 
-                showSetDialog(mExamInfoList.get(position));
+                if (vExamInfo.getId()!=null){
+                    zjyUserDao.sExamInfo=vExamInfo;
+                    showSetDialog(vExamInfo);
+                }
                 if(onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemClick(holder.itemView, pos);
@@ -180,18 +180,12 @@ public class zjy_examAdapter extends baseRecyclerAdapter<zjy_examAdapter.ViewHol
 
         but_sjd.setOnClickListener((View view)-> {
             Intent i = new Intent(mActivity, zjy_examAnswActivity.class);
-            i.putExtra("Course", mCourseIfno);
-            i.putExtra("ZjyUser", mZjyUser);
-            i.putExtra("ExamInfo", ExamInfo);
             i.putExtra("flag", "0");
             mActivity.startActivity(i);
 
         });
         but_zy.setOnClickListener((View view)-> {
             Intent i = new Intent(mActivity, zjy_examAnswActivity.class);
-            i.putExtra("Course", mCourseIfno);
-            i.putExtra("ZjyUser", mZjyUser);
-            i.putExtra("ExamInfo", ExamInfo);
             i.putExtra("flag", "1");
             mActivity.startActivity(i);
 
@@ -199,9 +193,6 @@ public class zjy_examAdapter extends baseRecyclerAdapter<zjy_examAdapter.ViewHol
 
         but_ks.setOnClickListener((View view) ->{
             Intent i = new Intent(mActivity, zjy_examDoActivity.class);
-            i.putExtra("Course", mCourseIfno);
-            i.putExtra("ZjyUser", mZjyUser);
-            i.putExtra("ExamInfo", ExamInfo);
             mActivity.startActivity(i);
             }
         );

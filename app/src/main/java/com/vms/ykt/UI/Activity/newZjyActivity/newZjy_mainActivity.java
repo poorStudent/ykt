@@ -71,6 +71,7 @@ public class newZjy_mainActivity extends AppCompatActivity {
 
     private void initView() {
         mButton = findViewById(R.id.icve_bt_djjz);
+
         mButton2 = findViewById(R.id.newzjy_bt_gndq);
         mSwipeRefreshLayout = findViewById(R.id.icve_swiperefresh);
         mRecyclerView = findViewById(R.id.icve_RecyclerView);
@@ -133,29 +134,33 @@ public class newZjy_mainActivity extends AppCompatActivity {
             public void run() {
 
 
+
+
                 mNewZjyCourseList = newZjyMain.getMyClassList(mNewZjyUser);
 
-                newZjyMain.upAuthorization(mNewZjyUser);
-                newZjyMain.upUNTYXLCOOKIE(mNewZjyUser, "");
-                newZjyMain.upUsersessionidm(mNewZjyUser,"","");
-                //newZjyApi.getUsersessionidw2();
-                //newZjyApi.getUsersessionidw();
-                Log.d(TAG, "run: " + mNewZjyUser.getUserAccessToken());
-                Log.d(TAG, "run: " + mNewZjyUser.getUSERSESSIONID());
-                Log.d(TAG, "run: " + mNewZjyUser.getUNTYXLCOOKIE());
 
                 if (mNewZjyCourseList.size() != 0) {
-                    new Thread(() -> {
-                        //  newZjyMain.upUNTYXLCOOKIE(mNewZjyUser,mNewZjyCourseList.get(0).getCourseId());
-                        // newZjyMain.upUsersessionidm(mNewZjyUser,mNewZjyCourseList.get(0).getCourseId(),"");
-                    }).start();
+
+                    newZjyMain.upAuthorization(mNewZjyUser);
+                    newZjyMain.upUNTYXLCOOKIE(mNewZjyUser, "");
+                    newZjyMain.upUsersessionidm(mNewZjyUser,"","");
+
+                    //newZjyApi.getUsersessionidw2();
+                    //newZjyApi.getUsersessionidw();
+
+                    Log.d(TAG, "run: " + mNewZjyUser.getUserAccessToken());
+
+                    Log.d(TAG, "run: " + mNewZjyUser.getUNTYXLCOOKIE());
+
+                    Log.d(TAG, "run: " + mNewZjyUser.getUSERSESSIONID());
                 }
+
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (mNewZjyCourseList.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new newzjy_main_Adapter(mNewZjyCourseList, mNewZjyUser);
+                                mRecyclerAdapter = new newzjy_main_Adapter(mNewZjyCourseList);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
 
                             } else {
@@ -312,9 +317,9 @@ public class newZjy_mainActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        if (mNewZjyUser == null) {
+                        if (mNewZjyUser == null)
                             mNewZjyUser = newZjyMain.MobileLogin(username, password);
-                        }
+
                     }
 
 
@@ -325,7 +330,7 @@ public class newZjy_mainActivity extends AppCompatActivity {
 
                             cq_loadingProgressBar.setVisibility(View.GONE);
 
-                            // 更新UI的操作/
+
                             if (mNewZjyUser == null || mNewZjyUser.getLoginId() == null) {
                                 Tool.toast(mActivity, "登录失败\n");
                                 return;
@@ -333,6 +338,8 @@ public class newZjy_mainActivity extends AppCompatActivity {
                             Log.d(TAG, mNewZjyUser.getLoginId());
 
                             // mUserVModel.setNewZjyUser(mNewZjyUser);
+                            mNewZjyUser.setOtNewZjyUser(newZjyMain.getTeacherUser());
+
                             newZjyUserDao.sNewZjyUser = mNewZjyUser;
 
 

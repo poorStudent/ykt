@@ -9,7 +9,7 @@ import java.io.Serializable;
  * {"id":"brjvahcknj9lmq9m9cargq","schedule":"1.59","datecreated":"2021/4/28 17:24:55","title":"单片机技术基础",
  * "cover":"https://file.icve.com.cn/doc_public/243/871/3CCD9D5569792102769205F0850CF61E.jpg?x-oss-process=image/resize,m_fixed,w_198,h_112,limit_0","studyhours":"120.0","state":"3"},{"id":"59ynaf6pjo1ajtx227s31q","schedule":"0.00","datecreated":"2021/4/28 17:18:20","title":"JavaScript及框架应用","cover":"https://file.icve.com.cn/file_doc_public/395/384/62E600EA00DE0884DCC4B22FC34D3F7C.jpg?x-oss-process=image/resize,m_fixed,w_198,h_112,limit_0","studyhours":"60.0","state":"3"}],"userid":"2w7jafiswazbrev468vb5q","pagination":{"totalCount":3,"pageSize":12,"pageIndex":1}}**/
 
-public class icveCourseInfo implements Serializable {
+public class icveCourseInfo  {
     private String id;
     private String schedule;
     private String datecreated;

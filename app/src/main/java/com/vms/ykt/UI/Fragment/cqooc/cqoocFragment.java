@@ -40,6 +40,7 @@ import com.vms.ykt.Util.CacheUs;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.viewModel.ViewModelUtils;
 import com.vms.ykt.viewModel.yktUserVM;
+import com.vms.ykt.yktDao.cqooc.cqoocUserDao;
 import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocCourseInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocHttp;
@@ -72,9 +73,7 @@ public class cqoocFragment extends baseFragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private List<cqoocCourseInfo> mCqoocCourseInfo;
     private userInfo mUserInfo = null;
-    private cqoocHttp mCqoocHttp;
-    private cqoocMain mCqoocMain;
-    private cqApi mCqApi;
+
     private static yktUserVM mUserVModel;
 
     public static Fragment newInstance(int icve) {
@@ -165,10 +164,7 @@ public class cqoocFragment extends baseFragment {
         //mUserInfo=mUserVModel.getCqoocUser();
         if (mUserInfo == null || mUserInfo.getUsername() == null) {
             mSwipeRefreshLayout.setRefreshing(false);
-            mProgressBar.setVisibility(View.GONE);
-            mCqoocHttp =new cqoocHttp();
-            mCqoocMain=new cqoocMain();
-            mCqApi=new cqApi();
+            mProgressBar.setVisibility(View.GONE);;
             newInit("");
             loginDialog();
             return;
@@ -177,14 +173,14 @@ public class cqoocFragment extends baseFragment {
             @Override
             public void run() {
 
-                mCqoocCourseInfo = mCqoocMain.getAllCourse(mUserInfo);
+                mCqoocCourseInfo = cqoocMain.getAllCourse(mUserInfo);
 
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if ( mCqoocCourseInfo.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new cqoocRecyclerAdapter(mCqoocCourseInfo, mUserInfo,mCqoocMain,mCqApi);
+                                mRecyclerAdapter = new cqoocRecyclerAdapter(mCqoocCourseInfo);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
 
                             } else {
@@ -335,19 +331,19 @@ public class cqoocFragment extends baseFragment {
                             return;
                         }
                         newInit(userCk);
-                        mUserInfo = mCqoocMain.getUsreInfo(userCk);
+                        mUserInfo = cqoocMain.getUsreInfo(userCk);
                         ck = userCk;
                     } else {
 
                         if (!chck.equals("null")) {
                             newInit(chck);
-                            mUserInfo = mCqoocMain.getUsreInfo(chck);
+                            mUserInfo = cqoocMain.getUsreInfo(chck);
                         }
                         if (mUserInfo == null) {
                             ck = vCqoocLogin.LoignIng(username, password);
                             if (ck != null && !ck.isEmpty()) {
                                 newInit(ck);
-                                mUserInfo = mCqoocMain.getUsreInfo(ck);
+                                mUserInfo = cqoocMain.getUsreInfo(ck);
                             }
                         } else {
                             ck = chck;
@@ -369,12 +365,15 @@ public class cqoocFragment extends baseFragment {
                                 return;
                             }
 
-                            mUserVModel.setCqoocUser(mUserInfo);
+
 
                             vCacheUs.writeCacheUs(mEditor, "cq", "null", ck);
                             mUserInfo.setCookie("player=1; xsid=" + ck);
                             Tool.toast(mActivity, "登录成功");
                             customAlert.dismiss();
+
+                            cqoocUserDao.sUserInfo=mUserInfo;
+
                             Log.d(TAG, mUserInfo.getCookie());
                             Log.d(TAG, mUserInfo.getUsername());
                             Log.d(TAG, mUserInfo.getId());
@@ -391,9 +390,7 @@ public class cqoocFragment extends baseFragment {
     }
 
     private void newInit(String ck){
-        mCqoocHttp.setUserCookie("player=1; xsid=" + ck);
-        mCqApi.setCqoocHttp(mCqoocHttp);
-        mCqoocMain.setCqApi(mCqApi);
+        cqoocHttp.restCookie("player=1; xsid=" + ck);
     }
 
     @Override

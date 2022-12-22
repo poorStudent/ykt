@@ -15,7 +15,7 @@ import java.io.Serializable;
  "lastlogin":1653481926224,"lastsync":1653486086889,"needPhone":"1","status":"1","stuNo":null,"qqOpenId":null,
  "qqAccessToken":null,"wxOpenId":null,"wxAccessToken":null}
  **/
-public class userInfo implements Serializable {
+public class userInfo  {
 
     public String getOtherXsid() {
         return otherXsid;

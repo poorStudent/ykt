@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,10 +22,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.vms.ykt.R;
 import com.vms.ykt.Util.AppStatus;
 import com.vms.ykt.Util.Tool;
 
+import com.vms.ykt.yktDao.cqooc.cqoocUserDao;
+import com.vms.ykt.yktStuWeb.Cqooc.ExamPreview;
+import com.vms.ykt.yktStuWeb.Cqooc.TaskPreview;
 import com.vms.ykt.yktStuWeb.Cqooc.cellLessonsInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cellResourceInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cqApi;
@@ -32,6 +37,7 @@ import com.vms.ykt.yktStuWeb.Cqooc.cqoocCourseInfo;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocHttp;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocLogin;
 import com.vms.ykt.yktStuWeb.Cqooc.cqoocMain;
+import com.vms.ykt.yktStuWeb.Cqooc.examTask;
 import com.vms.ykt.yktStuWeb.Cqooc.userInfo;
 
 import java.util.ArrayList;
@@ -42,7 +48,7 @@ import java.util.Objects;
 public class cqooc_shuakeActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getSimpleName();
-    private cqoocMain mCqoocMain;
+
     private cqApi mCqApi;
 
     private Button cqooc_shuke_sz, cqooc_shuke_ks, cqooc_shuke_zt;
@@ -80,10 +86,9 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         this.mContext = cqooc_shuakeActivity.this;
-        this.mCourseIfno = (cqoocCourseInfo) i.getSerializableExtra("Course");
-        this.mUserInfo = (userInfo) i.getSerializableExtra("cqUser");
-        this.mCqoocMain = (cqoocMain) i.getSerializableExtra("mCqoocMain");
-        this.mCqApi = (cqApi) i.getSerializableExtra("mCqApi");
+        this.mCourseIfno = cqoocUserDao.sCqoocCourseInfo;
+        this.mUserInfo = cqoocUserDao.sUserInfo;
+
         ip = Tool.getIPAddress(mContext);
         Log.d(TAG, "initData: " + mCourseIfno.getTitle());
         Log.d(TAG, "initData: " + mCourseIfno.getUsername());
@@ -119,6 +124,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
         cqooc_shuke_ks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mUserInfo==null)return;
                 isShuke_zt = false;
                 pageCt = 0;
                 curCt = 0;
@@ -150,8 +156,8 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
         List<cellLessonsInfo> varList =new ArrayList<>();
         ArrayList<String> varFinishaLessons=new ArrayList<>();
         if (cqooc_shuke_sk.isChecked()) {
-            varList = mCqoocMain.getAlllessons(mCourseIfno);
-            varFinishaLessons = mCqoocMain.getFinishaLessons(mUserInfo, mCourseIfno);
+            varList = cqoocMain.getAlllessons(mCourseIfno);
+            varFinishaLessons = cqoocMain.getFinishaLessons(mUserInfo, mCourseIfno);
         }
         pageCt = varList.size();
 
@@ -181,12 +187,63 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
 
         //作业考试
         if (cqooc_shuke_zdzy.isChecked()){
-
+            List<examTask> vExamTasks=cqoocMain.getAllExam(mCourseIfno.getCourseId());
+            for (examTask vExamTask:vExamTasks){
+                DoExam(mUserInfo,vExamTask,mCourseIfno.getCourseId());
+            }
 
         }
         if (cqooc_shuke_zdks.isChecked()){
 
         }
+
+    }
+    //做作业
+    public  void DoTask(userInfo userInfo, examTask examTask, cqoocCourseInfo varCourseInfo) {
+
+        cqoocHttp.restCookie( userInfo.getOtherXsid());
+        List<TaskPreview> vPreviewList = cqoocMain.getOpenTasks(varCourseInfo.getCourseId(), examTask.getId());
+        if (vPreviewList.size() == 0) {
+            //获取答案失败 随机吧
+            vPreviewList = cqoocMain.getTasksInfo(varCourseInfo.getCourseId(), examTask.getId());
+        }
+        cqoocHttp.restCookie(userInfo.getCookie());
+        String resp = cqoocMain.getTaskAdd(vPreviewList, userInfo, varCourseInfo, examTask);
+
+    }
+
+    //做试卷
+    public void DoExam(userInfo userInfo, examTask examTask,String courseId) {
+        cqoocCourseInfo varCourseInfo = null;
+        
+        // userInfo otherUserInfo = getUsreInfo(userInfo.getOtherXsid());
+
+        String resp = cqoocMain.getIfExamGen(null, "", "");
+        if (resp == null || !resp.contains("id")) return;
+
+        JSONArray vJSONArray = Tool.parseJsonA(resp, "data");
+        String js = vJSONArray.getString(0);
+        String id = Tool.parseJsonS(js, "id");//提交用的id
+        if (id == null || id.equals("")) {
+            return;
+        }
+
+        cqoocHttp.restCookie( userInfo.getOtherXsid());
+        String answs = cqApi.getExamPreview(varCourseInfo.getCourseId(), examTask.getId());
+
+        Object answ = cqoocMain.parseExamAswn(answs);
+        if (answ == null || String.valueOf(answ).isEmpty()) {
+            //答案获取失败 随机答案吧
+            //vExamPreviewList = parseExamPreview(resp);
+            //answ="";
+            return;
+        }
+        else {
+
+            //vExamPreviewList = parseExamPreview((String) answ);
+        }
+        cqoocHttp.restCookie(userInfo.getCookie());
+        cqoocMain.examSubmit(userInfo,courseId, examTask.getId(),id,answs);
 
     }
 
@@ -197,7 +254,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
 
         if (true){
             //课件评分
-            String resp=mCqoocMain.getAddScore(mCourseIfno.getCourseId(), varCellLessonsInfo.getResId(), "5");
+            String resp=cqoocMain.getAddScore(mCourseIfno.getCourseId(), varCellLessonsInfo.getResId(), "5");
         }
         if (cqooc_shuke_sk.isChecked()) {
             if (cqooc_shuke_tgys.isChecked()) {
@@ -231,7 +288,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
                 String fourmID = varCellLessonsInfo.getForumId();
                 if (fourmID != null && !fourmID.equals("null")) {
                     //讨论
-                    String ct = mCqoocMain.getOtherFourmCt(mCourseIfno.getCourseId(), fourmID);
+                    String ct = cqoocMain.getOtherFourmCt(mCourseIfno.getCourseId(), fourmID);
                     if (ct.isEmpty()) {
                         ct = "无";
                     }
@@ -277,7 +334,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
             if (testID != null && !testID.equals("null")) {
                 //测验
 
-                cellLessonsInfo vInfo = mCqoocMain.parseLessonsTests(varCellLessonsInfo);
+                cellLessonsInfo vInfo = cqoocMain.parseLessonsTests(varCellLessonsInfo);
                 stringBuffer.append("\n" + "自动测验->" + vInfo.getTitle() + " *" + vInfo.getTestId());
                 mHandler.sendEmptyMessage(100);
 
@@ -300,15 +357,10 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
 
     private void doTest(cellLessonsInfo varCellLessonsInfo) {
 
-        final cqoocHttp mCqoocHttps = new cqoocHttp();
-        final cqoocMain mCqoocMains = new cqoocMain();
-        final cqApi mCqApis = new cqApi();
-        mCqoocHttps.setUserCookie("player=1; xsid=" + xsid);
-        mCqApis.setCqoocHttp(mCqoocHttps);
-        mCqoocMains.setCqApi(mCqApis);
-        String answ = mCqApis.getTestResult(mCourseIfno, varCellLessonsInfo);
+        cqoocHttp.restCookie(mUserInfo.getOtherXsid());
+        String answ = cqApi.getTestResult(mCourseIfno, varCellLessonsInfo);
         //String openTest=mCqApi.getOpenPaper(mCourseIfno,varCellLessonsInfo);
-        answ = mCqoocMain.parseTestAnsw(answ);
+        answ = cqoocMain.parseTestAnsw(answ);
         Log.d(TAG, "doTest: " + answ);
         if (answ == null) {
             stringBuffer.append("\n" + "答案获取异常");
@@ -335,11 +387,9 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
     }
 
     private void showSetDialog() {
-        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mContext);
-        //获取界面
-        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.cqooc_shuke_setdialog, null);
-        //将界面填充到AlertDiaLog容器并去除边框
-        setDeBugDialog.setView(dialogView);
+
+
+        View dialogView =Tool.creatDialog(mContext,R.layout.cqooc_shuke_setdialog);
         //初始化控件
         EditText but_pjjg = dialogView.findViewById(R.id.cqooc_shuke_jg);
         EditText but_lspj = dialogView.findViewById(R.id.cqooc_shuke_tlnr);
@@ -351,24 +401,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
         EditText but_cy_zh = dialogView.findViewById(R.id.cqooc_cy_zh);
         EditText but_cy_mm = dialogView.findViewById(R.id.cqooc_cy_mm);
         Button but_cy_dl = dialogView.findViewById(R.id.cqooc_cy_dl);
-        //取消点击外部消失弹窗
-        setDeBugDialog.setCancelable(true);
-        //创建AlertDiaLog
-        setDeBugDialog.create();
-        //AlertDiaLog显示
-        final AlertDialog customAlert = setDeBugDialog.show();
-        //设置AlertDiaLog宽高属性
-        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
-        params.width = 900;
-        params.height = 850;
-        customAlert.getWindow().setAttributes(params);
-        // 移除dialog的decorview背景色
-        // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
-        //设置自定义界面的点击事件逻辑
 
-        /*
-
-         * */
         but_qd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -383,7 +416,7 @@ public class cqooc_shuakeActivity extends AppCompatActivity {
                         mCqooc_tlnr.add(p);
                     Log.d(TAG, "onClick: " + p);
                 }
-                customAlert.cancel();
+                onKeyDown(KeyEvent.KEYCODE_BACK,  null );
             }
         });
 

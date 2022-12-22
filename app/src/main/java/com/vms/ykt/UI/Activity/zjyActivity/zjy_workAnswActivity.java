@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.vms.ykt.R;
 import com.vms.ykt.Util.AppStatus;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.HomeworkInfo;
 import com.vms.ykt.yktStuMobile.zjy.answerInfo;
 import com.vms.ykt.yktStuMobile.zjy.homeWorkViewInfo;
@@ -45,9 +46,6 @@ public class zjy_workAnswActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
 
 
-    private zjyHttpW mZjyHttpW;
-    private zjyApiW mZjyApiW;
-    private zjyMainW mZjyMainW;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,21 +59,14 @@ public class zjy_workAnswActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = zjy_workAnswActivity.this;
-        this.mCourseIfno = (zjyCourseIfno) i.getSerializableExtra("Course");
-        this.mHomeworkInfo = (HomeworkInfo) i.getSerializableExtra("HomeworkInfo");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
+        this.mCourseIfno = zjyUserDao.sZjyCourseIfno;
+        this.mHomeworkInfo =zjyUserDao.sHomeworkInfo ;
+        this.mZjyUser = zjyUserDao.sZjyUser;
         this.flag = (String) i.getSerializableExtra("flag");
-        this.mZjyHttpW=new zjyHttpW();
-        this.mZjyApiW=new zjyApiW();
-        this.mZjyMainW=new zjyMainW();
-        mZjyHttpW.setUserCookie(mZjyUser.getCookie());
-        mZjyApiW.setZjyHttpW(mZjyHttpW);
-        mZjyMainW.setZjyApiW(mZjyApiW);
         Log.d(TAG, "initData: " + mCourseIfno.getCourseName());
         Log.d(TAG, "initData: " + mZjyUser.getUserId());
         Log.d(TAG, "initData: " + mHomeworkInfo.getId());
         Log.d(TAG, "initData: " + mHomeworkInfo.getHomeworkId());
-        Log.d(TAG, "initData: " + mZjyHttpW.getUserCookie());
     }
 
     private void initView() {
@@ -141,7 +132,7 @@ public class zjy_workAnswActivity extends AppCompatActivity {
 
     private String doWorkW(){
         homeWorkViewInfo vHomeWorkViewInfo;
-         String resp= mZjyApiW.getPreview(mCourseIfno, mHomeworkInfo);
+         String resp= zjyApiW.getPreview(mCourseIfno, mHomeworkInfo);
         Log.d(TAG, "doWorkW: "+resp);
         if (resp==null||!resp.contains("redisData"))return resp+"";
         vHomeWorkViewInfo = JSONObject.parseObject(resp, homeWorkViewInfo.class);

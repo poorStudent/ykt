@@ -19,7 +19,7 @@ import java.io.Serializable;
  * "isPreview":1,"fixedPublishTime":"/Date(1652888436106)/","IsExtraOnlineExam":0,"isVerified":1,"questionOrderType":1,
  * "optionOrderType":1},**/
 
- public class ExamInfo implements Serializable {
+ public class ExamInfo  {
   private String examId;
   private String examType;
   private String ztWay;

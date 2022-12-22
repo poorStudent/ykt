@@ -1,8 +1,5 @@
 package com.vms.ykt.Util;
 
-import android.location.Location;
-import android.util.Log;
-
 import com.alibaba.fastjson.JSONObject;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 class TrustAllCerts implements X509TrustManager {
@@ -48,14 +47,14 @@ class TrustAllHostnameVerifier implements HostnameVerifier {
     }
 }
 
-public class httpTool {
+public class HttpTool {
 
-    static String TAG = httpTool.class.getSimpleName();
+    static String TAG = HttpTool.class.getSimpleName();
 
     private static OkHttpClient client;
 
     private static void getClient() {
-        synchronized (httpTool.class) {
+        synchronized (HttpTool.class) {
             if (client == null) {
                 OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
                 mBuilder.sslSocketFactory(createSSLSocketFactory(), new TrustAllCerts());
@@ -276,12 +275,16 @@ public class httpTool {
 
         // 装载请求头参数
         if (header != null) {
+
+            header.put("Host", parseHost(url));
+
             Iterator<Map.Entry<String, Object>> headerIterator = header.entrySet().iterator();
             while (headerIterator.hasNext()) {
                 Map.Entry<String, Object> entry = headerIterator.next();
                 builder.addHeader(entry.getKey(), (String) entry.getValue());
 
             }
+
         }
 
         // 装载请求的参数
@@ -347,10 +350,16 @@ public class httpTool {
         getClient();
         // 创建一个请求 Builder
         Request.Builder builder = new Request.Builder();
-
         String MediaTypes = "application/x-www-form-urlencoded; charset=utf-8";
+        if (header.containsKey("Content-Type")){
+            MediaTypes=(String) header.get("Content-Type");
+        }
+
         // 装载请求头参数
         if (header != null) {
+
+            header.put("Host", parseHost(url));
+
             Iterator<Map.Entry<String, Object>> headerIterator = header.entrySet().iterator();
             while (headerIterator.hasNext()) {
                 Map.Entry<String, Object> entry = headerIterator.next();
@@ -359,6 +368,7 @@ public class httpTool {
                     MediaTypes=(String) entry.getValue();
                 }
             }
+
         }
 
         //application/octet-stream
@@ -433,18 +443,21 @@ public class httpTool {
             }
 
             URL url = new URL(requestUrl);
-            HttpURLConnection conn = null;
-            conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn  = (HttpURLConnection) url.openConnection();
             conn.setInstanceFollowRedirects(false);
             conn.setRequestMethod("GET");
 
             if (header != null) {
+
+                header.put("Host", parseHost(requestUrl));
+
                 Iterator<Map.Entry<String, Object>> headerIterator = header.entrySet().iterator();
                 while (headerIterator.hasNext()) {
                     Map.Entry<String, Object> entry = headerIterator.next();
                     conn.setRequestProperty(entry.getKey(), (String) entry.getValue());
 
                 }
+
             }
 
 
@@ -494,17 +507,21 @@ public class httpTool {
             URL url = new URL(requestUrl);
             HttpURLConnection conn = null;
             conn = (HttpURLConnection) url.openConnection();
-            conn.setDoInput(true);
+            //conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setInstanceFollowRedirects(false);
             if (header != null) {
+
+                header.put("Host", parseHost(requestUrl));
+
                 Iterator<Map.Entry<String, Object>> headerIterator = header.entrySet().iterator();
                 while (headerIterator.hasNext()) {
                     Map.Entry<String, Object> entry = headerIterator.next();
                     conn.setRequestProperty(entry.getKey(), (String) entry.getValue());
 
                 }
+
             }
             if (json == null) json = "";
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(conn.getOutputStream()));
@@ -555,6 +572,20 @@ public class httpTool {
         return varRespnose;
     }
 
+    public static String parseHost(String resp){
+
+        String host="";
+        String pattern = "https?://(.+?)/";
+        // 创建 Pattern 对象
+        Pattern r = Pattern.compile(pattern);
+        // 现在创建 matcher 对象
+        Matcher m = r.matcher(resp);
+        if (m.find()) {
+            host=m.group(1);
+
+        }
+        return host;
+    }
 
     public static httpRespnose toLocation(Map<String, Object> Map, httpRespnose httpRespnose, String data, int type) {
 

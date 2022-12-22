@@ -207,26 +207,25 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
         stringBuffer.append("\n" + Tool.getCurrentData() + " " + username + " ->登录成功");
         mHandler.sendEmptyMessage(100);
         mZjyUser.setOtherZjyUser(tmpus);
-        final moocHttpW vMoocHttpW = new moocHttpW();
-        final moocApiW mMoocApiW = new moocApiW();
-        final moocMianW mMoocMianW = new moocMianW();
-        vMoocHttpW.setUserCookie(mZjyUser.getCookie());
-        mMoocApiW.setMoocHttpW(vMoocHttpW);
-        mMoocMianW.setMoocApiW(mMoocApiW);
-        for (moocCourseInfo vMoocCourseInfo : mMoocMianW.getMyCourseList(mZjyUser)) {
 
-            if (course.contains(vMoocCourseInfo.getCourseName())) {
 
-                doWork(mZjyUser, vMoocCourseInfo, mMoocApiW, mMoocMianW);
+        synchronized (this) {
+            moocHttpW.restCookie("");
+            moocHttpW.restCookie(mZjyUser.getCookie());
+            for (moocCourseInfo vMoocCourseInfo : moocMianW.getMyCourseList(mZjyUser)) {
 
+                if (course.contains(vMoocCourseInfo.getCourseName())) {
+
+                    doWork(mZjyUser, vMoocCourseInfo);
+
+                }
             }
+            String jd = "账号个数: " + yszhs + "/" + zhzs;
+            runOnUiThread(() -> mooc_shuake_jd.setText(jd));
         }
-        String jd="账号个数: "+yszhs+"/"+zhzs;
-        runOnUiThread(()->mooc_shuake_jd.setText(jd));
-
     }
 
-    private void doWork(zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW mMoocApiW, moocMianW mMoocMianW) {
+    private void doWork(zjyUser mZjyUser, moocCourseInfo mCourseIfno) {
         ArrayList<moocCellInfo> mMoocCellList = new ArrayList<>();
         for (moocModInfo vMoocModInfo : moocMianM.getProcessList(mZjyUser, mCourseIfno)) {
             if (vMoocModInfo.getModuleType().contains("2")) {
@@ -271,11 +270,11 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 mooc_shuake_jd.setText("进度: " + curCt + "/" + pageCt);
             });
-            shuke(vMoocCellInfo,mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+            shuke(vMoocCellInfo,mZjyUser, mCourseIfno);
         }
     }
 
-    private void shuke(moocCellInfo varCellInfo,zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW mMoocApiW, moocMianW mMoocMianW) {
+    private void shuke(moocCellInfo varCellInfo,zjyUser mZjyUser, moocCourseInfo mCourseIfno) {
         String kjmc = "\n----" + varCellInfo.getCellName() + " *" + varCellInfo.getCategoryName() + " *" + varCellInfo.getIsStudyFinish();
         stringBuffer.append(kjmc);
         Log.d(TAG, "shuke: " + kjmc);
@@ -295,10 +294,10 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
 
             String ret = "";
             if (mooc_shuke_websk.isChecked()) {
-                ret = mMoocApiW.viewDirectory(mCourseIfno, varCellInfo);
+                ret = moocApiW.viewDirectory(mCourseIfno, varCellInfo);
                 String videoLong = Tool.parseJsonS(Tool.parseJsonS(ret, "courseCell"), "VideoTimeLong");
                 // stringBuffer.append("\n" + Tool.getCurrentData() + "刷课->" + ret);
-                ret = mMoocApiW.StuProcessCell(mCourseIfno, varCellInfo, videoLong + "");
+                ret = moocApiW.StuProcessCell(mCourseIfno, varCellInfo, videoLong + "");
             } else {
                 ret = moocApi.getStuProcessCell(mZjyUser, mCourseIfno, varCellInfo);
             }
@@ -368,7 +367,7 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
             }
 
             if (varCellInfo.getCellType().contains("5")) {
-                doWorkexam(varCellInfo, "1",mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+                doWorkexam(varCellInfo, "1",mZjyUser, mCourseIfno);
             }
 
             if (varCellInfo.getCategoryName().contains("测验")) {
@@ -384,7 +383,7 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
                 return;
             }
             if (varCellInfo.getCellType().contains("6")) {
-                doWorkexam(varCellInfo, "0",mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+                doWorkexam(varCellInfo, "0",mZjyUser, mCourseIfno);
                 return;
             }
             if (varCellInfo.getCategoryName().contains("作业")) {
@@ -399,7 +398,7 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
                 return;
             }
             if (varCellInfo.getCellType().contains("7")) {
-                doWorkexam(varCellInfo, "2",mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+                doWorkexam(varCellInfo, "2",mZjyUser, mCourseIfno);
             }
             if (varCellInfo.getCategoryName().contains("考试")) {
 
@@ -408,7 +407,7 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
 
     }
 
-    private void doWorkexam(moocCellInfo varCellInfo, String workExamType,zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW mMoocApiW, moocMianW mMoocMianW) {
+    private void doWorkexam(moocCellInfo varCellInfo, String workExamType,zjyUser mZjyUser, moocCourseInfo mCourseIfno) {
 
         String resp;
         resp = moocApi.getWorkexam(mZjyUser, mCourseIfno, varCellInfo, workExamType);
@@ -423,13 +422,13 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
 
         StuAnsw = moocMianM.getStuAnsw(mZjyUser, mCourseIfno, varCellInfo.getResId());
         if (unid != null && !StuAnsw.isEmpty() && !unid.isEmpty() && !StuAnsw.get(0).getAnswer().isEmpty()) {
-            postHomeWork(StuAnsw, unid, varCellInfo, workExamType,mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+            postHomeWork(StuAnsw, unid, varCellInfo, workExamType,mZjyUser, mCourseIfno);
             return;
         }
 
         StuAnsw = moocMianM.getStuAnsw2(mZjyUser, mCourseIfno, varCellInfo, Preview, workExamType);
         if (unid != null && !StuAnsw.isEmpty() && !unid.isEmpty() && !StuAnsw.get(0).getAnswer().isEmpty()) {
-            postHomeWork(StuAnsw, unid, varCellInfo, workExamType,mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+            postHomeWork(StuAnsw, unid, varCellInfo, workExamType,mZjyUser, mCourseIfno);
             return;
         }
         stringBuffer.append("\n");
@@ -437,7 +436,7 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
         mHandler.sendEmptyMessage(100);
     }
 
-    private void postHomeWork(List<homeWorkAnswInfo> StuAnsw, String unid, moocCellInfo varCellInfo, String workExamType,zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW mMoocApiW, moocMianW mMoocMianW) {
+    private void postHomeWork(List<homeWorkAnswInfo> StuAnsw, String unid, moocCellInfo varCellInfo, String workExamType,zjyUser mZjyUser, moocCourseInfo mCourseIfno) {
         String resp = "";
         for (homeWorkAnswInfo varInfo : StuAnsw) {
 
@@ -470,34 +469,34 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
         Log.d(TAG, "postHomeWork: " + resp);
     }
 
-    private void GetDoTest(zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW mMoocApiW, moocMianW mMoocMianW) {
+    private void GetDoTest(zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW moocApiW, moocMianW moocMianW) {
         if (mooc_shuke_zdcy.isChecked()) {
 
-            List<WorkExamList> mWorkExamLists = mMoocMianW.getAllTestWork(mCourseIfno.getCourseOpenId());
-            GetDoTwe(mWorkExamLists, "1",mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+            List<WorkExamList> mWorkExamLists = moocMianW.getAllTestWork(mCourseIfno.getCourseOpenId());
+            GetDoTwe(mWorkExamLists, "1",mZjyUser, mCourseIfno, moocApiW, moocMianW);
 
         }
     }
 
-    private void GetDoWork(zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW mMoocApiW, moocMianW mMoocMianW) {
+    private void GetDoWork(zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW moocApiW, moocMianW moocMianW) {
         if (mooc_shuke_zdzy.isChecked()) {
 
-            List<WorkExamList> mWorkExamLists = mMoocMianW.getAllhomeWork(mCourseIfno.getCourseOpenId());
+            List<WorkExamList> mWorkExamLists = moocMianW.getAllhomeWork(mCourseIfno.getCourseOpenId());
 
-            GetDoTwe(mWorkExamLists, "0",mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+            GetDoTwe(mWorkExamLists, "0",mZjyUser, mCourseIfno, moocApiW, moocMianW);
 
         }
     }
 
-    private void GetDoExam(zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW mMoocApiW, moocMianW mMoocMianW) {
+    private void GetDoExam(zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW moocApiW, moocMianW moocMianW) {
         if (mooc_shuke_zdks.isChecked()) {
-            List<WorkExamList> mWorkExamLists = mMoocMianW.getAllonlineExam(mCourseIfno.getCourseOpenId());
-            GetDoTwe(mWorkExamLists, "2",mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+            List<WorkExamList> mWorkExamLists = moocMianW.getAllonlineExam(mCourseIfno.getCourseOpenId());
+            GetDoTwe(mWorkExamLists, "2",mZjyUser, mCourseIfno, moocApiW, moocMianW);
         }
     }
 
-    private void GetDoTwe(List<WorkExamList> mWorkExamLists, String workExamType,zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW mMoocApiW, moocMianW mMoocMianW) {
-        List<courseInfoForTeach> mForTeachList = mMoocApiW.getCourseForTeach();
+    private void GetDoTwe(List<WorkExamList> mWorkExamLists, String workExamType,zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW moocApiW, moocMianW moocMianW) {
+        List<courseInfoForTeach> mForTeachList = moocApiW.getCourseForTeach();
         moocMianM.getTeachId3(mZjyUser, mCourseIfno, mForTeachList);
         ArrayList<String> TypeName=new ArrayList<>();
         TypeName.add("作业");
@@ -525,13 +524,13 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
             stringBuffer.append(" ");
             stringBuffer.append(vWorkExamList.getTitle());
             mHandler.sendEmptyMessage(100);
-            DoTwe(vWorkExamList, workExamType,mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+            DoTwe(vWorkExamList, workExamType,mZjyUser, mCourseIfno, moocApiW, moocMianW);
             String jd= tn+curCt+"/"+pageCt;
             runOnUiThread(() -> mooc_shuake_jd.setText(jd));
         }
     }
 
-    private void DoTwe(WorkExamList vWorkExamList, String workExamType,zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW mMoocApiW, moocMianW mMoocMianW) {
+    private void DoTwe(WorkExamList vWorkExamList, String workExamType,zjyUser mZjyUser, moocCourseInfo mCourseIfno, moocApiW moocApiW, moocMianW moocMianW) {
         if (vWorkExamList.getIsDoExam().contains("1")){
             stringBuffer.append("\n ");
             stringBuffer.append(vWorkExamList.getTitle());
@@ -541,7 +540,7 @@ public class mooc_moreUserSkActivity extends AppCompatActivity {
         moocCellInfo varCellInfo=new moocCellInfo();
         varCellInfo.setCellName(vWorkExamList.getTitle());
         varCellInfo.setResId(vWorkExamList.getId());
-        doWorkexam(varCellInfo,workExamType,mZjyUser, mCourseIfno, mMoocApiW, mMoocMianW);
+        doWorkexam(varCellInfo,workExamType,mZjyUser, mCourseIfno);
     }
 
     private final Handler mHandler = new Handler(Looper.getMainLooper()) {

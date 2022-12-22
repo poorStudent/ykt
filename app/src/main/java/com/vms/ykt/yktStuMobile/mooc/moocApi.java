@@ -58,7 +58,7 @@ public class moocApi {
         postParam.append("equipmentApiVersion=10&");
         postParam.append("newToken=" + zjyUser.getNewToken());
         String postParams = postParam.toString();
-        resp = moocHttp.post(addCourseStudy, postParams, null);
+        resp = moocHttp.post(addCourseStudy, postParams);
         return resp;
 
     }
@@ -74,7 +74,7 @@ public class moocApi {
         postParam.append("sourceType=0&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(MyCourseList, postParams, null);
+        resp = moocHttp.post(MyCourseList, postParams);
         return resp;
 
     }
@@ -88,7 +88,7 @@ public class moocApi {
         postParam.append("sourceType=2&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(ProcessList, postParams, null);
+        resp = moocHttp.post(ProcessList, postParams);
         return resp;
 
     }
@@ -103,7 +103,7 @@ public class moocApi {
         postParam.append("sourceType=2&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(TopicList, postParams, null);
+        resp = moocHttp.post(TopicList, postParams);
         return resp;
 
     }
@@ -121,7 +121,7 @@ public class moocApi {
         postParam.append("sourceType=2&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(CellList, postParams, null);
+        resp = moocHttp.post(CellList, postParams);
         return resp;
 
     }
@@ -137,7 +137,7 @@ public class moocApi {
         postParam.append("sourceType=2&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(viewDirectory, postParams, null);
+        resp = moocHttp.post(viewDirectory, postParams);
         return resp;
 
     }
@@ -156,7 +156,7 @@ public class moocApi {
         postParam.append("sourceType=2&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(StuProcessCell, postParams, null);
+        resp = moocHttp.post(StuProcessCell, postParams);
         return resp;
 
     }
@@ -175,7 +175,7 @@ public class moocApi {
         postParam.append("sourceType=2&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(learningTimeLong, postParams, null);
+        resp = moocHttp.post(learningTimeLong, postParams);
         return resp;
 
     }
@@ -198,7 +198,7 @@ public class moocApi {
         postParam.append("equipmentApiVersion=10&");
         postParam.append("newToken=" + zjyUser.getNewToken());
         String postParams = postParam.toString();
-        resp = moocHttp.post(CommentData, postParams, null);
+        resp = moocHttp.post(CommentData, postParams);
         return resp;
 
     }
@@ -220,7 +220,7 @@ public class moocApi {
 
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(addTopicRepl, postParams, null);
+        resp = moocHttp.post(addTopicRepl, postParams);
         return resp;
 
     }
@@ -249,7 +249,7 @@ public class moocApi {
         postParam.append("equipmentApiVersion=10&");
         postParam.append("newToken=" + zjyUser.getNewToken());
         String postParams = postParam.toString();
-        resp = moocHttp.post(DiscussReply, postParams, null);
+        resp = moocHttp.post(DiscussReply, postParams);
         return resp;
 
     }
@@ -294,7 +294,7 @@ public class moocApi {
         postParam.append("urlList=[]&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(getsaveAllReply, postParams, null);
+        resp = moocHttp.post(getsaveAllReply, postParams);
         return resp;
 
     }
@@ -338,7 +338,7 @@ public class moocApi {
 
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(getCourseNewsNew, postParams, null);
+        resp = moocHttp.post(getCourseNewsNew, postParams);
 
         return resp;
 
@@ -358,7 +358,7 @@ public class moocApi {
 
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(getDetailCourseNewsNew, postParams, null);
+        resp = moocHttp.post(getDetailCourseNewsNew, postParams);
         return resp;
 
     }
@@ -396,7 +396,7 @@ public class moocApi {
 
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(DiscussNewsNew, postParams, null);
+        resp = moocHttp.post(DiscussNewsNew, postParams);
         return resp;
 
     }
@@ -436,7 +436,7 @@ public class moocApi {
         postParam.append("sort=-displayName&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(getDiscussTopicNew, postParams, null);
+        resp = moocHttp.post(getDiscussTopicNew, postParams);
         return resp;
 
     }
@@ -478,7 +478,7 @@ public class moocApi {
         postParam.append("urlList=[]&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(addPublishTopic, postParams, null);
+        resp = moocHttp.post(addPublishTopic, postParams);
         return resp;
 
     }
@@ -511,7 +511,7 @@ public class moocApi {
         postParam.append("equipmentApiVersion=10&");
         // postParam.append("newToken=" + zjyUser.getNewToken());
         String postParams = postParam.toString();
-        resp = moocHttp.post(deleteTopic, postParams, null);
+        resp = moocHttp.post(deleteTopic, postParams);
         return resp;
     }
 
@@ -553,7 +553,7 @@ public class moocApi {
         postParam.append("workExamType="+workExamType+"&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(url, postParams, null);
+        resp = moocHttp.post(url, postParams);
         return resp;
 
     }
@@ -578,7 +578,7 @@ public class moocApi {
 
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(HomeWorkAndTestCorrect, postParams, null);
+        resp = moocHttp.post(HomeWorkAndTestCorrect, postParams);
         return resp;
 
     }
@@ -607,7 +607,7 @@ public class moocApi {
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
         Log.d("", "getWorkExamSave: "+postParams);
-        resp = moocHttp.post(url, postParams, null);
+        resp = moocHttp.post(url, postParams);
         return resp;
 
     }
@@ -627,7 +627,7 @@ public class moocApi {
 
         postParam.append(getHeaders(ZjyUser));
         String postParams = postParam.toString();
-        resp = moocHttp.post(onlineHomeworkAnswer, postParams, null);
+        resp = moocHttp.post(onlineHomeworkAnswer, postParams);
         return resp;
 
     }
@@ -676,7 +676,7 @@ public class moocApi {
         postParam.append("equipmentApiVersion=10&");
         postParam.append("newToken=" +NewToken);
         String postParams = postParam.toString();
-        resp = moocHttp.post(preview, postParams, null);
+        resp = moocHttp.post(preview, postParams  );
         return resp;
 
     }

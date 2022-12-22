@@ -18,6 +18,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Adapter.moocAdapter.mooc_workAdapter;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.mooc.moocUserDao;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.mooc.moocCourseInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.mooc.WorkExamList;
@@ -43,8 +45,6 @@ public class mooc_workActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     List<WorkExamList> mWorkExamLists =new ArrayList<>();
 
-    private moocApiW mMoocApiW;
-    private moocMianW mMoocMianW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +59,9 @@ public class mooc_workActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = mooc_workActivity.this;
-        this.mCourseIfno = (moocCourseInfo) i.getSerializableExtra("Course");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("mZjyUser");
-
-        moocHttpW vMoocHttpW = new moocHttpW();
-        mMoocApiW = new moocApiW();
-        mMoocMianW = new moocMianW();
-        vMoocHttpW.setUserCookie(mZjyUser.getCookie());
-        mMoocApiW.setMoocHttpW(vMoocHttpW);
-        mMoocMianW.setMoocApiW(mMoocApiW);
+        this.mCourseIfno = moocUserDao.sMoocCourseInfo;
+        this.mZjyUser = zjyUserDao.sZjyUser;
+        
         Log.d(TAG, "initData: " + mCourseIfno.getCourseName());
         Log.d(TAG, "initData: " + mZjyUser.getUserId());
     }
@@ -114,7 +108,7 @@ public class mooc_workActivity extends AppCompatActivity {
             public void run() {
 
 
-                mWorkExamLists = mMoocMianW.getAllhomeWork(mCourseIfno.getCourseOpenId());
+                mWorkExamLists = moocMianW.getAllhomeWork(mCourseIfno.getCourseOpenId());
                 if (mWorkExamLists.size() == 0) {
                 }
 
@@ -124,7 +118,7 @@ public class mooc_workActivity extends AppCompatActivity {
 
                         if (mWorkExamLists.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new mooc_workAdapter(mWorkExamLists,mZjyUser,mCourseIfno);
+                                mRecyclerAdapter = new mooc_workAdapter(mWorkExamLists);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mWorkExamLists);

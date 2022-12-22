@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class yktHeaders {
 
-    public static HashMap<String, Object> getZjyMHeader() {
+    public static Map<String, Object> getZjyMHeader() {
         String host = "zjyapp.icve.com.cn";
         String defaultAgent = Tool.getUA();
         String ctype = "application/x-www-form-urlencoded; charset=utf-8";
@@ -21,7 +21,7 @@ public class yktHeaders {
         return header;
     }
 
-    public static HashMap<String, Object> getZjyWHeader() {
+    public static Map<String, Object> getZjyWHeader() {
 
         String host = "security.zjy2.icve.com.cn";
         String Origin = "https://zjy2.icve.com.cn";
@@ -41,27 +41,30 @@ public class yktHeaders {
 
     public static Map<String, Object> getNewZjyMHeader() {
 
-        String host = "user.icve.com.cn";
-        String Origin = "https://user.icve.com.cn";
-        String defaultAgent = "Mozilla/5.0 (Linux; Android 11; M2007J17C Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/92.0.4515.131 Mobile Safari/537.36 whatyApp whatyApiApp";
+        //String host = "user.icve.com.cn";
+        //String Origin = "https://user.icve.com.cn";
+        String defaultAgent;
+        //defaultAgent = "Mozilla/5.0 (Linux; Android 11; M2007J17C Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/92.0.4515.131 Mobile Safari/537.36 whatyApp whatyApiApp";
+        defaultAgent="Mozilla/5.0 (Linux; Android 9; Pixel 3 Build/PQ3A.190801.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/71.0.3578.99 Mobile Safari/537.36 whatyApp whatyApiApp";
+        //defaultAgent = Tool.getUA() + " AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/71.0.3578.99 Mobile Safari/537.36 whatyApp whatyApiApp";
         String ctype = "application/x-www-form-urlencoded; charset=UTF-8";
 
         HashMap<String, Object> header = new HashMap<>();
         header.put("Connection", "Keep-Alive");
         header.put("Content-Type", ctype);
-        header.put("Origin", Origin);
+        //header.put("Origin", Origin);
         header.put("User-Agent", defaultAgent);
         //header.put("Sec-Fetch-Site", "same-site");
-       // header.put("Sec-Fetch-Dest", "empty");
+        // header.put("Sec-Fetch-Dest", "empty");
         //header.put("Sec-Fetch-Mode", "cors");
         //header.put("Accept", "application/json, text/javascript, */*; q=0.01");
         // header.put("Accept-Encoding", "gzip, deflate, br");
-       // header.put("X-Requested-With", "XMLHttpRequest");
-        header.put("Host", host);
+        // header.put("X-Requested-With", "XMLHttpRequest");
+        //header.put("Host", host);
         return header;
     }
 
-    public static HashMap<String, Object> getMoocWHeader() {
+    public static Map<String, Object> getMoocWHeader() {
 
         String host = "moocapp.icve.com.cn";
         String defaultAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.39";
@@ -78,22 +81,22 @@ public class yktHeaders {
         return header;
     }
 
-    public static HashMap<String, Object> getMoocMHeader() {
+    public static Map<String, Object> getMoocMHeader() {
 
         String host = "moocapp.icve.com.cn";
         //String defaultAgent = Tool.getUA();
-        String defaultAgent ="okhttp/4.5.0";
+        String defaultAgent = "okhttp/4.5.0";
         String ctype = "application/x-www-form-urlencoded; charset=utf-8";
         HashMap<String, Object> header = new HashMap<>();
         header.put("Connection", "Keep-Alive");
         header.put("Host", host);
         header.put("Content-Type", ctype);
-        header.put("User-Agent",defaultAgent);
+        header.put("User-Agent", defaultAgent);
         //header.put("Accept-Encoding","gzip, deflate");
         return header;
     }
 
-    public static HashMap<String, Object> getIcveWHeader() {
+    public static Map<String, Object> getIcveWHeader() {
 
         String host = "www.icve.com.cn";
         String defaultAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.39";
@@ -110,6 +113,18 @@ public class yktHeaders {
         header.put("Host", host);
         return header;
     }
+
+    public static Map<String, Object> getcqWHeader() {
+
+        Map<String, Object> header = new HashMap<>();
+        header.put("Connection", "keep-alive");
+        header.put("Host", "www.cqooc.com");
+        header.put("Origin", "http://www.cqooc.com");
+        header.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:73.0) Gecko/20100101 Firefox/73.0");
+        return header;
+    }
+
+
 
     public static String appv = "";
 

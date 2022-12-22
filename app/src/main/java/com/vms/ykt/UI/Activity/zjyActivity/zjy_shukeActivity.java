@@ -23,6 +23,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.vms.ykt.R;
 import com.vms.ykt.Util.AppStatus;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyApi;
 import com.vms.ykt.yktStuMobile.zjy.zjyCellChildList;
 import com.vms.ykt.yktStuMobile.zjy.zjyCellList;
@@ -61,9 +62,7 @@ public class zjy_shukeActivity extends AppCompatActivity {
     int curCt = 0;
     int pageCt = 0;
     StringBuilder stringBuffer;
-
-    private zjyApiW mZjyApiW;
-    private zjyMainW mZjyMainW;
+    
     private Thread mThread = null;
     private Thread mThread2 = null;
 
@@ -83,15 +82,10 @@ public class zjy_shukeActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = zjy_shukeActivity.this;
-        this.mCourseIfno = (zjyCourseIfno) i.getSerializableExtra("Course");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
-        zjyHttpW vZjyHttpW = new zjyHttpW();
-        this.mZjyApiW = new zjyApiW();
-        this.mZjyMainW = new zjyMainW();
+        this.mCourseIfno = zjyUserDao.sZjyCourseIfno;
+        this.mZjyUser = zjyUserDao.sZjyUser;
+        zjyHttpW.restCookie(mZjyUser.getCookie());
 
-        vZjyHttpW.setUserCookie(mZjyUser.getCookie());
-        mZjyApiW.setZjyHttpW(vZjyHttpW);
-        mZjyMainW.setZjyApiW(mZjyApiW);
         mShuake_kjpj.add("课件清晰明了");
         mShuake_kjpj.add("无");
         mShuake_kjpj.add("讲得非常棒");
@@ -416,9 +410,9 @@ public class zjy_shukeActivity extends AppCompatActivity {
                 mHandler.sendEmptyMessage(100);
                 return;
             }
-            String ret = mZjyApiW.getChangeData(mCourseIfno, zjyCellList);
+            String ret = zjyApiW.getChangeData(mCourseIfno, zjyCellList);
             Tool.waitTime(500);
-            ViewDirectory varViewDirectory = mZjyMainW.getViewDirectory(mCourseIfno, zjyCellList);
+            ViewDirectory varViewDirectory = zjyMainW.getViewDirectory(mCourseIfno, zjyCellList);
             Log.d(TAG, "shukeW: " + ret);
             if (varViewDirectory.getAudioVideoLong() == null) {
                 stringBuffer.append("\n" + Tool.getCurrentData() + "刷课->异常");
@@ -450,9 +444,9 @@ public class zjy_shukeActivity extends AppCompatActivity {
             }
 
         } else {
-            String ret = mZjyApiW.getChangeData(mCourseIfno, zjyCellList);
+            String ret = zjyApiW.getChangeData(mCourseIfno, zjyCellList);
             Tool.waitTime(500);
-            ViewDirectory varViewDirectory = mZjyMainW.getViewDirectory(mCourseIfno, zjyCellList);
+            ViewDirectory varViewDirectory = zjyMainW.getViewDirectory(mCourseIfno, zjyCellList);
             Log.d(TAG, "shukeW: " + ret);
             shuekeW_UI(zjyCellList, varViewDirectory, mShuake_fspkjys, 666);
         }
@@ -473,7 +467,7 @@ public class zjy_shukeActivity extends AppCompatActivity {
         }
         String ret;
         Tool.waitTime(time);
-        ret = mZjyApiW.getProcessCellLog(varViewDirectory, zjyCellList, String.valueOf(VideoLong));
+        ret = zjyApiW.getProcessCellLog(varViewDirectory, zjyCellList, String.valueOf(VideoLong));
         if (ret != null) {
             if (ret.contains("刷课记录")) {
                 mHandler.sendEmptyMessage(0);
@@ -489,9 +483,9 @@ public class zjy_shukeActivity extends AppCompatActivity {
         if (vCellList == null) return;
         //单刷学习时间
         mThread2 = new Thread(() -> {
-            Log.d(TAG, "shukeW: " + mZjyApiW.getChangeData(mCourseIfno, vCellList));
+            Log.d(TAG, "shukeW: " + zjyApiW.getChangeData(mCourseIfno, vCellList));
             Tool.waitTime(500);
-            ViewDirectory varViewDirectory = mZjyMainW.getViewDirectory(mCourseIfno, vCellList);
+            ViewDirectory varViewDirectory = zjyMainW.getViewDirectory(mCourseIfno, vCellList);
             if (varViewDirectory == null) return;
             while (true) {
                 if (mThread2.isInterrupted()) {
@@ -505,7 +499,7 @@ public class zjy_shukeActivity extends AppCompatActivity {
 
                 if (!mShuake_sk.isChecked()) {
                     Tool.waitTime(2000);
-                    Log.d(TAG, "ShuakeW_xxsc: " + mZjyApiW.getProcessCellLog(varViewDirectory, "666"));
+                    Log.d(TAG, "ShuakeW_xxsc: " + zjyApiW.getProcessCellLog(varViewDirectory, "666"));
                 }
             }
         });

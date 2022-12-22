@@ -26,6 +26,7 @@ import com.vms.ykt.UI.Fragment.mooc.moocFragment;
 import com.vms.ykt.UI.Fragment.zjy.zjyFragment;
 import com.vms.ykt.viewModel.ViewModelUtils;
 import com.vms.ykt.viewModel.yktUserVM;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 
 
@@ -75,6 +76,7 @@ public class yktMainActivity extends AppCompatActivity {
         this.mZjyUser =  JSONObject.parseObject(userInfo, zjyUser.class);
         mZjyUser.setAppv(appv);
         mZjyUser.setCookie(cookie);
+        zjyUserDao.sZjyUser=mZjyUser;
         mUserVModel.setZjyUser(mZjyUser);
 
     }

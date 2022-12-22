@@ -20,6 +20,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.vms.ykt.R;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.icve.icveUserDao;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.icve.AnswersInfo;
 import com.vms.ykt.yktStuWeb.icve.icveApiW;
@@ -52,8 +54,7 @@ public class icve_DoAnswActivity extends AppCompatActivity {
     private Thread mThread;
     private boolean isDoWork = true;
 
-    private icveMainW mIcveMainW;
-    private icveApiW mIcveApiW;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,17 +69,11 @@ public class icve_DoAnswActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = icve_DoAnswActivity.this;
-        this.mCourseIfno = (icveCourseInfo) i.getSerializableExtra("Course");
-        this.mWorkExamListInfo = (workExamListInfo) i.getSerializableExtra("vWorkExamListInfo");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
+        mCourseIfno = icveUserDao.sIcveCourseInfo;
+        mZjyUser = zjyUserDao.sZjyUser;
+        this.mWorkExamListInfo =icveUserDao.sWorkExamListInfo ;
         this.flag = (String) i.getSerializableExtra("flag");
         this.Workflag = (String) i.getSerializableExtra("Workflag");
-        icveHttpW mIcveHttpW = new icveHttpW();
-        mIcveHttpW.setUserCookie(mZjyUser.getCookie());
-        this.mIcveApiW = new icveApiW();
-        mIcveApiW.setIcveHttpW(mIcveHttpW);
-        this.mIcveMainW = new icveMainW();
-        mIcveMainW.setIcveApiW(mIcveApiW);
         Log.d(TAG, "initData: " + mCourseIfno.getTitle());
         Log.d(TAG, "initData: " + mZjyUser.getUserId());
 
@@ -167,7 +162,7 @@ public class icve_DoAnswActivity extends AppCompatActivity {
         stringBuffer.append("\n 作业->----");
         stringBuffer.append(WorkInfo.getTitle());
         mHandler.sendEmptyMessage(100);
-        String data = mIcveApiW.getWorkPerview(mCourseIfno.getId(), WorkInfo.getId());
+        String data = icveApiW.getWorkPerview(mCourseIfno.getId(), WorkInfo.getId());
         if (data==null||!data.contains("answer")){
             stringBuffer.append("\n 作业->");
             stringBuffer.append(data);
@@ -180,9 +175,9 @@ public class icve_DoAnswActivity extends AppCompatActivity {
             mHandler.sendEmptyMessage(100);
             return;
         }
-        List<AnswersInfo> vAnswersInfoList = mIcveMainW.getAnswPapers(data);
+        List<AnswersInfo> vAnswersInfoList = icveMainW.getAnswPapers(data);
         if (vAnswersInfoList.size() == 0) {
-            vAnswersInfoList = mIcveMainW.getAnswArrays(data);
+            vAnswersInfoList = icveMainW.getAnswArrays(data);
         }
         if (vAnswersInfoList.size() == 0) {
             return;
@@ -214,7 +209,7 @@ public class icve_DoAnswActivity extends AppCompatActivity {
         }
         String asnwJson = JSONArray.toJSONString(answList);
         Log.d(TAG, "doTest: " + asnwJson);
-        String resp = mIcveApiW.getAnswerOnlineWorks(answerId, asnwJson);
+        String resp = icveApiW.getAnswerOnlineWorks(answerId, asnwJson);
         stringBuffer.append("\n 作业->" + resp);
         mHandler.sendEmptyMessage(100);
     }
@@ -224,7 +219,7 @@ public class icve_DoAnswActivity extends AppCompatActivity {
         stringBuffer.append("\n 考试->----");
         stringBuffer.append(WorkInfo.getTitle());
         mHandler.sendEmptyMessage(100);
-        String data = mIcveApiW.getExamPerview(mCourseIfno.getId(), WorkInfo.getId());
+        String data = icveApiW.getExamPerview(mCourseIfno.getId(), WorkInfo.getId());
         if (data==null||!data.contains("answer")){
             stringBuffer.append("\n 考试->");
             stringBuffer.append(data);
@@ -238,9 +233,9 @@ public class icve_DoAnswActivity extends AppCompatActivity {
             return;
         }
 
-        List<AnswersInfo> vAnswersInfoList = mIcveMainW.getAnswPapers(data);
+        List<AnswersInfo> vAnswersInfoList = icveMainW.getAnswPapers(data);
         if (vAnswersInfoList.size() == 0) {
-            vAnswersInfoList = mIcveMainW.getAnswArrays(data);
+            vAnswersInfoList = icveMainW.getAnswArrays(data);
         }
         if (vAnswersInfoList.size() == 0) {
             return;
@@ -273,7 +268,7 @@ public class icve_DoAnswActivity extends AppCompatActivity {
         }
         String asnwJson = JSONArray.toJSONString(answList);
         Log.d(TAG, "doTest: " + asnwJson);
-        String resp = mIcveApiW.getAnswerExam(answerId, asnwJson);
+        String resp = icveApiW.getAnswerExam(answerId, asnwJson);
         stringBuffer.append("\n 考试->" + resp);
         mHandler.sendEmptyMessage(100);
     }

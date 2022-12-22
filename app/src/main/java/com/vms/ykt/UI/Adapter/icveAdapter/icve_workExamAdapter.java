@@ -29,8 +29,6 @@ import java.util.Objects;
 public class icve_workExamAdapter extends baseRecyclerAdapter<icve_workExamAdapter.ViewHolder1> {
 
     List<workExamListInfo> mWorkExamListInfos;
-    private icveCourseInfo mCourseIfno;
-    private zjyUser mZjyUser;
     private icve_workExamActivity mActivity;
 
     private String TAG=this.getClass().getSimpleName();
@@ -41,10 +39,8 @@ public class icve_workExamAdapter extends baseRecyclerAdapter<icve_workExamAdapt
 
     private icve_workExamAdapter.initRcView mInitRcView;
 
-    public icve_workExamAdapter(List<workExamListInfo> data, zjyUser zjyUsers, icveCourseInfo courseIfno) {
+    public icve_workExamAdapter(List<workExamListInfo> data) {
         this.mWorkExamListInfos = data;
-        this.mZjyUser=zjyUsers;
-        this.mCourseIfno=courseIfno;
  
     }
 
@@ -173,9 +169,6 @@ public class icve_workExamAdapter extends baseRecyclerAdapter<icve_workExamAdapt
         //设置自定义界面的点击事件逻辑
         but_ks.setOnClickListener((View view)-> {
             Intent i = new Intent(mActivity, icve_DoAnswActivity.class);
-            i.putExtra("Course", mCourseIfno);
-            i.putExtra("ZjyUser", mZjyUser);
-            i.putExtra("vWorkExamListInfo", vWorkExamListInfo);
             i.putExtra("flag", "1");
             i.putExtra("Workflag", "1");
             mActivity.startActivity(i);
@@ -183,9 +176,6 @@ public class icve_workExamAdapter extends baseRecyclerAdapter<icve_workExamAdapt
         });
         but_sjd.setOnClickListener((View view)-> {
             Intent i = new Intent(mActivity, icve_AnswActivity.class);
-            i.putExtra("Course", mCourseIfno);
-            i.putExtra("ZjyUser", mZjyUser);
-            i.putExtra("vWorkExamListInfo", vWorkExamListInfo);
             i.putExtra("flag", "1");
             i.putExtra("Workflag", "2");
             mActivity.startActivity(i);

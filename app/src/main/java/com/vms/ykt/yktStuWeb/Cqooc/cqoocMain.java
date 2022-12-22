@@ -15,21 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class cqoocMain implements Serializable {
-
-    public cqApi getCqApi() {
-        return mCqApi;
-    }
-
-    public void setCqApi(cqApi cqApi) {
-        mCqApi = cqApi;
-    }
-
-    private cqApi mCqApi;
+public  class cqoocMain  {
 
     private static String TAG = cqoocMain.class.getSimpleName();
 
-    public List<cqoocCourseInfo> getAllCourse(userInfo UserInfo) {
+    public static  List<cqoocCourseInfo> getAllCourse(userInfo UserInfo) {
         String ownerId = UserInfo.getId();
         List<cqoocCourseInfo> vVarCqoocCourseInfoList = new ArrayList<>();
         List<cqoocCourseInfo> vVarCqoocCourseInfoList2 = new ArrayList<>();
@@ -39,7 +29,7 @@ public class cqoocMain implements Serializable {
         vInfo.setType(22);//在线课
         vVarCqoocCourseInfoList.add(vInfo);
 
-        resp = mCqApi.getCourseInfo2(ownerId);
+        resp = cqApi.getCourseInfo2(ownerId);
         if (resp != null && resp.contains("data")) {
             List<cqoocCourseInfo> varInfoList = parseCourse(resp, 2);
             vVarCqoocCourseInfoList.addAll(varInfoList);
@@ -49,7 +39,7 @@ public class cqoocMain implements Serializable {
         vInfo.setType(11);//公开课
         vVarCqoocCourseInfoList.add(vInfo);
 
-        resp = mCqApi.getCourseInfo1(ownerId);
+        resp = cqApi.getCourseInfo1(ownerId);
         if (resp != null && resp.contains("data")) {
             List<cqoocCourseInfo> varInfoList = parseCourse(resp, 1);
             vVarCqoocCourseInfoList.addAll(varInfoList);
@@ -60,7 +50,7 @@ public class cqoocMain implements Serializable {
         vInfo.setType(33);//spoc课
         vVarCqoocCourseInfoList.add(vInfo);
 
-        resp = mCqApi.getCourseInfo3(ownerId);
+        resp = cqApi.getCourseInfo3(ownerId);
         if (resp != null && resp.contains("data")) {
             List<cqoocCourseInfo> varInfoList = parseCourse(resp, 3);
             vVarCqoocCourseInfoList.addAll(varInfoList);
@@ -71,7 +61,7 @@ public class cqoocMain implements Serializable {
         vInfo.setType(44);//独立云班课
         vVarCqoocCourseInfoList.add(vInfo);
 
-        resp = mCqApi.getCourseInfo4(ownerId);
+        resp = cqApi.getCourseInfo4(ownerId);
         if (resp != null && resp.contains("data")) {
             List<cqoocCourseInfo> varInfoList = parseCourse(resp, 4);
             vVarCqoocCourseInfoList.addAll(varInfoList);
@@ -81,12 +71,12 @@ public class cqoocMain implements Serializable {
         return vVarCqoocCourseInfoList;
     }
 
-    public ArrayList<String> getFinishaLessons(userInfo UserInfo, cqoocCourseInfo varCqoocCourseInfo) {
+    public static  ArrayList<String> getFinishaLessons(userInfo UserInfo, cqoocCourseInfo varCqoocCourseInfo) {
         ArrayList<String> FinishaLessons = new ArrayList<>();
         String resps;
         int start = 1;
         while (true) {
-            resps = mCqApi.getFlishLessons(varCqoocCourseInfo.getCourseId(), UserInfo.getUsername(), 150, start);
+            resps = cqApi.getFlishLessons(varCqoocCourseInfo.getCourseId(), UserInfo.getUsername(), 150, start);
             if (resps == null) break;
             JSONArray varList = Tool.parseJsonA(resps, "data");
             if (varList.size() == 0 || varList.isEmpty()) break;
@@ -99,12 +89,12 @@ public class cqoocMain implements Serializable {
         return FinishaLessons;
     }
 
-    public List<cellLessonsInfo> getAlllessons(cqoocCourseInfo cqoocCourseInfo) {
+    public static  List<cellLessonsInfo> getAlllessons(cqoocCourseInfo cqoocCourseInfo) {
         List<cellLessonsInfo> varCellLessonsList = new ArrayList<>();
         String resps;
         int start = 1;
         while (true) {
-            resps = mCqApi.getAlllessons(cqoocCourseInfo.getCourseId(), 250, start);
+            resps = cqApi.getAlllessons(cqoocCourseInfo.getCourseId(), 250, start);
             if (resps == null) break;
             List<cellLessonsInfo> varList = parseLessons(resps);
             if (varList.size() == 0 || varList.isEmpty()) break;
@@ -115,7 +105,7 @@ public class cqoocMain implements Serializable {
         return varCellLessonsList;
     }
 
-    public List<cellLessonsInfo> parseLessons(String resps) {
+    public static  List<cellLessonsInfo> parseLessons(String resps) {
         //解析每个课件信息
         List<cellLessonsInfo> varCellLessonsList = new ArrayList<>();
         if (resps == null || resps.isEmpty()) return varCellLessonsList;
@@ -133,14 +123,14 @@ public class cqoocMain implements Serializable {
         return varCellLessonsList;
     }
 
-    public cellLessonsInfo parseLessonsTests(cellLessonsInfo varCellLessonsInfo) {
+    public static  cellLessonsInfo parseLessonsTests(cellLessonsInfo varCellLessonsInfo) {
         //解析每个课件信息
         String title = Tool.parseJsonS(varCellLessonsInfo.getTest(), "title");
         varCellLessonsInfo.setTitle(title);
         return varCellLessonsInfo;
     }
 
-    public String parseTestAnsw(String resps) {
+    public static  String parseTestAnsw(String resps) {
         if (resps == null || !resps.contains("body")) return null;
         JSONArray data = Tool.parseJsonA(resps, "data");
         JSONArray body = Tool.parseJsonA(data.getString(0), "body");
@@ -154,15 +144,15 @@ public class cqoocMain implements Serializable {
         return answ.toString().replaceFirst(",", "");
     }
 
-    public List<ModleChaptersInfo> getModleChapters(String CourseId) {
+    public static  List<ModleChaptersInfo> getModleChapters(String CourseId) {
         List<ModleChaptersInfo> varModleChaptersInfoList = new ArrayList<>();
-        String resp = mCqApi.getModleChapters(CourseId, 250);
+        String resp = cqApi.getModleChapters(CourseId, 250);
         if (resp == null || resp.isEmpty()) return varModleChaptersInfoList;
         varModleChaptersInfoList = (List<ModleChaptersInfo>) Tool.parseJsonA(resp, "data", ModleChaptersInfo.class);
         return varModleChaptersInfoList;
     }
 
-    public List<ModleChaptersInfo> parseModle(List<ModleChaptersInfo> ParmsList) {
+    public static  List<ModleChaptersInfo> parseModle(List<ModleChaptersInfo> ParmsList) {
         //模块列表
         List<ModleChaptersInfo> varModlelist = new ArrayList<>();
         for (ModleChaptersInfo varModleChaptersInfo : ParmsList) {
@@ -173,7 +163,7 @@ public class cqoocMain implements Serializable {
         return varModlelist;
     }
 
-    public List<ModleChaptersInfo> parseChapter(List<ModleChaptersInfo> ParmsList) {
+    public static  List<ModleChaptersInfo> parseChapter(List<ModleChaptersInfo> ParmsList) {
         //章节列表
         List<ModleChaptersInfo> varChapterlist = new ArrayList<>();
         for (ModleChaptersInfo varModleChaptersInfo : ParmsList) {
@@ -184,19 +174,19 @@ public class cqoocMain implements Serializable {
         return varChapterlist;
     }
 
-    public List<cellLessonsInfo> getLessonsByChap(cqoocCourseInfo cqoocCourseInfo, ModleChaptersInfo varModleChaptersInfo) {
+    public static  List<cellLessonsInfo> getLessonsByChap(cqoocCourseInfo cqoocCourseInfo, ModleChaptersInfo varModleChaptersInfo) {
 //根据章节id获取每个课件信息
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ParmsE) {
             ParmsE.printStackTrace();
         }
-        String resps = mCqApi.getLessonsByChap(cqoocCourseInfo.getCourseId(), varModleChaptersInfo.getId(), 250);
+        String resps = cqApi.getLessonsByChap(cqoocCourseInfo.getCourseId(), varModleChaptersInfo.getId(), 250);
         if (resps == null) return new ArrayList<cellLessonsInfo>();
         return parseLessons(resps);
     }
 
-    public List<cqoocCourseInfo> parseCourse(String resp, int type) {
+    public static  List<cqoocCourseInfo> parseCourse(String resp, int type) {
         //所有课程
         List<cqoocCourseInfo> vVarCqoocCourseInfoList = new ArrayList<>();
         JSONArray varJSONArray;
@@ -231,32 +221,32 @@ public class cqoocMain implements Serializable {
         return vVarCqoocCourseInfoList;
     }
 
-    public String getAddScore(String courseId, String resID, String score) {
+    public static  String getAddScore(String courseId, String resID, String score) {
         String resp = "";
-        mCqApi.getAddScore(courseId, resID, score);
+        cqApi.getAddScore(courseId, resID, score);
         return resp;
     }
 
     //作业相关
-    public List<examTask> getAllTasks(String courseId) {
+    public static  List<examTask> getAllTasks(String courseId) {
         List<examTask> vExamTaskList;
         vExamTaskList = getExamTask(courseId, 1);
         return vExamTaskList;
     }
 
-    public List<TaskPreview> getTasksInfo(String courseId, String taskId) {
+    public static  List<TaskPreview> getTasksInfo(String courseId, String taskId) {
         //作业详情
-        String resp = mCqApi.getTasksInfo(courseId, taskId);
+        String resp = cqApi.getTasksInfo(courseId, taskId);
         return parseTaskPreview(resp);
     }
 
-    public List<TaskPreview> getOpenTasks(String courseId, String taskId) {
+    public static  List<TaskPreview> getOpenTasks(String courseId, String taskId) {
         //他人 作业已做详情 答案
-        String resp = mCqApi.getOpenTasks(courseId, taskId);
+        String resp = cqApi.getOpenTasks(courseId, taskId);
         return parseTaskPreview(resp);
     }
 
-    public List<TaskPreview> parseTaskPreview(String resp) {
+    public static  List<TaskPreview> parseTaskPreview(String resp) {
         //答案和题目共用解析
         List<TaskPreview> vTaskPreviewList = new ArrayList<>();
         if (resp == null || !resp.contains("data")) {
@@ -272,10 +262,10 @@ public class cqoocMain implements Serializable {
     }
 
     //提交作业
-    public String getTaskAdd(List<TaskPreview> previewList, userInfo UserInfo, cqoocCourseInfo varCourseInfo, examTask examTask) {
+    public static  String getTaskAdd(List<TaskPreview> previewList, userInfo UserInfo, cqoocCourseInfo varCourseInfo, examTask examTask) {
         StringBuilder vStringBuilder = new StringBuilder();
         for (TaskPreview vPreview : previewList) {
-            String resp = mCqApi.getTaskAdd(UserInfo, vPreview.getContent() + "", varCourseInfo, examTask);
+            String resp = cqApi.getTaskAdd(UserInfo, vPreview.getContent() + "", varCourseInfo, examTask);
             vStringBuilder.append(resp);
             vStringBuilder.append("\n");
         }
@@ -283,16 +273,11 @@ public class cqoocMain implements Serializable {
     }
 
     //做作业
-    public void DoTask(String otherXsid, examTask examTask, cqoocCourseInfo varCourseInfo) {
+    public static  void DoTask(String otherXsid, examTask examTask, cqoocCourseInfo varCourseInfo) {
 
-        cqoocHttp vCqoocHttp = new cqoocHttp();
-        cqApi vCqApi = new cqApi();
-        cqoocMain vCqoocMain = new cqoocMain();
-        vCqoocHttp.setUserCookie("player=2; xsid=" + otherXsid);
-        vCqApi.setCqoocHttp(vCqoocHttp);
-        vCqoocMain.setCqApi(vCqApi);
-        userInfo otherUserInfo = vCqoocMain.getUsreInfo(otherXsid);
-        List<TaskPreview> vPreviewList = vCqoocMain.getOpenTasks(varCourseInfo.getCourseId(), examTask.getId());
+        cqoocHttp.restCookie( otherXsid);
+
+        List<TaskPreview> vPreviewList = getOpenTasks(varCourseInfo.getCourseId(), examTask.getId());
         if (vPreviewList.size() == 0) {
             //获取答案失败 随机吧
             vPreviewList = getTasksInfo(varCourseInfo.getCourseId(), examTask.getId());
@@ -303,25 +288,25 @@ public class cqoocMain implements Serializable {
     }
 
     //考试相关
-    public List<examTask> getAllExam(String courseId) {
+    public static  List<examTask> getAllExam(String courseId) {
         List<examTask> vExamTaskList;
         vExamTaskList = getExamTask(courseId, 1);
         return vExamTaskList;
     }
 
     //是否生成试卷并获取
-    public String getIfExamGen(userInfo userInfo, String courseId, String examId) {
-        String resp = mCqApi.getExamPreview(courseId, examId);
+    public static  String getIfExamGen(userInfo userInfo, String courseId, String examId) {
+        String resp = cqApi.getExamPreview(courseId, examId);
         if (resp == null || !resp.contains("body")) return null;
         if (!resp.contains("questions")) {
-            resp = mCqApi.getExamGen(userInfo, courseId, examId);
+            resp = cqApi.getExamGen(userInfo, courseId, examId);
             if (resp == null) return null;
-            resp = mCqApi.getExamPreview(courseId, examId);
+            resp = cqApi.getExamPreview(courseId, examId);
         }
         return resp;
     }
 
-    public Object parseExamAswn(String resps) {
+    public static  Object parseExamAswn(String resps) {
         //他人已做试卷解析答案
         JSONObject vJSONObject;
         if (resps == null || !resps.contains("answer")) return null;
@@ -331,7 +316,7 @@ public class cqoocMain implements Serializable {
         return vJSONObject;
     }
 
-    public List<ExamPreview> parseExamPreview(String resp) {
+    public static  List<ExamPreview> parseExamPreview(String resp) {
         //试卷解析题目
         List<ExamPreview> vExamPreviewList = new ArrayList<>();
         if (resp == null || !resp.contains("body")) return null;
@@ -355,15 +340,12 @@ public class cqoocMain implements Serializable {
     }
 
     //做试卷
-    public void DoExam(userInfo userInfo, examTask examTask,String courseId) {
+    public static  void DoExam(userInfo userInfo, examTask examTask,String courseId) {
         cqoocCourseInfo varCourseInfo = null;
-        cqoocHttp vCqoocHttp = new cqoocHttp();
-        cqApi vCqApi = new cqApi();
-        cqoocMain vCqoocMain = new cqoocMain();
-        vCqoocHttp.setUserCookie("player=2; xsid=" + userInfo.getOtherXsid());
-        vCqApi.setCqoocHttp(vCqoocHttp);
-        vCqoocMain.setCqApi(vCqApi);
-        userInfo otherUserInfo = vCqoocMain.getUsreInfo(userInfo.getOtherXsid());
+
+
+
+       // userInfo otherUserInfo = getUsreInfo(userInfo.getOtherXsid());
 
         String resp = getIfExamGen(null, "", "");
         if (resp == null || !resp.contains("id")) return;
@@ -374,7 +356,9 @@ public class cqoocMain implements Serializable {
         if (id == null || id.equals("")) {
             return;
         }
-        String answs = vCqApi.getExamPreview(varCourseInfo.getCourseId(), examTask.getId());
+
+        cqoocHttp.restCookie( userInfo.getOtherXsid());
+        String answs = cqApi.getExamPreview(varCourseInfo.getCourseId(), examTask.getId());
 
         Object answ = parseExamAswn(answs);
         List<ExamPreview> vExamPreviewList;
@@ -391,11 +375,11 @@ public class cqoocMain implements Serializable {
 
     }
 
-    public void examSubmit(userInfo userInfo, String courseId, String examId, String id, Object answers) {
-        mCqApi.getExamSubmit(userInfo, courseId, examId, id, answers);
+    public static  void examSubmit(userInfo userInfo, String courseId, String examId, String id, Object answers) {
+        cqApi.getExamSubmit(userInfo, courseId, examId, id, answers);
     }
 
-    private List<examTask> getExamTask(String courseId, int type) {
+    private static List<examTask> getExamTask(String courseId, int type) {
         List<examTask> vExamTaskList = new ArrayList<>();
         int start = 1;
         int limt;
@@ -408,9 +392,9 @@ public class cqoocMain implements Serializable {
         while (true) {
             String resp = "";
             if (type == 1) {
-                resp = mCqApi.getTasks(courseId, limt, start);
+                resp = cqApi.getTasks(courseId, limt, start);
             } else {
-                resp = mCqApi.getExams(courseId, limt, start);
+                resp = cqApi.getExams(courseId, limt, start);
                 break;
             }
             if (resp == null || resp.contains("data")) break;
@@ -422,7 +406,7 @@ public class cqoocMain implements Serializable {
         return vExamTaskList;
     }
 
-    private List<examTask> parseExamTask(String resp, int type) {
+    private static List<examTask> parseExamTask(String resp, int type) {
         List<examTask> vExamTaskList = new ArrayList<>();
         if (resp == null || resp.contains("data")) return vExamTaskList;
         JSONArray vJSONArray = Tool.parseJsonA(resp, "data");
@@ -436,10 +420,10 @@ public class cqoocMain implements Serializable {
     }
 
 
-    public String getOtherFourmCt(String courseId, String forumId) {
+    public static  String getOtherFourmCt(String courseId, String forumId) {
         String OtherFourmCt = "";
         List<String> cts = new ArrayList<>();
-        String resp = mCqApi.getForumAnsw(courseId, forumId);
+        String resp = cqApi.getForumAnsw(courseId, forumId);
         if (resp == null) return OtherFourmCt;
         JSONArray varArray = Tool.parseJsonA(resp, "data");
         if (varArray.isEmpty() || varArray.size() == 0) return OtherFourmCt;
@@ -453,16 +437,16 @@ public class cqoocMain implements Serializable {
         return OtherFourmCt;
     }
 
-    public userInfo getUsreInfo(String xsid) {
+    public static  userInfo getUsreInfo(String xsid) {
         String resp = "";
         userInfo varUserInfo = null;
-        resp = mCqApi.getUsreInfo1();
+        resp = cqApi.getUsreInfo1();
 
         if (resp != null && !resp.isEmpty()) {
             varUserInfo = JSONObject.parseObject(resp, userInfo.class);
         }
 
-        resp = mCqApi.getUsreInfo2(xsid);
+        resp = cqApi.getUsreInfo2(xsid);
 
         if (resp != null && resp.contains("id")) {
 

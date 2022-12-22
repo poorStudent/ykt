@@ -5,17 +5,7 @@ import com.vms.ykt.yktStuMobile.zjy.*;
 
 import java.io.Serializable;
 
-public class zjyApiW implements Serializable {
-
-    public zjyHttpW getZjyHttpW() {
-        return mZjyHttpW;
-    }
-
-    public void setZjyHttpW(zjyHttpW zjyHttpW) {
-        mZjyHttpW = zjyHttpW;
-    }
-
-    private zjyHttpW mZjyHttpW;
+public  class zjyApiW  {
 
 
     static String loginWeb = "https://zjy2.icve.com.cn/api/common/login/login";
@@ -53,19 +43,19 @@ public class zjyApiW implements Serializable {
      * integrity":7,
      * "moocServer":"https://mooc.icve.com.cn","isMerge":0,"isOpenLite":"1"}
      **/
-    public String getStuInfo() {
+    public static String getStuInfo() {
         String resp = "";
         String Referer = "https://zjy2.icve.com.cn/student/stuInfo/stuInfo.html";
 
         StringBuilder postParam = new StringBuilder();
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.StuInfo, postParams, Referer);
+        resp = zjyHttpW.post(zjyApiW.StuInfo, postParams, Referer);
 
         return resp;
     }
 
-    public String getLearnningCourseList() {
+    public static String getLearnningCourseList() {
         String resp = "";
         String Referer = "https://zjy2.icve.com.cn/student/learning/courseList.html?type=1";
 
@@ -73,12 +63,12 @@ public class zjyApiW implements Serializable {
         postParam.append("type=1");
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.LearnningCourseList, postParams, Referer);
+        resp = zjyHttpW.post(zjyApiW.LearnningCourseList, postParams, Referer);
 
         return resp;
     }
 
-    public String getProcessList(zjyCourseIfno zjyCourseIfno) {
+    public static String getProcessList(zjyCourseIfno zjyCourseIfno) {
         String resp = "";
         // String Referer = "https://zjy2.icve.com.cn/student/learning/courseList.html?type=1";
 /**{"code":1,"courseOpenId":"uoqaoksbixovw0s4anrhq","openClassId":"5zogauaufrvd1yb5ansr4w","openCourseCellCount":2173,
@@ -93,27 +83,27 @@ public class zjyApiW implements Serializable {
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.ProcessList, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.ProcessList, postParams, null);
 
         return resp;
     }
 
-    public String getTopicByModuleId(zjyCourseIfno zjyCourseIfno, zjyModuleListInfo ZjyModuleInfo) {
+    public static String getTopicByModuleId(zjyCourseIfno zjyCourseIfno, zjyModuleListInfo zjyModuleListInfo) {
 
         //courseOpenId=uoqaoksbixovw0s4anrhq&moduleId=712taoksc7ha5seeotsj4w
         String resp = "";
         StringBuilder postParam = new StringBuilder();
-        postParam.append("moduleId=" + ZjyModuleInfo.getId() + "&");
+        postParam.append("moduleId=" + zjyModuleListInfo.getId() + "&");
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.TopicByModuleId, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.TopicByModuleId, postParams, null);
 
         return resp;
     }
 
-    public String getCellByTopicId(zjyCourseIfno zjyCourseIfno, zjyTopicList TopicInfos) {
+    public static String getCellByTopicId(zjyCourseIfno zjyCourseIfno, zjyTopicList TopicInfos) {
 
         //courseOpenId=uoqaoksbixovw0s4anrhq&moduleId=712taoksc7ha5seeotsj4w
         String resp = "";
@@ -123,48 +113,48 @@ public class zjyApiW implements Serializable {
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.CellByTopicId, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.CellByTopicId, postParams, null);
 
         return resp;
     }
 
     //课件是否公开
-    public String getProcessModulePower(zjyCourseIfno zjyCourseIfno, zjyModuleInfo ZjyModuleInfo, zjyCellInfo ZjyCellInfo) {
+    public static  String getProcessModulePower(zjyCourseIfno zjyCourseIfno, zjyModuleListInfo zjyModuleListInfo, zjyCellList zjyCellList) {
 
         //courseOpenId=uoqaoksbixovw0s4anrhq&openClassId=5zogauaufrvd1yb5ansr4w&cellId=812taoksmzzivwfcyf1qca&flag=s&moduleId=812taoksepddopuqq6byvw
         String resp = "";
         StringBuilder postParam = new StringBuilder();
-        postParam.append("cellId=" + ZjyCellInfo.getId() + "&");
-        postParam.append("moduleId=" + ZjyModuleInfo.getId() + "&");
+        postParam.append("cellId=" + zjyCellList.getId() + "&");
+        postParam.append("moduleId=" + zjyModuleListInfo.getId() + "&");
         postParam.append("flag=s" + "&");
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.ProcessModulePower, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.ProcessModulePower, postParams, null);
 
         return resp;
     }
 
     //获取课件详情
-    public String getviewDirectory(zjyCourseIfno zjyCourseIfno, zjyModuleInfo ZjyModuleInfo, zjyCellInfo ZjyCellInfo) {
+    public static String getviewDirectory(zjyCourseIfno zjyCourseIfno, zjyModuleListInfo zjyModuleListInfo, zjyCellList zjyCellList) {
 
         //courseOpenId=uoqaoksbixovw0s4anrhq&openClassId=5zogauaufrvd1yb5ansr4w&cellId=712taoksfq5dulkk00ljw&flag=s&moduleId=712taoksvkjk8r1eeic22w
         String resp = "";
         StringBuilder postParam = new StringBuilder();
-        postParam.append("cellId=" + ZjyCellInfo.getId() + "&");
-        postParam.append("moduleId=" + ZjyModuleInfo.getId() + "&");
+        postParam.append("cellId=" + zjyCellList.getId() + "&");
+        postParam.append("moduleId=" + zjyModuleListInfo.getId() + "&");
         postParam.append("flag=s" + "&");
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.viewDirectory, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.viewDirectory, postParams, null);
 
         return resp;
     }
 
-   public String getviewDirectory(zjyCourseIfno zjyCourseIfno, zjyCellList zjyCellList) {
+   public static String getviewDirectory(zjyCourseIfno zjyCourseIfno, zjyCellList zjyCellList) {
 
         //courseOpenId=uoqaoksbixovw0s4anrhq&openClassId=5zogauaufrvd1yb5ansr4w&cellId=712taoksfq5dulkk00ljw&flag=s&moduleId=712taoksvkjk8r1eeic22w
         String resp = "";
@@ -175,32 +165,32 @@ public class zjyApiW implements Serializable {
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mZjyHttpW.post(zjyApiW.viewDirectory, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.viewDirectory, postParams, null);
 
         return resp;
     }
 
     //切换课件
-    public String getChangeData(zjyCourseIfno zjyCourseIfno, zjyModuleInfo ZjyModuleInfo, zjyCellInfo ZjyCellInfo) {
+    public static String getChangeData(zjyCourseIfno zjyCourseIfno, zjyModuleListInfo zjyModuleListInfo, zjyCellList zjyCellList) {
 
         /**courseOpenId=uoqaoksbixovw0s4anrhq&openClassId=5zogauaufrvd1yb5ansr4w&
          * moduleId=812taoksepddopuqq6byvw&cellId=812taoksmzzivwfcyf1qca&
          * cellName=5.1+%E5%AF%BC%E8%AE%BA+%E9%82%93%E5%B0%8F%E5%B9%B3%E6%98%AF%E4%B8%AD%E5%9B%BD%E7%89%B9%E8%89%B2%E7%A4%BE%E4%BC%9A%E4%B8%BB%E4%B9%89%E7%90%86%E8%AE%BA%E7%9A%84%E5%BC%80%E5%88%9B%E8%80%85 **/
         String resp = "";
         StringBuilder postParam = new StringBuilder();
-        postParam.append("cellId=" + ZjyCellInfo.getId() + "&");
-        postParam.append("moduleId=" + ZjyModuleInfo.getId() + "&");
-        postParam.append("cellName=" + ZjyCellInfo.getCellName() + "&");
+        postParam.append("cellId=" + zjyCellList.getId() + "&");
+        postParam.append("moduleId=" + zjyModuleListInfo.getId() + "&");
+        postParam.append("cellName=" + zjyCellList.getCellName() + "&");
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.changeData, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.changeData, postParams, null);
 
         return resp;
     }
 
-    public String getChangeData(zjyCourseIfno zjyCourseIfno,zjyCellList zjyCellList) {
+    public static String getChangeData(zjyCourseIfno zjyCourseIfno,zjyCellList zjyCellList) {
 
         /**courseOpenId=uoqaoksbixovw0s4anrhq&openClassId=5zogauaufrvd1yb5ansr4w&
          * moduleId=812taoksepddopuqq6byvw&cellId=812taoksmzzivwfcyf1qca&
@@ -213,13 +203,13 @@ public class zjyApiW implements Serializable {
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mZjyHttpW.post(zjyApiW.changeData, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.changeData, postParams, null);
 
         return resp;
     }
 
     //刷课
-    public String getProcessCellLog(ViewDirectory zjyViewDirectory, String time) {
+    public static String getProcessCellLog(ViewDirectory zjyViewDirectory, String time) {
 
         /**courseOpenId=uoqaoksbixovw0s4anrhq&openClassId=5zogauaufrvd1yb5ansr4w&
          * cellId=712taoksfq5dulkk00ljw&cellLogId=&picNum=1&studyNewlyTime=0&studyNewlyPicNum=999&
@@ -236,12 +226,12 @@ public class zjyApiW implements Serializable {
         postParam.append("courseOpenId=" + zjyViewDirectory.getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.stuProcessCellLog, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.stuProcessCellLog, postParams, null);
 
         return resp;
     }
 
-    public String getProcessCellLog( ViewDirectory zjyViewDirectory,zjyCellList zjyCellList, String time) {
+    public static String getProcessCellLog( ViewDirectory zjyViewDirectory,zjyCellList zjyCellList, String time) {
 
         /**courseOpenId=uoqaoksbixovw0s4anrhq&openClassId=5zogauaufrvd1yb5ansr4w&
          * cellId=712taoksfq5dulkk00ljw&cellLogId=&picNum=1&studyNewlyTime=0&studyNewlyPicNum=999&
@@ -258,20 +248,20 @@ public class zjyApiW implements Serializable {
         postParam.append("courseOpenId=" + zjyViewDirectory .getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.stuProcessCellLog, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.stuProcessCellLog, postParams, null);
 
         return resp;
     }
 
 
     //课件评价
-    public String getaddCellActivity(String OpenClassId, String CourseOpenId, String ZjyCellInfo, String content, String activityType) {
+    public static String getaddCellActivity(String OpenClassId, String CourseOpenId, String zjyCellList, String content, String activityType) {
 //课件评论
         //courseOpenId=myhoaf2rm5rmavmm2x5ig&openClassId=wobtaugukybmifjjvaxwta&
         //cellId=5h13awrhjdmgnhnxpv3kg&content=%E5%A5%BD&docJson=&star=0&activityType=4
         String resp = "";
         StringBuilder postParam = new StringBuilder();
-        postParam.append("cellId=" + ZjyCellInfo + "&");
+        postParam.append("cellId=" + zjyCellList + "&");
         postParam.append("content=" + content + "&");
         postParam.append("docJson=" + "&");
         postParam.append("star=5" + "&");
@@ -286,80 +276,80 @@ public class zjyApiW implements Serializable {
             ParmsE.printStackTrace();
         }
 
-        resp = mZjyHttpW.post(zjyApiW.addCellActivity, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.addCellActivity, postParams, null);
 
         return resp;
     }
 
     //课件评价
-    public String getaddCellActivity1_1(zjyCourseIfno zjyCourseIfno, zjyCellInfo ZjyCellInfo, String content) {
-        return getaddCellActivity(zjyCourseIfno.getOpenClassId(), zjyCourseIfno.getCourseOpenId(), ZjyCellInfo.getId(), content, "1");
+    public static String getaddCellActivity1_1(zjyCourseIfno zjyCourseIfno, zjyCellList zjyCellList, String content) {
+        return getaddCellActivity(zjyCourseIfno.getOpenClassId(), zjyCourseIfno.getCourseOpenId(), zjyCellList.getId(), content, "1");
     }
 
-    public String getaddCellActivity1_2(zjyCourseIfno zjyCourseIfno, zjyCellInfo ZjyCellInfo, String content) {
-        return getaddCellActivity(zjyCourseIfno.getOpenClassId(), zjyCourseIfno.getCourseOpenId(), ZjyCellInfo.getId(), content, "2");
+    public static String getaddCellActivity1_2(zjyCourseIfno zjyCourseIfno, zjyCellList zjyCellList, String content) {
+        return getaddCellActivity(zjyCourseIfno.getOpenClassId(), zjyCourseIfno.getCourseOpenId(), zjyCellList.getId(), content, "2");
     }
 
-    public String getaddCellActivity1_3(zjyCourseIfno zjyCourseIfno, zjyCellInfo ZjyCellInfo, String content) {
-        return getaddCellActivity(zjyCourseIfno.getOpenClassId(), zjyCourseIfno.getCourseOpenId(), ZjyCellInfo.getId(), content, "3");
+    public static String getaddCellActivity1_3(zjyCourseIfno zjyCourseIfno, zjyCellList zjyCellList, String content) {
+        return getaddCellActivity(zjyCourseIfno.getOpenClassId(), zjyCourseIfno.getCourseOpenId(), zjyCellList.getId(), content, "3");
     }
 
-    public String getaddCellActivity1_4(zjyCourseIfno zjyCourseIfno, zjyCellInfo ZjyCellInfo, String content) {
-        return getaddCellActivity(zjyCourseIfno.getOpenClassId(), zjyCourseIfno.getCourseOpenId(), ZjyCellInfo.getId(), content, "4");
+    public static String getaddCellActivity1_4(zjyCourseIfno zjyCourseIfno, zjyCellList zjyCellList, String content) {
+        return getaddCellActivity(zjyCourseIfno.getOpenClassId(), zjyCourseIfno.getCourseOpenId(), zjyCellList.getId(), content, "4");
     }
 
     //课件评价
-    public String getaddCellActivity2_1(ViewDirectory zjyViewDirectory, String content) {
+    public static String getaddCellActivity2_1(ViewDirectory zjyViewDirectory, String content) {
         return getaddCellActivity(zjyViewDirectory.getOpenClassId(), zjyViewDirectory.getCourseOpenId(), zjyViewDirectory.getCellId(), content, "1");
     }
 
-    public String getaddCellActivity2_2(ViewDirectory zjyViewDirectory, String content) {
+    public static String getaddCellActivity2_2(ViewDirectory zjyViewDirectory, String content) {
         return getaddCellActivity(zjyViewDirectory.getOpenClassId(), zjyViewDirectory.getCourseOpenId(), zjyViewDirectory.getCellId(), content, "2");
     }
 
-    public String getaddCellActivity2_3(ViewDirectory zjyViewDirectory, String content) {
+    public static String getaddCellActivity2_3(ViewDirectory zjyViewDirectory, String content) {
         return getaddCellActivity(zjyViewDirectory.getOpenClassId(), zjyViewDirectory.getCourseOpenId(), zjyViewDirectory.getCellId(), content, "3");
     }
 
-    public String getaddCellActivity2_4(ViewDirectory zjyViewDirectory, String content) {
+    public static String getaddCellActivity2_4(ViewDirectory zjyViewDirectory, String content) {
         return getaddCellActivity(zjyViewDirectory.getOpenClassId(), zjyViewDirectory.getCourseOpenId(), zjyViewDirectory.getCellId(), content, "2");
     }
 
 //获取课堂
-    public String getfaceTeachInfo(String date, String json) {
+    public static String getfaceTeachInfo(String date, String json) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("currentTime=" + date + "&");
         postParam.append("calendar=week" + "&");
         postParam.append(json);
         String postParams = postParam.toString();
-        resp = mZjyHttpW.post(zjyApiW.FaceTeach, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.FaceTeach, postParams, null);
 
         return resp;
     }
 //课后评价
-    public boolean getevaluationEdit(zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo) {
+    public static boolean getevaluationEdit(zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo) {
 
         return getEdit(zjyApiW.evaluationEdit, zjyCourseIfno, ZjyAllTeachInfo);
     }
 
-    public String getevaluationSave(zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo, String stuContent) {
+    public static String getevaluationSave(zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo, String stuContent) {
 
             return getSave(zjyApiW.evaluationSave, zjyCourseIfno, ZjyAllTeachInfo, stuContent);
 
     }
 
-    public boolean getselfratingEdit(zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo) {
+    public static boolean getselfratingEdit(zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo) {
         return getEdit(zjyApiW.selfratingEdit, zjyCourseIfno, ZjyAllTeachInfo);
 
     }
 
-    public String getselfratingSave(zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo, String stuContent) {
+    public static String getselfratingSave(zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo, String stuContent) {
         return getSave(zjyApiW.selfratingSave, zjyCourseIfno, ZjyAllTeachInfo, stuContent);
 
     }
 
-    private boolean getEdit(String url, zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo) {
+    private static  boolean getEdit(String url, zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo) {
         String resp = "";
 
         StringBuilder postParam = new StringBuilder();
@@ -368,7 +358,7 @@ public class zjyApiW implements Serializable {
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mZjyHttpW.post(url, postParams, null);
+        resp = zjyHttpW.post(url, postParams, null);
         if (resp.isEmpty()) return true;
         System.out.println(resp);
         if (JSONObject.parseObject(resp).getString("data").isEmpty()) {
@@ -383,7 +373,7 @@ public class zjyApiW implements Serializable {
     }
 
 
-    public String getSave(String url, zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo, String stuContent) {
+    public static String getSave(String url, zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo, String stuContent) {
         StringBuilder postParam = new StringBuilder();
         // activityId=rvs5axmuq7zbmv8hxrwpw&courseOpenId=myhoaf2rm5rmavmm2x5ig&openClassId=wobtaugukybmifjjvaxwta&stuContent=%E5%A5%BD&star=5
         postParam.append("activityId=" + ZjyAllTeachInfo.getId() + "&");
@@ -392,7 +382,7 @@ public class zjyApiW implements Serializable {
         postParam.append("star=5" + "&");
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
-        String resp = mZjyHttpW.post(url, postParams, null);
+        String resp = zjyHttpW.post(url, postParams, null);
         if (resp==null||!resp.contains("msg")) return "异常";
         resp = JSONObject.parseObject(resp).getString("msg");
         return resp;
@@ -402,7 +392,7 @@ public class zjyApiW implements Serializable {
     /**
      * 课堂活动
      */
-    public String getActivityInfo(zjyTeachInfo ZjyDayTeachInfo, String type) {
+    public static String getActivityInfo(zjyTeachInfo ZjyDayTeachInfo, String type) {
         //  type=3&courseOpenId=z8pjaeuulrbdnflicdpg&openClassId=mty7au2uq6hay0t4yghww&activityId=nmg4ax6u7jvkoqkpqpddyw
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -413,7 +403,7 @@ public class zjyApiW implements Serializable {
         postParam.append("type=" + type + "&");
         postParam.append("courseOpenId=" + ZjyDayTeachInfo.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mZjyHttpW.post(zjyApiW.ActivityInfo, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.ActivityInfo, postParams, null);
         return resp;
 
 
@@ -422,7 +412,7 @@ public class zjyApiW implements Serializable {
     static String stuSign = "https://security.zjy2.icve.com.cn/api/study/faceTeachInfo/stuSign";
 
     //签到获取
-    public String getSaveSign(String tid, String code, zjyUser zjyUser, zjyTeachInfo zjyDayTeachInfo) {
+    public static String getSaveSign(String tid, String code, zjyUser zjyUser, zjyTeachInfo zjyDayTeachInfo) {
         //签到
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -434,11 +424,11 @@ public class zjyApiW implements Serializable {
         postParam.append("stuId=" + zjyUser.getUserId() + "&");
         postParam.append("checkInCode=" + code);
         String postParams = postParam.toString();
-        resp = mZjyHttpW.post(stuSign, postParams, null);
+        resp = zjyHttpW.post(stuSign, postParams, null);
         return resp;
     }
 //课堂活动
-    public String getActivityType1(zjyTeachInfo ZjyDayTeachInfo) {
+    public static String getActivityType1(zjyTeachInfo ZjyDayTeachInfo) {
 
         String resp = "";
         resp = getActivityInfo(ZjyDayTeachInfo, "1");
@@ -447,7 +437,7 @@ public class zjyApiW implements Serializable {
 
     }
 
-    public String getActivityType2(zjyTeachInfo ZjyDayTeachInfo) {
+    public static String getActivityType2(zjyTeachInfo ZjyDayTeachInfo) {
 
         String resp = "";
         resp = getActivityInfo(ZjyDayTeachInfo, "2");
@@ -456,7 +446,7 @@ public class zjyApiW implements Serializable {
 
     }
 
-    public String getActivityType3(zjyTeachInfo ZjyDayTeachInfo) {
+    public static String getActivityType3(zjyTeachInfo ZjyDayTeachInfo) {
 
         String resp = "";
         resp = getActivityInfo(ZjyDayTeachInfo, "3");
@@ -465,7 +455,7 @@ public class zjyApiW implements Serializable {
     }
 
     //获取作业
-    public String getHomeworkList(zjyCourseIfno zjyCourseIfno) {
+    public static String getHomeworkList(zjyCourseIfno zjyCourseIfno) {
         String resp = "";
         // String Referer = "https://zjy2.icve.com.cn/student/learning/courseList.html?type=1";
 
@@ -473,13 +463,13 @@ public class zjyApiW implements Serializable {
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
-        resp = mZjyHttpW.post(zjyApiW.HomeworkList, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.HomeworkList, postParams, null);
 
         return resp;
     }
 
     //获取考试
-    public String getOnlineExamList(zjyCourseIfno zjyCourseIfno) {
+    public static String getOnlineExamList(zjyCourseIfno zjyCourseIfno) {
         String resp = "";
         // String Referer = "https://zjy2.icve.com.cn/student/learning/courseList.html?type=1";
 
@@ -488,7 +478,7 @@ public class zjyApiW implements Serializable {
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(zjyApiW.OnlineExamList, postParams, null);
+        resp = zjyHttpW.post(zjyApiW.OnlineExamList, postParams, null);
 
         return resp;
     }
@@ -496,7 +486,7 @@ public class zjyApiW implements Serializable {
     //打开作业
     static String preview = "https://security.zjy2.icve.com.cn/api/study/homework/preview";
 
-    public String getPreviewU(zjyCourseIfno zjyCourseIfno, String homeworkId, String homeworkTermTimeId) {
+    public static String getPreviewU(zjyCourseIfno zjyCourseIfno, String homeworkId, String homeworkTermTimeId) {
         /**获取作业题目**/
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -508,18 +498,18 @@ public class zjyApiW implements Serializable {
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(preview, postParams, null);
+        resp = zjyHttpW.post(preview, postParams, null);
         return resp;
     }
 
-    public String getPreview(zjyCourseIfno zjyCourseIfno, HomeworkInfo homework) {
+    public static String getPreview(zjyCourseIfno zjyCourseIfno, HomeworkInfo homework) {
 
         return getPreviewU(zjyCourseIfno, homework.getHomeworkId(), homework.getHomeworkTermTimeId());
     }
 
     static String homeworkDetail = "https://security.zjy2.icve.com.cn/api/study/homework/detail";
 
-    public String homeworkDetail(zjyCourseIfno zjyCourseIfno, String homeworkId, String homeworkTermTimeId) {
+    public static String homeworkDetail(zjyCourseIfno zjyCourseIfno, String homeworkId, String homeworkTermTimeId) {
         /**获取作业题目**/
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -531,18 +521,18 @@ public class zjyApiW implements Serializable {
         postParam.append("courseOpenId=" + zjyCourseIfno.getCourseOpenId());
         String postParams = postParam.toString();
 
-        resp = mZjyHttpW.post(homeworkDetail, postParams,null);
+        resp = zjyHttpW.post(homeworkDetail, postParams,null);
         return resp;
     }
 
     //打开考试
     static String previewNew = "https://security.zjy2.icve.com.cn/api/study/onlineExam/previewNew";
 
-    public String getPreviewNew(zjyCourseIfno zjyCourseIfno, ExamInfo ZjyExamInfo) {
+    public static String getPreviewNew(zjyCourseIfno zjyCourseIfno, ExamInfo ZjyExamInfo) {
         return getPreviewNewU(ZjyExamInfo.getExamId(), ZjyExamInfo.getExamTermTimeId(), zjyCourseIfno.getOpenClassId(), zjyCourseIfno.getCourseOpenId());
     }
 
-    public String getPreviewNewU(String examId, String examTimeId, String openClassId, String courseOpenId) {
+    public static String getPreviewNewU(String examId, String examTimeId, String openClassId, String courseOpenId) {
         /**获取考试题目**/
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -552,7 +542,7 @@ public class zjyApiW implements Serializable {
         postParam.append("openClassId=" + openClassId + "&");
         postParam.append("courseOpenId=" + courseOpenId);
         String postParams = postParam.toString();
-        resp = mZjyHttpW.post(previewNew, postParams,null);
+        resp = zjyHttpW.post(previewNew, postParams,null);
         return resp;
     }
 }

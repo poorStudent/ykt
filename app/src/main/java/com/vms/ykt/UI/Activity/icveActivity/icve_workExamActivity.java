@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.tabs.TabLayout;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Fragment.icve.icve_workExam_Fragment;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.icve.icveCourseInfo;
 
@@ -48,8 +49,7 @@ public class icve_workExamActivity extends AppCompatActivity {
 
     private void initData() {
         Intent i = getIntent();
-        this.mCourseIfno = (icveCourseInfo) i.getSerializableExtra("Course");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("mZjyUser");
+        this.mZjyUser = zjyUserDao.sZjyUser;
 
     }
 
@@ -132,12 +132,12 @@ public class icve_workExamActivity extends AppCompatActivity {
             switch (position) {
                 case 0:
                     fragment = new icve_workExam_Fragment(1);
-                    ((icve_workExam_Fragment) fragment).setData(mZjyUser, mCourseIfno);
+                    ((icve_workExam_Fragment) fragment).setData(mZjyUser);
                     hideOthersFragment(fragment, true, FragmentTag[position]);
                     break;
                 case 1:
                     fragment = new icve_workExam_Fragment(2);
-                    ((icve_workExam_Fragment) fragment).setData(mZjyUser, mCourseIfno);
+                    ((icve_workExam_Fragment) fragment).setData(mZjyUser);
                     hideOthersFragment(fragment, true, FragmentTag[position]);
                     break;
             }

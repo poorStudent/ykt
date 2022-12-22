@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.vms.ykt.R;
 import com.vms.ykt.Util.AppStatus;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.ExamInfo;
 import com.vms.ykt.yktStuMobile.zjy.ExamViewInfo;
 import com.vms.ykt.yktStuMobile.zjy.answerInfo;
@@ -48,9 +49,9 @@ public class zjy_examAnswActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
 
 
-    private zjyHttpW mZjyHttpW;
-    private zjyApiW mZjyApiW;
-    private zjyMainW mZjyMainW;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,17 +66,11 @@ public class zjy_examAnswActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = zjy_examAnswActivity.this;
-        this.mCourseIfno = (zjyCourseIfno) i.getSerializableExtra("Course");
-        this.mExamInfo = (ExamInfo) i.getSerializableExtra("ExamInfo");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
+        this.mCourseIfno =zjyUserDao.sZjyCourseIfno ;
+        this.mExamInfo = zjyUserDao.sExamInfo;
+        this.mZjyUser = zjyUserDao.sZjyUser;
         this.flag = (String) i.getSerializableExtra("flag");
-        this.mZjyHttpW=new zjyHttpW();
-        this.mZjyApiW=new zjyApiW();
-        this.mZjyMainW=new zjyMainW();
-
-        mZjyHttpW.setUserCookie(mZjyUser.getCookie());
-        mZjyApiW.setZjyHttpW(mZjyHttpW);
-        mZjyMainW.setZjyApiW(mZjyApiW);
+        
         Log.d(TAG, "initData: " + mCourseIfno.getCourseName());
         Log.d(TAG, "initData: " + mZjyUser.getUserId());
         Log.d(TAG, "initData: " + mExamInfo.getId());
@@ -145,7 +140,7 @@ public class zjy_examAnswActivity extends AppCompatActivity {
 
     private String doExamW(){
         ExamViewInfo vExamViewInfo;
-         String resp= mZjyApiW.getPreviewNew(mCourseIfno, mExamInfo);
+         String resp= zjyApiW.getPreviewNew(mCourseIfno, mExamInfo);
         if (resp==null||!resp.contains("questions"))return "";
         vExamViewInfo = JSONObject.parseObject(resp, ExamViewInfo.class);
         resp=vExamViewInfo.getQuestionData();

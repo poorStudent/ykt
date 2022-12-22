@@ -2,7 +2,7 @@ package com.vms.ykt.yktStuMobile.zjy;
 
 import java.io.Serializable;
 
-public class zjyUser implements Serializable {
+public class zjyUser  {
 
     private String cookie;
     private String token;

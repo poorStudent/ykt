@@ -22,6 +22,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.vms.ykt.R;
 import com.vms.ykt.Util.AppStatus;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyApi;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
 import com.vms.ykt.yktStuMobile.zjy.zjyMain;
@@ -59,7 +60,6 @@ public class zjy_keHouActivity extends AppCompatActivity {
     int curCt = 0;
     int pageCt = 0;
     StringBuffer stringBuffer;
-    private zjyMainW mZjyMainW;
     private Thread mThread;
     private boolean isDowork=true;
     @Override
@@ -75,10 +75,9 @@ public class zjy_keHouActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = zjy_keHouActivity.this;
-        this.mCourseIfno = (zjyCourseIfno) i.getSerializableExtra("Course");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
-        this.mZjyMainW = (zjyMainW) i.getSerializableExtra("mZjyMainW");
-
+        this.mCourseIfno = zjyUserDao.sZjyCourseIfno;
+        this.mZjyUser = zjyUserDao.sZjyUser;
+        
         mKeHou_lspj.add("课件清晰明了");
         mKeHou_lspj.add("无");
         mKeHou_lspj.add("讲得非常棒");
@@ -166,7 +165,7 @@ public class zjy_keHouActivity extends AppCompatActivity {
         if (mKeHou_bt_ktpj.isChecked()) {
             Tool.waitTime(mKeHou_pjjg);
             String resp = zjyApi.getAddEvaluationStu(zjyUser, zjyAllCourseIfno, varZjyAllTeachInfo, Tool.getRandomStr(mKeHou_lspj));
-           // resp=mZjyMainW.SelfratingSave(zjyAllCourseIfno,varZjyAllTeachInfo, Tool.getRandomStr(mKeHou_lspj));
+           // resp=zjyMainW.SelfratingSave(zjyAllCourseIfno,varZjyAllTeachInfo, Tool.getRandomStr(mKeHou_lspj));
             stringBuffer.append("\n" + Tool.getCurrentData() + " 课堂评价->" + resp);//老师评价
             mHandler.sendEmptyMessage(100);
         }
@@ -174,7 +173,7 @@ public class zjy_keHouActivity extends AppCompatActivity {
         if (mKeHou_bt_zwzj.isChecked()) {
             Tool.waitTime(mKeHou_pjjg);
             String resp = zjyApi.getSaveSelfEvaluation(zjyUser, zjyAllCourseIfno, varZjyAllTeachInfo, Tool.getRandomStr(mKeHou_zwzj));
-            //resp=mZjyMainW.EvaluationSave(zjyAllCourseIfno,varZjyAllTeachInfo, Tool.getRandomStr(mKeHou_lspj));
+            //resp=zjyMainW.EvaluationSave(zjyAllCourseIfno,varZjyAllTeachInfo, Tool.getRandomStr(mKeHou_lspj));
             stringBuffer.append("\n" + Tool.getCurrentData() + " 自我总结->" + resp);//自我总结
             mHandler.sendEmptyMessage(100);
         }
@@ -193,7 +192,7 @@ public class zjy_keHouActivity extends AppCompatActivity {
         List<zjyTeachInfo> vList=zjyMain.getAllFaceTeach(zjyUser, mCourseIfno);
         if (vList.size()==0){
             //web
-            vList= mZjyMainW.getAllFaceTeachInfoByCourse(mCourseIfno);
+            vList= zjyMainW.getAllFaceTeachInfoByCourse(mCourseIfno);
         }
         for (zjyTeachInfo varZjyAllTeachInfo : vList) {
            /** if (!ismKeHou_zt) {

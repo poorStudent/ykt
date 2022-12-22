@@ -19,6 +19,7 @@ import com.vms.ykt.UI.Activity.zjyActivity.zjy_shukeActivity;
 import com.vms.ykt.UI.Activity.zjyActivity.zjy_workActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
 import com.vms.ykt.UI.yktMainActivity;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.Util.Tool;
@@ -36,11 +37,10 @@ import java.util.Objects;
 public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.ViewHolder1> {
 
     List<zjyCourseIfno> mZjyAllCourseInfos;
-    private final zjyUser mZjyUser;
     private Context mContext;
     private yktMainActivity mActivity;
 
-    private String TAG=this.getClass().getSimpleName();
+    private String TAG = this.getClass().getSimpleName();
     /**
      * 事件回调监听
      */
@@ -48,23 +48,19 @@ public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.V
 
     private zjyRecyclerAdapter.initRcView mInitRcView;
 
-    private final zjyApiW mZjyApiW;
-    private final zjyMainW mZjyMainW;
 
-    public zjyRecyclerAdapter(List<zjyCourseIfno> data, zjyUser zjyUsers, zjyMainW zjyMainW, zjyApiW zjyApiW) {
+
+    public zjyRecyclerAdapter(List<zjyCourseIfno> data) {
         this.mZjyAllCourseInfos = data;
-        this.mZjyUser=zjyUsers;
-        this.mZjyMainW=zjyMainW;
-        this.mZjyApiW=zjyApiW;
     }
 
     public void updateData(List<zjyCourseIfno> data) {
 
-        if (mZjyAllCourseInfos!=null){
+        if (mZjyAllCourseInfos != null) {
             mZjyAllCourseInfos.clear();
             mZjyAllCourseInfos.addAll(data);
-        }else {
-            mZjyAllCourseInfos=new ArrayList<>();
+        } else {
+            mZjyAllCourseInfos = new ArrayList<>();
             mZjyAllCourseInfos.addAll(data);
         }
 
@@ -75,10 +71,10 @@ public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.V
      * 添加新的Item
      */
     public void addNewItem(zjyCourseIfno zjyCourseIfno, int position) {
-        if(mZjyAllCourseInfos == null) {
-            mZjyAllCourseInfos=new ArrayList<>();
+        if (mZjyAllCourseInfos == null) {
+            mZjyAllCourseInfos = new ArrayList<>();
         }
-        mZjyAllCourseInfos.add(position,zjyCourseIfno);
+        mZjyAllCourseInfos.add(position, zjyCourseIfno);
         notifyItemInserted(position);
     }
 
@@ -86,7 +82,7 @@ public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.V
      * 删除Item
      */
     public void deleteItem(int position) {
-        if(mZjyAllCourseInfos == null || mZjyAllCourseInfos.isEmpty()) {
+        if (mZjyAllCourseInfos == null || mZjyAllCourseInfos.isEmpty()) {
             return;
         }
         mZjyAllCourseInfos.remove(position);
@@ -113,10 +109,10 @@ public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.V
         // 实例化展示的view
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.zjy_recycler_item, parent, false);
         // 实例化viewholder
-        if (mContext==null)
-        mContext=parent.getContext();
-        if (mActivity==null)
-        mActivity=(yktMainActivity)mContext;
+        if (mContext == null)
+            mContext = parent.getContext();
+        if (mActivity == null)
+            mActivity = (yktMainActivity) mContext;
 
         ViewHolder1 viewHolder = new ViewHolder1(v);
         Log.d(TAG, "onCreateViewHolder: ");
@@ -124,38 +120,40 @@ public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.V
     }
 
     @Override
-    public void onBindViewHolder (final ViewHolder1 holder, int position) {
+    public void onBindViewHolder(final ViewHolder1 holder, int position) {
         // 绑定数据
 
         zjyCourseIfno vZjyCourseIfno = mZjyAllCourseInfos.get(position);
-        String kcmc= vZjyCourseIfno.getCourseName();
-        String lsmc= vZjyCourseIfno.getMainTeacherName();
-        String bjmc= vZjyCourseIfno.getOpenClassName();
-        String kcjd= vZjyCourseIfno.getProcess();
-        String kctp= vZjyCourseIfno.getThumbnail();
+        String kcmc = vZjyCourseIfno.getCourseName();
+        String lsmc = vZjyCourseIfno.getMainTeacherName();
+        String bjmc = vZjyCourseIfno.getOpenClassName();
+        String kcjd = vZjyCourseIfno.getProcess();
+        String kctp = vZjyCourseIfno.getThumbnail();
 
 
-        if (!Tool.isDestroy(mActivity)||holder.mImageView!=null||holder.mImageView.getContext()!=null) {
-        Glide.with(holder.mImageView.getContext())
-                .load(kctp)
-                .error(R.drawable.ic_launcher_background)
-                .fitCenter()
-                .into(holder.mImageView);
+        if (!Tool.isDestroy(mActivity) || holder.mImageView != null || holder.mImageView.getContext() != null) {
+            Glide.with(holder.mImageView.getContext())
+                    .load(kctp)
+                    .error(R.drawable.ic_launcher_background)
+                    .fitCenter()
+                    .into(holder.mImageView);
         }
 
 
         holder.mTextView1.setText(kcmc);
-        holder.mTextView2.setText("老师: "+lsmc);
-        holder.mTextView3.setText("班级: "+bjmc);
-        holder.mTextView4.setText("进度: "+kcjd+"%");
+        holder.mTextView2.setText("老师: " + lsmc);
+        holder.mTextView3.setText("班级: " + bjmc);
+        holder.mTextView4.setText("进度: " + kcjd + "%");
         holder.mProgressBar.setProgress(Integer.valueOf(kcjd));
         Log.d(TAG, "onBindViewHolder: ");
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-
-                showSetDialog(mZjyAllCourseInfos.get(position));
-                if(onItemClickListener != null) {
+                if (vZjyCourseIfno.getCourseOpenId() != null) {
+                    zjyUserDao.sZjyCourseIfno = vZjyCourseIfno;
+                    showSetDialog(vZjyCourseIfno);
+                }
+                if (onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemClick(holder.itemView, pos);
                 }
@@ -167,7 +165,7 @@ public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.V
             @Override
             public boolean onLongClick(View v) {
 
-                if(onItemClickListener != null) {
+                if (onItemClickListener != null) {
                     int pos = holder.getLayoutPosition();
                     onItemClickListener.onItemLongClick(holder.itemView, pos);
                 }
@@ -199,7 +197,7 @@ public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.V
         //设置AlertDiaLog宽高属性
         WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
         params.width = 900;
-        params.height = 850 ;
+        params.height = 850;
         customAlert.getWindow().setAttributes(params);
         // 移除dialog的decorview背景色
         // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
@@ -207,24 +205,16 @@ public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.V
         but_shuake.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getCourseOpenId()!=null) {
-                    Intent i = new Intent(mActivity, zjy_shukeActivity.class);
-                    i.putExtra("Course", CourseIfno);
-                    i.putExtra("ZjyUser", mZjyUser);
 
-                    mActivity.startActivity(i);
-                }
+                Intent i = new Intent(mActivity, zjy_shukeActivity.class);
+                mActivity.startActivity(i);
             }
         });
         but_khpj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getCourseOpenId()!=null) {
+                if (CourseIfno.getCourseOpenId() != null) {
                     Intent i = new Intent(mActivity, zjy_keHouActivity.class);
-                    i.putExtra("Course", CourseIfno);
-                    i.putExtra("ZjyUser", mZjyUser);
-                    i.putExtra("mZjyApiW", mZjyApiW);
-                    i.putExtra("mZjyMainW", mZjyMainW);
                     mActivity.startActivity(i);
                 }
             }
@@ -232,38 +222,29 @@ public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.V
         but_zy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getCourseOpenId()!=null) {
                     Intent i = new Intent(mActivity, zjy_workActivity.class);
-                    i.putExtra("Course", CourseIfno);
-                    i.putExtra("ZjyUser", mZjyUser);
-                    i.putExtra("mZjyApiW", mZjyApiW);
-                    i.putExtra("mZjyMainW", mZjyMainW);
                     mActivity.startActivity(i);
-                }
             }
         });
         but_ks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CourseIfno.getCourseOpenId()!=null) {
                     Intent i = new Intent(mActivity, zjy_examActivity.class);
-                    i.putExtra("Course", CourseIfno);
-                    i.putExtra("ZjyUser", mZjyUser);
-                    i.putExtra("mZjyApiW", mZjyApiW);
-                    i.putExtra("mZjyMainW", mZjyMainW);
                     mActivity.startActivity(i);
-                }
+
             }
         });
     }
 
-    public void initListener(final ViewHolder1 holder){
+    public void initListener(final ViewHolder1 holder) {
 
     }
 
-    public void pauseRequests(){
+    public void pauseRequests() {
         Glide.with(mContext).pauseRequests();
-    };
+    }
+
+    ;
 
     @Override
     public int getItemCount() {
@@ -272,33 +253,36 @@ public class zjyRecyclerAdapter extends baseRecyclerAdapter<zjyRecyclerAdapter.V
 
     public static class ViewHolder1 extends RecyclerView.ViewHolder {
 
-        TextView mTextView1,mTextView2,mTextView3,mTextView4;
+        TextView mTextView1, mTextView2, mTextView3, mTextView4;
         ProgressBar mProgressBar;
         ImageView mImageView;
 
         public ViewHolder1(View itemView) {
             super(itemView);
-            mImageView=itemView.findViewById(R.id.zjy_kctp);
-            mTextView1=itemView.findViewById(R.id.zjy_kcmc);
-            mTextView2=itemView.findViewById(R.id.zjy_lsmc);
-            mTextView3=itemView.findViewById(R.id.zjy_bjmc);
-            mTextView4=itemView.findViewById(R.id.zjy_jd);
+            mImageView = itemView.findViewById(R.id.zjy_kctp);
+            mTextView1 = itemView.findViewById(R.id.zjy_kcmc);
+            mTextView2 = itemView.findViewById(R.id.zjy_lsmc);
+            mTextView3 = itemView.findViewById(R.id.zjy_bjmc);
+            mTextView4 = itemView.findViewById(R.id.zjy_jd);
             mProgressBar = itemView.findViewById(R.id.zjy_kcjd);
         }
     }
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
+
         void onItemLongClick(View view, int position);
     }
 
-    public interface initRcView{
+    public interface initRcView {
         String getTitle(int position);
+
         String getCourseId(int position);
+
         String getEndTime(int position);
+
         String getParentId(int position);
     }
-
 
 
 }

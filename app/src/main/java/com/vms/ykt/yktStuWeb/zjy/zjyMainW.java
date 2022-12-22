@@ -11,6 +11,7 @@ import com.vms.ykt.yktStuMobile.zjy.ExamInfo;
 import com.vms.ykt.yktStuMobile.zjy.ExamViewInfo;
 import com.vms.ykt.yktStuMobile.zjy.HomeworkInfo;
 import com.vms.ykt.yktStuMobile.zjy.homeWorkViewInfo;
+import com.vms.ykt.yktStuMobile.zjy.zjyCellChildList;
 import com.vms.ykt.yktStuMobile.zjy.zjyCellList;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
 import com.vms.ykt.yktStuMobile.zjy.zjyModuleListInfo;
@@ -24,24 +25,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class zjyMainW implements Serializable {
-    public com.vms.ykt.yktStuWeb.zjy.zjyApiW getZjyApiW() {
-        return mZjyApiW;
-    }
-
-    public void setZjyApiW(com.vms.ykt.yktStuWeb.zjy.zjyApiW zjyApiW) {
-        this.mZjyApiW = zjyApiW;
-    }
-
-    private zjyApiW mZjyApiW;
+public class zjyMainW {
+  ;
 
     //获取课件
-    public ArrayList<zjyCourseIfno> getCoures() {
+    public static ArrayList<zjyCourseIfno> getCoures() {
 /**
  * web所有课程
  * **/
         ArrayList<zjyCourseIfno> zjyCourseInfoList = new ArrayList<>();
-        String resp = mZjyApiW.getLearnningCourseList();
+        String resp = zjyApiW.getLearnningCourseList();
         if (resp == null || !resp.contains("courseList")) return zjyCourseInfoList;
         JSONObject ret = JSONObject.parseObject(resp);
         JSONArray retArr = ret.getJSONArray("courseList");
@@ -65,9 +58,9 @@ public class zjyMainW implements Serializable {
         return zjyCourseInfoList;
     }
 
-    public List<zjyModuleListInfo> getProcessList(zjyCourseIfno zjyCourseIfno) {
+    public static List<zjyModuleListInfo> getProcessList(zjyCourseIfno zjyCourseIfno) {
         List<zjyModuleListInfo> vModuleListInfos = new ArrayList<>();
-        String resp = mZjyApiW.getProcessList(zjyCourseIfno);
+        String resp = zjyApiW.getProcessList(zjyCourseIfno);
         if (resp == null || !resp.contains("moduleList")) return vModuleListInfos;
         JSONObject json = JSONObject.parseObject(resp);
         JSONArray varArray = json.getJSONObject("progress").getJSONArray("moduleList");
@@ -79,10 +72,10 @@ public class zjyMainW implements Serializable {
         return vModuleListInfos;
     }
 
-    public List<zjyTopicList> getTopicByModuleId(zjyCourseIfno zjyCourseIfno, zjyModuleListInfo ZjyModuleInfo) {
+    public static List<zjyTopicList> getTopicByModuleId(zjyCourseIfno zjyCourseIfno, zjyModuleListInfo zjyModuleListInfo) {
 
         List<zjyTopicList> vTopicListList = new ArrayList<>();
-        String resp = mZjyApiW.getTopicByModuleId(zjyCourseIfno, ZjyModuleInfo);
+        String resp = zjyApiW.getTopicByModuleId(zjyCourseIfno, zjyModuleListInfo);
         if (resp == null || !resp.contains("topicList")) return vTopicListList;
         JSONArray varArray = JSONObject.parseObject(resp).getJSONArray("topicList");
         for (int i = 0; i < varArray.size(); i++) {
@@ -93,79 +86,79 @@ public class zjyMainW implements Serializable {
         return vTopicListList;
     }
 
-    public ArrayList<zjyCellInfo> getCellByTopicId(zjyCourseIfno zjyCourseIfno, zjyTopicList varTopicInfo) {
-        ArrayList<zjyCellInfo> varZjyCellInfoList = new ArrayList<>();
-        String resp = mZjyApiW.getCellByTopicId(zjyCourseIfno, varTopicInfo);
-        if (resp == null || !resp.contains("cellList")) return varZjyCellInfoList;
+    public static ArrayList<zjyCellList> getCellByTopicId(zjyCourseIfno zjyCourseIfno, zjyTopicList varTopicInfo) {
+        ArrayList<zjyCellList> varzjyCellListList = new ArrayList<>();
+        String resp = zjyApiW.getCellByTopicId(zjyCourseIfno, varTopicInfo);
+        if (resp == null || !resp.contains("cellList")) return varzjyCellListList;
         JSONArray varArray = JSONObject.parseObject(resp).getJSONArray("cellList");
-        if (varArray.size() == 0) return varZjyCellInfoList;
+        if (varArray.size() == 0) return varzjyCellListList;
         for (int i = 0; i < varArray.size(); i++) {
             String json = varArray.getString(i);
-            zjyCellInfo varZjyCellInfo = JSONObject.parseObject(json, zjyCellInfo.class);
-            varZjyCellInfo.setZjyChildCellInfo(null);
-            if (varZjyCellInfo.getCategoryName().contains("子节点")) {
-                System.out.println("---" + varZjyCellInfo.getCellName() + " *" + varZjyCellInfo.getCategoryName());
+            zjyCellList varzjyCellList = JSONObject.parseObject(json, zjyCellList.class);
+            varzjyCellList.setCellChildNodeList(null);
+            if (varzjyCellList.getCategoryName().contains("子节点")) {
+                System.out.println("---" + varzjyCellList.getCellName() + " *" + varzjyCellList.getCategoryName());
 
                 JSONArray varArray1 = JSONObject.parseObject(json).getJSONArray("childNodeList");
                 if (varArray1 != null && varArray1.size() != 0) {
-                    ArrayList<zjyChildCellInfo> varZjyChildCellInfoList = new ArrayList<>();
+                    ArrayList<zjyCellChildList> varzjyCellChildListList = new ArrayList<>();
                     for (int j = 0; j < varArray1.size(); j++) {
                         String js = varArray1.getString(j);
-                        zjyChildCellInfo varZjyChildCellInfo = JSONObject.parseObject(js, zjyChildCellInfo.class);
-                        System.out.println("----" + varZjyChildCellInfo.getCellName() + " *" + varZjyChildCellInfo.getCategoryName() + " *" + varZjyChildCellInfo.getStuCellFourPercent());
-                        // shuake( zjyCourseIfno,ZjyModuleInfo,varZjyChildCellInfo);
-                        //  pl1(zjyCourseIfno,varZjyChildCellInfo,"hao");
-                        varZjyChildCellInfoList.add(varZjyChildCellInfo);
+                        zjyCellChildList varzjyCellChildList = JSONObject.parseObject(js, zjyCellChildList.class);
+                        System.out.println("----" + varzjyCellChildList.getCellName() + " *" + varzjyCellChildList.getCategoryName() + " *" + varzjyCellChildList.getStudyCellPercent());
+                        // shuake( zjyCourseIfno,zjyModuleListInfo,varzjyCellChildList);
+                        //  pl1(zjyCourseIfno,varzjyCellChildList,"hao");
+                        varzjyCellChildListList.add(varzjyCellChildList);
 
                     }
-                    varZjyCellInfo.setZjyChildCellInfo(varZjyChildCellInfoList);
+                    varzjyCellList.setCellChildNodeList(varzjyCellChildListList);
                 }
             } else {
-                System.out.println("---" + varZjyCellInfo.getCellName() + " *" + varZjyCellInfo.getCategoryName() + " *" + varZjyCellInfo.getStuCellFourPercent());
-                // shuake( zjyCourseIfno,ZjyModuleInfo,varZjyCellInfo);
-                //  pl1(zjyCourseIfno,varZjyCellInfo,"hao");
+                System.out.println("---" + varzjyCellList.getCellName() + " *" + varzjyCellList.getCategoryName() + " *" + varzjyCellList.getStudyCellPercent());
+                // shuake( zjyCourseIfno,zjyModuleListInfo,varzjyCellList);
+                //  pl1(zjyCourseIfno,varzjyCellList,"hao");
             }
 
-            varZjyCellInfoList.add(varZjyCellInfo);
+            varzjyCellListList.add(varzjyCellList);
         }
-        return varZjyCellInfoList;
+        return varzjyCellListList;
     }
 
     //课件评论
-    public String pl1(zjyCourseIfno zjyCourseIfno, zjyCellInfo ZjyCellInfo, String content) {
-        String resp1 = mZjyApiW.getaddCellActivity1_1(zjyCourseIfno, ZjyCellInfo, content);
+    public static String pl1(zjyCourseIfno zjyCourseIfno, zjyCellList zjyCellList, String content) {
+        String resp1 = zjyApiW.getaddCellActivity1_1(zjyCourseIfno, zjyCellList, content);
         System.out.println(resp1);
-        String resp2 = mZjyApiW.getaddCellActivity1_2(zjyCourseIfno, ZjyCellInfo, content);
+        String resp2 = zjyApiW.getaddCellActivity1_2(zjyCourseIfno, zjyCellList, content);
         System.out.println(resp2);
-        String resp3 = mZjyApiW.getaddCellActivity1_3(zjyCourseIfno, ZjyCellInfo, content);
+        String resp3 = zjyApiW.getaddCellActivity1_3(zjyCourseIfno, zjyCellList, content);
         System.out.println(resp3);
-        String resp4 = mZjyApiW.getaddCellActivity1_4(zjyCourseIfno, ZjyCellInfo, content);
+        String resp4 = zjyApiW.getaddCellActivity1_4(zjyCourseIfno, zjyCellList, content);
         System.out.println(resp4);
         return "";
     }
 
-    public String pl2(ViewDirectory zjyViewDirectory, String content) {
-        String resp1 = mZjyApiW.getaddCellActivity2_1(zjyViewDirectory, content);
+    public static String pl2(ViewDirectory zjyViewDirectory, String content) {
+        String resp1 = zjyApiW.getaddCellActivity2_1(zjyViewDirectory, content);
         System.out.println(resp1);
-        String resp2 = mZjyApiW.getaddCellActivity2_2(zjyViewDirectory, content);
+        String resp2 = zjyApiW.getaddCellActivity2_2(zjyViewDirectory, content);
         System.out.println(resp2);
-        String resp3 = mZjyApiW.getaddCellActivity2_3(zjyViewDirectory, content);
+        String resp3 = zjyApiW.getaddCellActivity2_3(zjyViewDirectory, content);
         System.out.println(resp3);
-        String resp4 = mZjyApiW.getaddCellActivity2_4(zjyViewDirectory, content);
+        String resp4 = zjyApiW.getaddCellActivity2_4(zjyViewDirectory, content);
         System.out.println(resp4);
         return "";
     }
 
     //打开课件详情
-    public ViewDirectory getViewDirectory(zjyCourseIfno zjyCourseIfno, zjyModuleInfo ZjyModuleInfo, zjyCellInfo ZjyCellInfo) {
-        String resp = mZjyApiW.getviewDirectory(zjyCourseIfno, ZjyModuleInfo, ZjyCellInfo);
+    public static ViewDirectory getViewDirectory(zjyCourseIfno zjyCourseIfno, zjyModuleListInfo zjyModuleListInfo, zjyCellList zjyCellList) {
+        String resp = zjyApiW.getviewDirectory(zjyCourseIfno, zjyModuleListInfo, zjyCellList);
         if (resp == null || !resp.contains("guIdToken")) return null;
         ViewDirectory varViewDirectory = JSONObject.parseObject(resp, ViewDirectory.class);
         return varViewDirectory;
     }
 
-    public ViewDirectory getViewDirectory(zjyCourseIfno zjyCourseIfno, zjyCellList zjyCellList) {
-        String resp = mZjyApiW.getviewDirectory(zjyCourseIfno, zjyCellList);
+    public static ViewDirectory getViewDirectory(zjyCourseIfno zjyCourseIfno, zjyCellList zjyCellList) {
+        String resp = zjyApiW.getviewDirectory(zjyCourseIfno, zjyCellList);
         Log.d("", "getViewDirectory: "+resp);
         if (resp == null || !resp.contains("guIdToken")) return null;
         ViewDirectory varViewDirectory = JSONObject.parseObject(resp, ViewDirectory.class);
@@ -173,14 +166,14 @@ public class zjyMainW implements Serializable {
     }
 
     //今日课堂
-    public List<zjyTeachInfo> getDayfaceTeachInfo() {
+    public static List<zjyTeachInfo> getDayfaceTeachInfo() {
         //今日课堂
         List<zjyTeachInfo> varDayTeachInfoList = new ArrayList<>();
         String resp = "";
         SimpleDateFormat varSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar varCalendar = Calendar.getInstance();
         String date = varSimpleDateFormat.format(varCalendar.getTime());
-        resp = mZjyApiW.getfaceTeachInfo(date, "");
+        resp = zjyApiW.getfaceTeachInfo(date, "");
         if (resp == null || !resp.contains("faceTeachList")) return varDayTeachInfoList;
         JSONArray varArray = JSONObject.parseObject(resp).getJSONArray("faceTeachList");
         for (int i = 0; i < varArray.size(); i++) {
@@ -191,7 +184,7 @@ public class zjyMainW implements Serializable {
     }
 
     //单个课程所有课堂
-    public List<zjyTeachInfo> getAllFaceTeachInfoByCourse(zjyCourseIfno zjyCourseIfno) {
+    public static List<zjyTeachInfo> getAllFaceTeachInfoByCourse(zjyCourseIfno zjyCourseIfno) {
         //所有课堂
         List<zjyTeachInfo> varDayTeachInfoList = new ArrayList<>();
         SimpleDateFormat varSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -204,7 +197,7 @@ public class zjyMainW implements Serializable {
         while (true) {
             String date = varSimpleDateFormat.format(varCalendar.getTime());
 
-            String resp = mZjyApiW.getfaceTeachInfo(date, json);
+            String resp = zjyApiW.getfaceTeachInfo(date, json);
 
             if (resp == null || !resp.contains("faceTeachList")) {
                 break;
@@ -227,17 +220,17 @@ public class zjyMainW implements Serializable {
     }
 
     //课后评价
-    public String EvaluationSave( zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo, String stuContent) {
-        return mZjyApiW.getevaluationSave(zjyCourseIfno,ZjyAllTeachInfo,stuContent);
+    public static String EvaluationSave( zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo, String stuContent) {
+        return zjyApiW.getevaluationSave(zjyCourseIfno,ZjyAllTeachInfo,stuContent);
     }
 
-    public String SelfratingSave( zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo, String stuContent) {
-        return mZjyApiW.getselfratingSave(zjyCourseIfno,ZjyAllTeachInfo,stuContent);
+    public static String SelfratingSave( zjyCourseIfno zjyCourseIfno, zjyTeachInfo ZjyAllTeachInfo, String stuContent) {
+        return zjyApiW.getselfratingSave(zjyCourseIfno,ZjyAllTeachInfo,stuContent);
     }
 
         //获取作业考试
-    public ArrayList<HomeworkInfo> getHomeworkList(zjyCourseIfno zjyCourseIfno) {
-        String resp = mZjyApiW.getHomeworkList(zjyCourseIfno);
+    public static ArrayList<HomeworkInfo> getHomeworkList(zjyCourseIfno zjyCourseIfno) {
+        String resp = zjyApiW.getHomeworkList(zjyCourseIfno);
         if (resp == null) return null;
         JSONObject json = JSONObject.parseObject(resp);
         if (!json.getString("code").equals("1")) {
@@ -256,8 +249,8 @@ public class zjyMainW implements Serializable {
         return varHomeworkInfoList;
     }
 
-    public ArrayList<ExamInfo> getOnlineExamList(zjyCourseIfno zjyCourseIfno) {
-        String resp = mZjyApiW.getOnlineExamList(zjyCourseIfno);
+    public static ArrayList<ExamInfo> getOnlineExamList(zjyCourseIfno zjyCourseIfno) {
+        String resp = zjyApiW.getOnlineExamList(zjyCourseIfno);
         if (resp == null) return null;
         JSONObject json = JSONObject.parseObject(resp);
         if (!json.getString("code").equals("1")) {
@@ -278,19 +271,19 @@ public class zjyMainW implements Serializable {
     }
 
     //打开作业考试
-    public homeWorkViewInfo getHomeWorkPreview(zjyCourseIfno zjyCourseIfno, HomeworkInfo ZjyHomeworkInfo) {
+    public static homeWorkViewInfo getHomeWorkPreview(zjyCourseIfno zjyCourseIfno, HomeworkInfo ZjyHomeworkInfo) {
         /**获取作业题目*/
         homeWorkViewInfo varHomeWorkViewInfo = null;
-        String resp = mZjyApiW.getPreview(zjyCourseIfno, ZjyHomeworkInfo);
+        String resp = zjyApiW.getPreview(zjyCourseIfno, ZjyHomeworkInfo);
         if (resp == null || !resp.contains("redisData")) return varHomeWorkViewInfo;
         varHomeWorkViewInfo = JSONObject.parseObject(resp, homeWorkViewInfo.class);
         return varHomeWorkViewInfo;
     }
 
-    public ExamViewInfo getExamViewPreview(zjyCourseIfno zjyCourseIfno, ExamInfo ZjyExamInfo) {
+    public static ExamViewInfo getExamViewPreview(zjyCourseIfno zjyCourseIfno, ExamInfo ZjyExamInfo) {
         /**获取考试题目·*/
         ExamViewInfo varExamViewInfo = null;
-        String resp = mZjyApiW.getPreviewNew(zjyCourseIfno, ZjyExamInfo);
+        String resp = zjyApiW.getPreviewNew(zjyCourseIfno, ZjyExamInfo);
         if (resp == null || !resp.contains("questions")) return varExamViewInfo;
         varExamViewInfo = JSON.parseObject(resp, ExamViewInfo.class);
         return varExamViewInfo;

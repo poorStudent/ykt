@@ -3,9 +3,9 @@ package com.vms.ykt.yktUtil.zjy;
 
 import android.util.Log;
 
+import com.vms.ykt.Util.HttpTool;
 import com.vms.ykt.Util.SystemUtil;
 import com.vms.ykt.Util.httpRespnose;
-import com.vms.ykt.Util.httpTool;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -58,7 +58,7 @@ public class zjyMobileLogin {
         header.put("Host", "zjyapp.icve.com.cn");
         header.put("User-Agent", "okhttp/4.5.0");
         httpRespnose ret = null;
-        ret = httpTool.postJ(requestUrl, header, body);
+        ret = HttpTool.postJ(requestUrl, header, body);
         resp = ret.getResp();
         if (resp != null && !resp.isEmpty()) {
             ck = Arrays.toString(ret

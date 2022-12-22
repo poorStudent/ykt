@@ -9,7 +9,7 @@ import java.io.Serializable;
  * "isFinished":"0","stuId":"2w7jafiswazbrev468vb5q","schoolName":"宁波职业技术学院"},
 **/
 
-public class moocCourseInfo implements Serializable {
+public class moocCourseInfo  {
     private String id;
     private String cid;
 

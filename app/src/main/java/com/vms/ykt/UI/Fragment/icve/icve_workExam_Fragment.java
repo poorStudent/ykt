@@ -24,6 +24,8 @@ import com.vms.ykt.UI.Activity.icveActivity.icve_workExamActivity;
 import com.vms.ykt.UI.Adapter.icveAdapter.icve_workExamAdapter;
 import com.vms.ykt.UI.Fragment.baseFragment;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.icve.icveUserDao;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 import com.vms.ykt.yktStuWeb.icve.icveApiW;
 import com.vms.ykt.yktStuWeb.icve.icveCourseInfo;
@@ -60,25 +62,16 @@ public class icve_workExam_Fragment extends baseFragment {
     private icveCourseInfo mCourseIfno;
 
 
-    private icveMainW mIcveMainW;
-    private icveApiW mIcveApiW;
-
     private int flag;
 
     public icve_workExam_Fragment(int flag) {
         this.flag = flag;
     }
 
-    public void setData(zjyUser zjyUser, icveCourseInfo CourseIfno) {
+    public void setData(zjyUser zjyUser) {
         if (zjyUser == null) return;
-        this.mCourseIfno=CourseIfno;
-        this.mZjyUser = zjyUser;
-        icveHttpW mIcveHttpW = new icveHttpW();
-        mIcveHttpW.setUserCookie(mZjyUser.getCookie());
-        this.mIcveApiW = new icveApiW();
-        mIcveApiW.setIcveHttpW(mIcveHttpW);
-        this.mIcveMainW = new icveMainW();
-        mIcveMainW.setIcveApiW(mIcveApiW);
+        this.mZjyUser=zjyUserDao.sZjyUser;
+        this.mCourseIfno= icveUserDao.sIcveCourseInfo;
     }
 
     private static String ARG_PARAM = "param_key";
@@ -160,7 +153,7 @@ public class icve_workExam_Fragment extends baseFragment {
 
                         if (mWorkExamListInfos.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new icve_workExamAdapter(mWorkExamListInfos, mZjyUser,mCourseIfno);
+                                mRecyclerAdapter = new icve_workExamAdapter(mWorkExamListInfos);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mWorkExamListInfos);
@@ -183,12 +176,12 @@ public class icve_workExam_Fragment extends baseFragment {
 
         switch (flag) {
             case 1:
-                mWorkExamListInfos = mIcveMainW.getWorksList(mCourseIfno.getId());
+                mWorkExamListInfos = icveMainW.getWorksList(mCourseIfno.getId());
                 if (mWorkExamListInfos.size() == 0) {
                 }
                 break;
             case 2:
-                mWorkExamListInfos = mIcveMainW.getExamList(mCourseIfno.getId());
+                mWorkExamListInfos = icveMainW.getExamList(mCourseIfno.getId());
                 if (mWorkExamListInfos.size() == 0) {
                 }
                 break;

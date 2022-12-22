@@ -14,6 +14,7 @@ import com.vms.ykt.UI.Activity.zjyActivity.zjy_courseHdActivity;
 import com.vms.ykt.UI.Activity.zjyActivity.zjy_testAnswActivity;
 import com.vms.ykt.UI.Adapter.baseRecyclerAdapter;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyApi;
 import com.vms.ykt.yktStuMobile.zjy.zjyCouresActivitInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
@@ -47,13 +48,11 @@ public class zjy_courseHDAdapter extends baseRecyclerAdapter<zjy_courseHDAdapter
     private zjyApiW mZjyApiW;
     private zjyMainW mZjyMainW;
 
-    public zjy_courseHDAdapter(List<zjyCouresActivitInfo> data, zjyUser zjyUsers, zjyTeachInfo zjyTeachInfo) {
+    public zjy_courseHDAdapter(List<zjyCouresActivitInfo> data) {
         this.mZjyCouresActivitInfos = data;
-        this.mZjyUser=zjyUsers;
-        this.mZjyTeachInfo=zjyTeachInfo;
-        mZjyHttpW.setUserCookie(mZjyUser.getCookie());
-        mZjyApiW.setZjyHttpW(mZjyHttpW);
-        mZjyMainW.setZjyApiW(mZjyApiW);
+        this.mZjyUser = zjyUserDao.sZjyUser;
+        this.mZjyTeachInfo =zjyUserDao.sZjyTeachInfo ;
+
     }
 
     public void updateData(List<zjyCouresActivitInfo> data) {
@@ -127,9 +126,7 @@ public class zjy_courseHDAdapter extends baseRecyclerAdapter<zjy_courseHDAdapter
 
                 if (vZjyCouresActivitInfo.getDataType().contains("测验")) {
                     Intent i = new Intent(mActivity, zjy_testAnswActivity.class);
-                    i.putExtra("ZjyUser", mZjyUser);
-                    i.putExtra("mZjyTeachInfo", mZjyTeachInfo);
-                    i.putExtra("vZjyCouresActivitInfo", vZjyCouresActivitInfo);
+
                     mActivity.startActivity(i);
                 }
                 if (vZjyCouresActivitInfo.getDataType().contains("签到")) {

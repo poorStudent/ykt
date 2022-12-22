@@ -40,28 +40,30 @@ public class newzjy_examWork_Adapter extends baseRecyclerAdapter<newzjy_examWork
     private List<ExamWork> mExamWorkList;
     private int type = 4;
     private String typeName;
+
     public newzjy_examWork_Adapter(List<ExamWork> data) {
         this.mExamWorkList = data;
     }
 
-    private void initData(){
-        switch (type){
+    private void initData() {
+        switch (type) {
             case 0:
-                typeName="测验";
+                typeName = "测验";
                 break;
             case 1:
-                typeName="作业";
+                typeName = "作业";
                 break;
             case 2:
-                typeName="考试";
+                typeName = "考试";
                 break;
             case 3://附件作业
-                typeName="附件";
+                typeName = "附件";
                 break;
             default:
                 break;
         }
     }
+
     public void updateData(List<ExamWork> data) {
         this.mExamWorkList = data;
         notifyDataSetChanged();
@@ -97,21 +99,17 @@ public class newzjy_examWork_Adapter extends baseRecyclerAdapter<newzjy_examWork
     public void onBindViewHolder(final newzjy_examWork_Adapter.ViewHolder1 holder, int position) {
         // 绑定数据
 
+        holder.mTextView0.setText(typeName);
+        holder.mTextView3.setTextColor(mContext.getColor(R.color.color4));
         ExamWork vExamWork = mExamWorkList.get(position);
 
-        String title=vExamWork.getExamName();
-        String zt=vExamWork.getExamStatus();
-        String Exam_num=vExamWork.getExam_num();
-        holder.mTextView0.setText(typeName);
-        holder.mTextView1.setText(title+" "+Exam_num);
 
+        String title = vExamWork.getExamName();
+        String zt = vExamWork.getExamStatus();
+        String Exam_num = vExamWork.getExam_num();
+        holder.mTextView1.setText(title + " " + Exam_num);
         holder.mTextView2.setText(vExamWork.getExam_general_sub());
         holder.mTextView4.setText("分数: " + vExamWork.getMy_score());
-
-
-        holder.mTextView3.setTextColor(mContext.getColor(R.color.color4));
-
-
         holder.mTextView3.setText("状态: " + zt);
 
         Log.d(TAG, "onBindViewHolder: ");
@@ -119,11 +117,11 @@ public class newzjy_examWork_Adapter extends baseRecyclerAdapter<newzjy_examWork
             @Override
             public void onClick(final View v) {
 
-                newZjyUserDao.sExamWork = vExamWork;
 
-                if (vExamWork.getExamId() != null || type!=3) {
+                if (type != 3 && vExamWork.getExamId() != null) {
+                    newZjyUserDao.sExamWork = vExamWork;
                     showSetDialog(vExamWork);
-                }else {
+                } else {
 
                 }
             }
@@ -142,32 +140,15 @@ public class newzjy_examWork_Adapter extends baseRecyclerAdapter<newzjy_examWork
 
 
     private void showSetDialog(ExamWork vExamWork) {
-        AlertDialog.Builder setDeBugDialog = new AlertDialog.Builder(mContext);
-        //获取界面
-        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.newzjy_examwork_dialog, null);
-        //将界面填充到AlertDiaLog容器并去除边框
-        setDeBugDialog.setView(dialogView);
+
+        View dialogView = Tool.creatDialog(mContext,R.layout.newzjy_examwork_dialog);
+
         //初始化控件
         Button newzjy_bt_da1 = dialogView.findViewById(R.id.newzjy_bt_da1);
         Button newzjy_bt_da2 = dialogView.findViewById(R.id.newzjy_bt_da2);
         Button newzjy_bt_gf = dialogView.findViewById(R.id.newzjy_bt_gf);
         Button newzjy_bt_sz = dialogView.findViewById(R.id.newzjy_bt_sz);
         Button newzjy_bt_xq = dialogView.findViewById(R.id.newzjy_bt_xq);
-
-        //取消点击外部消失弹窗
-        setDeBugDialog.setCancelable(true);
-        //创建AlertDiaLog
-        setDeBugDialog.create();
-        //AlertDiaLog显示
-        final AlertDialog customAlert = setDeBugDialog.show();
-        //设置AlertDiaLog宽高属性
-        WindowManager.LayoutParams params = Objects.requireNonNull(customAlert.getWindow()).getAttributes();
-        params.width = 900;
-        params.height = 850;
-        customAlert.getWindow().setAttributes(params);
-        // 移除dialog的decorview背景色
-        // Objects.requireNonNull(customAlert.getWindow()).getDecorView().setBackground(null);
-        //设置自定义界面的点击事件逻辑
 
         newzjy_bt_da1.setOnClickListener((View view) -> {
             Intent i = new Intent(mActivity, newzjy_ExamWorkAnswActivity.class);

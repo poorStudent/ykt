@@ -19,7 +19,7 @@ Status: "1"
 Title: "钳加工试题五"
 TotalScore: "100.0"
 UserId: "h63yafaksrhcjc4j3nrdua"*/
-public class workExamListInfo implements Serializable {
+public class workExamListInfo  {
 
     private String Title;
     private String EndDate;

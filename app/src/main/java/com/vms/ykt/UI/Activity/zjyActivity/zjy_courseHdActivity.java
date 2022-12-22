@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.tabs.TabLayout;
 import com.vms.ykt.R;
 import com.vms.ykt.UI.Fragment.zjy.zjy_coursehd_Fragment;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
 import com.vms.ykt.yktStuMobile.zjy.zjyTeachInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyUser;
@@ -49,9 +50,9 @@ public class zjy_courseHdActivity extends AppCompatActivity {
 
     private void initData() {
         Intent i = getIntent();
-        this.mCourseIfno = (zjyCourseIfno) i.getSerializableExtra("Course");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
-        this.mZjyTeachInfo = (zjyTeachInfo) i.getSerializableExtra("zjyTeachInfo");
+        this.mCourseIfno = zjyUserDao.sZjyCourseIfno ;
+        this.mZjyUser = zjyUserDao.sZjyUser;
+        this.mZjyTeachInfo =zjyUserDao.sZjyTeachInfo ;
 
     }
 
@@ -133,17 +134,17 @@ public class zjy_courseHdActivity extends AppCompatActivity {
             switch (position) {
                 case 0:
                     fragment = new zjy_coursehd_Fragment(1);
-                    ((zjy_coursehd_Fragment) fragment).setData(mZjyUser, mZjyTeachInfo);
+                    ((zjy_coursehd_Fragment) fragment).setData(mZjyUser);
                     hideOthersFragment(fragment, true, FragmentTag[position]);
                     break;
                 case 1:
                     fragment = new zjy_coursehd_Fragment(2);
-                    ((zjy_coursehd_Fragment) fragment).setData(mZjyUser, mZjyTeachInfo);
+                    ((zjy_coursehd_Fragment) fragment).setData(mZjyUser);
                     hideOthersFragment(fragment, true, FragmentTag[position]);
                     break;
                 case 2:
                     fragment = new zjy_coursehd_Fragment(3);
-                    ((zjy_coursehd_Fragment) fragment).setData(mZjyUser, mZjyTeachInfo);
+                    ((zjy_coursehd_Fragment) fragment).setData(mZjyUser);
                     hideOthersFragment(fragment, true, FragmentTag[position]);
                     break;
             }

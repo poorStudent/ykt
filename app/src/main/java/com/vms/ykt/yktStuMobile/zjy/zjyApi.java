@@ -15,8 +15,8 @@ import android.util.Log;
 import com.alibaba.fastjson.*;
 
 
+import com.vms.ykt.Util.HttpTool;
 import com.vms.ykt.Util.Tool;
-import com.vms.ykt.Util.httpTool;
 import com.vms.ykt.yktUtil.zjy.zjyTool;
 
 
@@ -126,7 +126,7 @@ public class zjyApi {
         postParam.append("faceDate=" + faceData + "&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.baseUrl + zjyApi.TeachList, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.baseUrl + zjyApi.TeachList, postParams);
         return resp;
     }
 
@@ -189,7 +189,7 @@ public class zjyApi {
         postParam.append("type=1&");
         postParam.append("newToken=" + zjyUser.getNewToken());
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.baseUrl + zjyApi.JoinActivities, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.baseUrl + zjyApi.JoinActivities, postParams);
         return resp;
     }
 
@@ -206,7 +206,7 @@ public class zjyApi {
         postParam.append("checkInCode=" + code + "&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.baseUrl + zjyApi.saveSign, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.baseUrl + zjyApi.saveSign, postParams);
         return resp;
     }
 
@@ -220,7 +220,7 @@ public class zjyApi {
         postParam.append("pageSize=" + 100 + "&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.AllCourseInfo, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.AllCourseInfo, postParams);
         return resp;
     }
 
@@ -234,7 +234,7 @@ public class zjyApi {
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.ModuleList, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.ModuleList, postParams);
         return resp;
     }
 
@@ -248,7 +248,7 @@ public class zjyApi {
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.TopicList, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.TopicList, postParams);
         return resp;
     }
 
@@ -262,7 +262,7 @@ public class zjyApi {
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.CellList, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.CellList, postParams);
         return resp;
     }
 
@@ -283,7 +283,7 @@ public class zjyApi {
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.canOpenCell, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.canOpenCell, postParams);
         return resp;
     }
 
@@ -299,7 +299,7 @@ public class zjyApi {
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.CellInfoByCelld, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.CellInfoByCelld, postParams);
         return resp;
     }
 
@@ -329,7 +329,7 @@ public class zjyApi {
         String postParams = postParam.toString();
         Log.d(TAG, "getStuProcessCellLog: " + postParams);
 
-        resp = zjyHttpM.post(zjyApi.StuProcessCellLog, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.StuProcessCellLog, postParams);
         return resp;
     }
 
@@ -348,7 +348,7 @@ public class zjyApi {
         postParam.append(getHeaders(zjyUser));
 
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.CellBBSList, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.CellBBSList, postParams);
         return resp;
     }
 
@@ -373,7 +373,7 @@ public class zjyApi {
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
 
-        resp = zjyHttpM.post(zjyUrl, postParams, null, null);
+        resp = zjyHttpM.post(zjyUrl, postParams);
         return resp;
     }
 
@@ -406,7 +406,7 @@ public class zjyApi {
         postParam.append("openClassId=" + zjyCourseIfno.getOpenClassId() + "&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.AllFaceTeachList, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.AllFaceTeachList, postParams);
         return resp;
     }
 
@@ -419,7 +419,7 @@ public class zjyApi {
         postParam.append("ActivityId=" + zjyAllTeachInfo.getId() + "&");
         postParam.append(getHeaders(zjyUser));
         String postParams = postParam.toString();
-        resp = zjyHttpM.post(zjyApi.SelfEvaluationInfo, postParams, null, null);
+        resp = zjyHttpM.post(zjyApi.SelfEvaluationInfo, postParams);
         return resp;
     }
 
@@ -685,7 +685,7 @@ public class zjyApi {
         header.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
         header.put("token", Token);
 
-        resp = httpTool.postJ(getAnswerList, header, postParams).getResp();
+        resp = HttpTool.postJ(getAnswerList, header, postParams).getResp();
         return resp;
     }
 
@@ -706,7 +706,7 @@ public class zjyApi {
         header.put("Host", "zjy.coolcr.cn");
         header.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
-        resp = httpTool.postJ(getAnswer, header, postParams).getResp();
+        resp = HttpTool.postJ(getAnswer, header, postParams).getResp();
         return resp;
     }
 
@@ -723,7 +723,7 @@ public class zjyApi {
         header.put("Host", "app.fuyaoup.cn");
         header.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
-        resp = httpTool.postJ(getToken, header, postParams).getResp();
+        resp = HttpTool.postJ(getToken, header, postParams).getResp();
         return resp;
     }
 

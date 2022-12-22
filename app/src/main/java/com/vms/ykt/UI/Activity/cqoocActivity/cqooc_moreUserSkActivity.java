@@ -160,20 +160,18 @@ public class cqooc_moreUserSkActivity extends AppCompatActivity {
         }
     }
 
-    private void goWork(String username, String password, ArrayList<String> course) {
+    private synchronized void  goWork(String username, String password, ArrayList<String> course) {
 
         final cqoocLogin vCqoocLogin = new cqoocLogin();
-        final cqoocHttp mCqoocHttp = new cqoocHttp();
-        final cqoocMain mCqoocMain = new cqoocMain();
-        final cqApi mCqApi = new cqApi();
+        
         final userInfo mUserInfo;
         String ck = vCqoocLogin.LoignIng(username, password);
-        mCqoocHttp.setUserCookie("player=1; xsid=" + ck);
-        mCqApi.setCqoocHttp(mCqoocHttp);
-        mCqoocMain.setCqApi(mCqApi);
+
+
+        cqoocHttp.restCookie("player=1; xsid=" + ck);
         Log.d(TAG, "goWork: " + ck);
         if (ck != null && !ck.isEmpty()) {
-            mUserInfo = mCqoocMain.getUsreInfo(ck);
+            mUserInfo = cqoocMain.getUsreInfo(ck);
         } else {
             mUserInfo = null;
         }
@@ -184,15 +182,16 @@ public class cqooc_moreUserSkActivity extends AppCompatActivity {
         }
         stringBuffer.append("\n" + Tool.getCurrentData() + " " + username + " ->登录成功");
         mHandler.sendEmptyMessage(100);
-        doWork(mUserInfo, mCqoocMain, mCqApi, course);
+        mUserInfo.setCookie("player=1; xsid=" + ck);
+        doWork(mUserInfo , course);
     }
 
-    private void doWork(userInfo userInfo, cqoocMain mCqoocMain, cqApi mCqApi, ArrayList<String> course) {
+    private void doWork(userInfo userInfo  ,ArrayList<String> course) {
 
         AppStatus.AppStatusInit();
         if (AppStatus.getCqooc() == null || !AppStatus.getCqooc().equals("cqoocok")) return;
 
-        for (cqoocCourseInfo courseIfno : mCqoocMain.getAllCourse(userInfo)) {
+        for (cqoocCourseInfo courseIfno : cqoocMain.getAllCourse(userInfo)) {
 
             if (!course.contains(courseIfno.getClassTitle())) {
                 stringBuffer.append("\n" + " " + userInfo.getName() + " 跳过->" + courseIfno.getTitle());
@@ -206,8 +205,8 @@ public class cqooc_moreUserSkActivity extends AppCompatActivity {
             List<cellLessonsInfo> varList = new ArrayList<>();
             ArrayList<String> varFinishaLessons = new ArrayList<>();
             if (cqooc_shuke_sk.isChecked()) {
-                varList = mCqoocMain.getAlllessons(courseIfno);
-                varFinishaLessons = mCqoocMain.getFinishaLessons(userInfo, courseIfno);
+                varList = cqoocMain.getAlllessons(courseIfno);
+                varFinishaLessons = cqoocMain.getFinishaLessons(userInfo, courseIfno);
             }
 
             for (cellLessonsInfo varCellLessonsInfo : varList) {
@@ -226,14 +225,14 @@ public class cqooc_moreUserSkActivity extends AppCompatActivity {
                 String jd = curCt + "/" + pageCt;
                 stringBuffer.append("\n" + userInfo.getName() + " " + courseIfno.getTitle() + " 进度->" + jd);
                 mHandler.sendEmptyMessage(100);
-                shuake(userInfo, courseIfno, varCellLessonsInfo, varFinishaLessons, mCqoocMain, mCqApi);
+                shuake(userInfo, courseIfno, varCellLessonsInfo, varFinishaLessons );
                 if (stringBuffer.length() == 1000) stringBuffer.delete(0, stringBuffer.length());
             }
             //作业考试
         }
     }
 
-    public void shuake(userInfo UserInfo, cqoocCourseInfo varCqoocCourseInfo, cellLessonsInfo varCellLessonsInfo, ArrayList<String> varFinishaLessons, cqoocMain mCqoocMain, cqApi mCqApi) {
+    public void shuake(userInfo UserInfo, cqoocCourseInfo varCqoocCourseInfo, cellLessonsInfo varCellLessonsInfo, ArrayList<String> varFinishaLessons  ) {
         cellResourceInfo varResourceInfo = varCellLessonsInfo.getCellResourceInfo();
         stringBuffer.append("\n--" + varCellLessonsInfo.getTitle() + " *" + varResourceInfo.getResMediaType());
         mHandler.sendEmptyMessage(100);
@@ -250,15 +249,15 @@ public class cqooc_moreUserSkActivity extends AppCompatActivity {
                 return;
             }
         }
-        stringBuffer.append("\n" + UserInfo.getName() + " StudyTime->" + mCqApi.getStudyTime(varCqoocCourseInfo.getCourseId()));
+        stringBuffer.append("\n" + UserInfo.getName() + " StudyTime->" + cqApi.getStudyTime(varCqoocCourseInfo.getCourseId()));
         mHandler.sendEmptyMessage(100);
 
-        mCqApi.getLearnLogs2(varCqoocCourseInfo.getCourseId(), varCellLessonsInfo.getId(), UserInfo.getUsername());
+        cqApi.getLearnLogs2(varCqoocCourseInfo.getCourseId(), varCellLessonsInfo.getId(), UserInfo.getUsername());
 
         String ResMediaType = varCellLessonsInfo.getCellResourceInfo().getResMediaType();
         if (ResMediaType != null && !ResMediaType.equals("null") && !ResMediaType.isEmpty()) {
             String resID = varCellLessonsInfo.getResId();
-            String resp = mCqApi.getRes(varCqoocCourseInfo.getCourseId(), resID);
+            String resp = cqApi.getRes(varCqoocCourseInfo.getCourseId(), resID);
             if (ResMediaType.contains("video")) {
                 //String durationTime = Tool.parseJsonS(resp, "durationTime");
                 //System.out.println(durationTime);
@@ -279,7 +278,7 @@ public class cqooc_moreUserSkActivity extends AppCompatActivity {
             String fourmID = varCellLessonsInfo.getForumId();
             if (fourmID != null && !fourmID.equals("null")) {
                 //讨论
-                String ct = mCqoocMain.getOtherFourmCt(varCqoocCourseInfo.getCourseId(), fourmID);
+                String ct = cqoocMain.getOtherFourmCt(varCqoocCourseInfo.getCourseId(), fourmID);
                 if (ct.isEmpty()) {
                     ct = "无";
                 }
@@ -288,18 +287,18 @@ public class cqooc_moreUserSkActivity extends AppCompatActivity {
                     Log.d(TAG, "shuake: tlnr");
                 }
                 Log.d(TAG, "shuake: " + ct);
-                stringBuffer.append("\n" + UserInfo.getName() + " 讨论->" + mCqApi.getAddForum(varCellLessonsInfo, varCqoocCourseInfo, "187.135.1.2", ct));
-                stringBuffer.append("\n" + UserInfo.getName() + " 讨论log->" + mCqApi.getForumLog(varCqoocCourseInfo.getCourseId(), UserInfo.getUsername()));
+                stringBuffer.append("\n" + UserInfo.getName() + " 讨论->" + cqApi.getAddForum(varCellLessonsInfo, varCqoocCourseInfo, "187.135.1.2", ct));
+                stringBuffer.append("\n" + UserInfo.getName() + " 讨论log->" + cqApi.getForumLog(varCqoocCourseInfo.getCourseId(), UserInfo.getUsername()));
                 mHandler.sendEmptyMessage(100);
             }
 
 
         }
         waitTime(cqooc_shuke_jg);
-        stringBuffer.append("\n" + UserInfo.getName() + " LearnLog->" + mCqApi.getLearnLogs3(varCqoocCourseInfo.getCourseId(), varCellLessonsInfo.getId(), UserInfo.getUsername()));
+        stringBuffer.append("\n" + UserInfo.getName() + " LearnLog->" + cqApi.getLearnLogs3(varCqoocCourseInfo.getCourseId(), varCellLessonsInfo.getId(), UserInfo.getUsername()));
         mHandler.sendEmptyMessage(100);
 
-        String resp = mCqApi.getAddLearnLog(UserInfo, varCqoocCourseInfo, varCellLessonsInfo);
+        String resp = cqApi.getAddLearnLog(UserInfo, varCqoocCourseInfo, varCellLessonsInfo);
         stringBuffer.append("\n" + UserInfo.getName() + "->" + varCellLessonsInfo.getTitle() + " 刷课->" + resp);
         mHandler.sendEmptyMessage(100);
         Log.d(TAG, "shuake: " + resp);
@@ -308,7 +307,7 @@ public class cqooc_moreUserSkActivity extends AppCompatActivity {
             if (resp == null || (!resp.contains("No error") && !resp.contains("添加"))) {
                 stringBuffer.append("\n 失败 正在尝试重试第 " + i + "次");
                 waitTime(cqooc_shuke_csjg);
-                resp = mCqApi.getAddLearnLog(UserInfo, varCqoocCourseInfo, varCellLessonsInfo);
+                resp = cqApi.getAddLearnLog(UserInfo, varCqoocCourseInfo, varCellLessonsInfo);
                 stringBuffer.append("\n" + UserInfo.getName() + "->" + varCellLessonsInfo.getTitle() + " 刷课->" + resp);
             } else {
                 break;

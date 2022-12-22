@@ -21,7 +21,7 @@ import java.io.Serializable;
  * "IsDoExam":0,"endTime":"\/Date(1656287999000)\/","isButton":true,"dateLine":"\/Date(1656287999000)\/",
  * "MutualResult":"0","IsOpenMutual":true,"isOver":false}],"pagination":{"totalCount":1,"pageSize":10,"pageIndex":1}}
  */
-public class WorkExamList implements Serializable {
+public class WorkExamList  {
     private String Id;
     private String endTime;
     private String startTime;

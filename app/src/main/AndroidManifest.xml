@@ -266,13 +266,18 @@
             android:label="newZjy"
             android:launchMode="singleTop"
             android:theme="@style/Theme.VmsZjy"/>
+
         <activity
             android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_ExamWorkAnswActivity"
             android:label="newZjy"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VmsZjy">
+            android:theme="@style/Theme.VmsZjy"/>
 
-        </activity>
+ <activity
+            android:name="com.vms.ykt.UI.Activity.newZjyActivity.newzjy_HomeWorkActivity"
+            android:label="newZjy"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VmsZjy"/>
 
 
     </application>

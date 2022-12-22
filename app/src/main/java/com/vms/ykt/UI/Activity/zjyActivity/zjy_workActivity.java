@@ -19,6 +19,7 @@ import com.vms.ykt.R;
 
 import com.vms.ykt.UI.Adapter.zjyAdapter.zjy_workAdapter;
 import com.vms.ykt.Util.Tool;
+import com.vms.ykt.yktDao.zjy.zjyUserDao;
 import com.vms.ykt.yktStuMobile.zjy.HomeworkInfo;
 import com.vms.ykt.yktStuMobile.zjy.zjyCourseIfno;
 import com.vms.ykt.yktStuMobile.zjy.zjyMain;
@@ -55,9 +56,8 @@ public class zjy_workActivity extends AppCompatActivity {
     private void initData() {
         Intent i = getIntent();
         this.mContext = zjy_workActivity.this;
-        this.mCourseIfno = (zjyCourseIfno) i.getSerializableExtra("Course");
-        this.mZjyUser = (zjyUser) i.getSerializableExtra("ZjyUser");
-
+        this.mCourseIfno = zjyUserDao.sZjyCourseIfno;
+        this.mZjyUser = zjyUserDao.sZjyUser;
         Log.d(TAG, "initData: " + mCourseIfno.getCourseName());
         Log.d(TAG, "initData: " + mZjyUser.getUserId());
     }
@@ -114,7 +114,7 @@ public class zjy_workActivity extends AppCompatActivity {
 
                         if (mHomeworkInfoList.size() != 0) {
                             if (mRecyclerAdapter == null) {
-                                mRecyclerAdapter = new zjy_workAdapter(mHomeworkInfoList,mZjyUser,mCourseIfno);
+                                mRecyclerAdapter = new zjy_workAdapter(mHomeworkInfoList);
                                 mRecyclerView.setAdapter(mRecyclerAdapter);
                             } else {
                                 mRecyclerAdapter.updateData(mHomeworkInfoList);

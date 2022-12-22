@@ -12,12 +12,34 @@ public class newZjyUser {
     private String mobile;
     private String learnSpaceUrl;
     private String token;
+    private String ssoToken;
     private String userAccessToken;
+    private String homeworkAccessToken;
     private String pageToken;
     private String UNTYXLCOOKIE;
     private String sessionId;
     private String id;
     private String USERSESSIONID;
+    private newZjyUser otNewZjyUser;
+    private String mobileCookie;
+    private String webCookie;
+
+
+    public newZjyUser getOtNewZjyUser() {
+        return otNewZjyUser;
+    }
+
+    public void setOtNewZjyUser(newZjyUser otNewZjyUser) {
+        this.otNewZjyUser = otNewZjyUser;
+    }
+
+    public String getHomeworkAccessToken() {
+        return homeworkAccessToken;
+    }
+
+    public void setHomeworkAccessToken(String homeworkAccessToken) {
+        this.homeworkAccessToken = homeworkAccessToken;
+    }
 
     public String getUSERSESSIONID() {
         return USERSESSIONID;
@@ -121,5 +143,13 @@ public class newZjyUser {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getSsoToken() {
+        return ssoToken;
+    }
+
+    public void setSsoToken(String ssoToken) {
+        this.ssoToken = ssoToken;
     }
 }

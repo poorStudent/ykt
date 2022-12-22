@@ -9,24 +9,16 @@ import com.vms.ykt.yktStuMobile.zjy.zjyUser;
 
 import java.io.Serializable;
 
-public class icveApiW implements Serializable {
+public  class icveApiW {
 
-    public icveHttpW getIcveHttpW() {
-        return mIcveHttpW;
-    }
 
-    public void setIcveHttpW(icveHttpW icveHttpW) {
-        mIcveHttpW = icveHttpW;
-    }
-
-    private icveHttpW mIcveHttpW;
 
     static String studingCourse = "https://www.icve.com.cn/studycenter/MyCourse/studingCourse";
     static String finishCourse = "https://www.icve.com.cn/studycenter/MyCourse/finishCourse";
     static String directoryList = "https://www.icve.com.cn/study/Directory/directoryList";
     static String getJcInfo = "https://www.icve.com.cn/common/common/getJcInfo";
 
-    private void login() {
+    private static  void login() {
         /*
         验证码
         GET https://www.icve.com.cn/portal/VerifyCode/index?t=0.4888292704555841 HTTP/1.1
@@ -36,25 +28,25 @@ public class icveApiW implements Serializable {
          */
     }
 
-    public String getMyCourseList(zjyUser zjyUser, String url) {
+    public static  String getMyCourseList(zjyUser zjyUser, String url) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("userId=" + zjyUser.getUserId());
         String postParams = postParam.toString();
 
-        resp = mIcveHttpW.post(url, postParams, null);
+        resp = icveHttpW.post(url, postParams);
         return resp;
 
     }
 
-    public String getFinishCourse(zjyUser zjyUser) {
+    public static  String getFinishCourse(zjyUser zjyUser) {
         //已完成课程
 
         return getMyCourseList(zjyUser, finishCourse);
 
     }
 
-    public String getStudingCourse(zjyUser zjyUser) {
+    public static  String getStudingCourse(zjyUser zjyUser) {
         //未完成课程
         return getMyCourseList(zjyUser, studingCourse);
 
@@ -62,34 +54,34 @@ public class icveApiW implements Serializable {
 
     static String studingSmallCourse = "https://www.icve.com.cn/studycenter/mySmallCourse/studingSmallCourse";
 
-    public String getStudingSmallCourse() {
+    public static  String getStudingSmallCourse() {
         //未完成课程
 
-        return mIcveHttpW.post(studingSmallCourse, "", null);
+        return icveHttpW.post(studingSmallCourse, "");
 
     }
 
     static String finishSmallCourse = "https://www.icve.com.cn/studycenter/mySmallCourse/finishSmallCourse";
 
-    public String getFinishSmallCCourse() {
+    public static  String getFinishSmallCCourse() {
         //完成课程
-        return mIcveHttpW.post(finishSmallCourse, "", null);
+        return icveHttpW.post(finishSmallCourse, "");
 
     }
 
-    public String getdirectoryList(icveCourseInfo CourseInfo) {
+    public static  String getdirectoryList(icveCourseInfo CourseInfo) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseId=" + CourseInfo.getId());
         String postParams = postParam.toString();
-        resp = mIcveHttpW.get(directoryList, postParams);
+        resp = icveHttpW.get(directoryList, postParams);
         return resp;
 
     }
 
-    private String directory = "https://www.icve.com.cn/study/directory/directory";
+    private static  String directory = "https://www.icve.com.cn/study/directory/directory";
 
-    public String getDirectory(String courseId, String chapterId, String sort) {
+    public static  String getDirectory(String courseId, String chapterId, String sort) {
 //courseId: ew-nab-oi7vfzf4ga-vx4w
 //chapterId: yxknab-obyllrs3r1i6lgg
 //sort: 0.002
@@ -100,63 +92,63 @@ public class icveApiW implements Serializable {
         postParam.append("sort=" + sort);
 
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(directory, postParams, null);
+        resp = icveHttpW.post(directory, postParams);
         return resp;
     }
 
-    public String getJcInfo(zjyUser zjyUser) {
+    public static  String getJcInfo(zjyUser zjyUser) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("userId=" + zjyUser.getUserId());
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(getJcInfo, postParams, null);
+        resp = icveHttpW.post(getJcInfo, postParams);
         return resp;
 
     }
 
     static String getView = "https://www.icve.com.cn/study/directory/view";
 
-    public String getView(String courseId, String cellId) {
+    public static  String getView(String courseId, String cellId) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseId=" + courseId + "&");
         postParam.append("cellId=" + cellId + "&");
         postParam.append("enterType=study");
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(getView, postParams, null);
+        resp = icveHttpW.post(getView, postParams);
         return resp;
 
     }
 
     static String updateStatus = "https://www.icve.com.cn/study/directory/updateStatus";
 
-    public String getUpdateStatus(String cellId) {
+    public static  String getUpdateStatus(String cellId) {
         //视频修改进度
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("cellId=" + cellId + "&");
         postParam.append("learntime=99999999&status=1");
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(updateStatus, postParams, null);
+        resp = icveHttpW.post(updateStatus, postParams);
         return resp;
 
     }
 
     static String reply = "https://www.icve.com.cn/study/bbs/reply";
 
-    public String getReply(String courseId, String topicId) {
+    public static  String getReply(String courseId, String topicId) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseId=" + courseId + "&");
         postParam.append("topicId=" + topicId);
 
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(reply, postParams, null);
+        resp = icveHttpW.post(reply, postParams);
         return resp;
 
     }
 
-    public String getReplyContext(String courseId, String topicId) {
+    public static  String getReplyContext(String courseId, String topicId) {
         String resp = "";
         String cont = "";
         resp = getReply(courseId, topicId);
@@ -171,7 +163,7 @@ public class icveApiW implements Serializable {
 
     static String addReply = "https://www.icve.com.cn/study/bbs/addReply";
 
-    public String addReply(String courseId, String topicId, String content) {
+    public static  String addReply(String courseId, String topicId, String content) {
         //添加讨论
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -181,14 +173,14 @@ public class icveApiW implements Serializable {
         postParam.append("parentId=");
 
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(addReply, postParams, null);
+        resp = icveHttpW.post(addReply, postParams);
         return resp;
 
     }
 
     static String answerpaper = "https://www.icve.com.cn/study/directory/answerpaper";
 
-    public String answerpaper(String works, String paperItemId, String answer) {
+    public static  String answerpaper(String works, String paperItemId, String answer) {
         //提交每道题的答案
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -198,14 +190,14 @@ public class icveApiW implements Serializable {
         postParam.append("answer=" + answer);
 
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(answerpaper, postParams, null);
+        resp = icveHttpW.post(answerpaper, postParams);
         return resp;
 
     }
 
     static String subPaper = "https://www.icve.com.cn/study/directory/subPaper";
 
-    public String subPaper(String studentWorksId) {
+    public static  String subPaper(String studentWorksId) {
         //提交测验
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -213,7 +205,7 @@ public class icveApiW implements Serializable {
         postParam.append("studentWorksId=" + studentWorksId);
 
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(subPaper, postParams, null);
+        resp = icveHttpW.post(subPaper, postParams);
         return resp;
 
     }
@@ -221,45 +213,45 @@ public class icveApiW implements Serializable {
 
     static String CourseInfo = "https://www.icve.com.cn/study/Directory/getCourseInfo";
 
-    public String getCourseInfo(String courseId) {
+    public static  String getCourseInfo(String courseId) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseId=" + courseId);
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(CourseInfo, postParams, null);
+        resp = icveHttpW.post(CourseInfo, postParams);
         return resp;
 
     }
 
     static String worksInfo = "https://www.icve.com.cn/study/works/index";
 
-    public String getWorkseInfo(String courseId) {
+    public static  String getWorkseInfo(String courseId) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseId=" + courseId);
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(worksInfo, postParams, null);
+        resp = icveHttpW.post(worksInfo, postParams);
         return resp;
 
     }
 
-    private String WorkPerview = "https://www.icve.com.cn/study/Works/works";
+    private static  String WorkPerview = "https://www.icve.com.cn/study/Works/works";
 
-    public String getWorkPerview(String courseId, String assignmentId) {
+    public static  String getWorkPerview(String courseId, String assignmentId) {
         //assignmentId: ptkcazokqjzbd2xvpyxwmg
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseId=" + courseId + "&");
         postParam.append("assignmentId=" + assignmentId);
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(WorkPerview, postParams, null);
+        resp = icveHttpW.post(WorkPerview, postParams);
         return resp;
 
     }
 
-    private String answerOnlineWorks = "https://www.icve.com.cn/study/Works/answerOnlineWorks";
+    private static  String answerOnlineWorks = "https://www.icve.com.cn/study/Works/answerOnlineWorks";
 
-    public String getAnswerOnlineWorks(String answerId, String data) {
+    public static  String getAnswerOnlineWorks(String answerId, String data) {
         String resp;
         StringBuilder postParam = new StringBuilder();
 
@@ -267,41 +259,41 @@ public class icveApiW implements Serializable {
         postParam.append("data=" + data);
         //data: [{"paperItemId":"zslyammu2ozioo9vcaqjig","answer":"2"}]
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(answerOnlineWorks, postParams, null);
+        resp = icveHttpW.post(answerOnlineWorks, postParams);
         return resp;
     }
 
 
 
-    private String Exam = "https://www.icve.com.cn/study/Exam/index";
+    private static  String Exam = "https://www.icve.com.cn/study/Exam/index";
 
-    public String getExam(String courseId) {
+    public static  String getExam(String courseId) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseId=" + courseId);
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(Exam, postParams, null);
+        resp = icveHttpW.post(Exam, postParams);
         return resp;
 
     }
 
-    private String ExamPerview = "https://www.icve.com.cn/study/Exam/exam";
+    private static  String ExamPerview = "https://www.icve.com.cn/study/Exam/exam";
 
-    public String getExamPerview(String courseId, String examId) {
+    public static  String getExamPerview(String courseId, String examId) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseId=" + courseId + "&");
         postParam.append("examId=" + examId);
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(ExamPerview, postParams, null);
+        resp = icveHttpW.post(ExamPerview, postParams);
         return resp;
 
     }
 
-    private String answerExam="https://www.icve.com.cn/study/Exam/answerExam";
+    private static  String answerExam="https://www.icve.com.cn/study/Exam/answerExam";
 
 
-    public String getAnswerExam(String answerId, String data) {
+    public static  String getAnswerExam(String answerId, String data) {
         String resp;
         StringBuilder postParam = new StringBuilder();
 
@@ -309,79 +301,79 @@ public class icveApiW implements Serializable {
         postParam.append("data=" + data);
         //data: [{"paperItemId":"zslyammu2ozioo9vcaqjig","answer":"2"}]
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(answerExam, postParams, null);
+        resp = icveHttpW.post(answerExam, postParams);
         return resp;
     }
 
     //微课
 
-    private String microHeadInfo = "https://www.icve.com.cn/Portal/microstudy/getHeadInfo";
+    private static  String microHeadInfo = "https://www.icve.com.cn/Portal/microstudy/getHeadInfo";
 
-    public String getMicroHeadInfo(String courseId) {
+    public static  String getMicroHeadInfo(String courseId) {
         //获取课件
         String resp = "";
         //courseId: kieiahuk7k1cpfsyrscxga
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseId=" + courseId);
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(microHeadInfo, postParams, null);
+        resp = icveHttpW.post(microHeadInfo, postParams);
         return resp;
     }
 
-    private String microView = "https://www.icve.com.cn/portal/microstudy/view";
+    private static  String microView = "https://www.icve.com.cn/portal/microstudy/view";
 
-    public String getMicroView(String cellId) {
+    public static  String getMicroView(String cellId) {
         //刷课
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("cellId=" + cellId);
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(microView, postParams, null);
+        resp = icveHttpW.post(microView, postParams);
         return resp;
     }
 
-    private String microReply = "https://www.icve.com.cn/portal/microstudy/reply";
+    private static  String microReply = "https://www.icve.com.cn/portal/microstudy/reply";
 
-    public String getMicroReply(String cellId) {
+    public static  String getMicroReply(String cellId) {
         //获取讨论
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("cellId=" + cellId);
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(microReply, postParams, null);
+        resp = icveHttpW.post(microReply, postParams);
         return resp;
     }
 
-    private String microsAddComment = "https://www.icve.com.cn/Portal/microstudy/addComment";
+    private static  String microsAddComment = "https://www.icve.com.cn/Portal/microstudy/addComment";
 
-    public String getMicrosAddComment(String courseId) {
+    public static  String getMicrosAddComment(String courseId) {
         //微课评价
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("courseId=" + courseId + "&");
         postParam.append("content=5");
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(microsAddComment, postParams, null);
+        resp = icveHttpW.post(microsAddComment, postParams);
         return resp;
     }
 
-    private String microUpdateStatus = "https://www.icve.com.cn/portal/microstudy/updateStatus";
+    private static  String microUpdateStatus = "https://www.icve.com.cn/portal/microstudy/updateStatus";
 
-    public String getMicroUpdateStatus(String cellId) {
+    public static  String getMicroUpdateStatus(String cellId) {
         //视频修改进度
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("cellId=" + cellId + "&");
         postParam.append("learntime=99999999&status=1");
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(microUpdateStatus, postParams, null);
+        resp = icveHttpW.post(microUpdateStatus, postParams);
         return resp;
 
     }
 
-    private String microAddReply = "https://www.icve.com.cn/portal/microstudy/addReply";
+    private static  String microAddReply = "https://www.icve.com.cn/portal/microstudy/addReply";
 
-    public String getMicroAddReply(String topicId, String content) {
+    public static  String getMicroAddReply(String topicId, String content) {
         String resp = "";
         StringBuilder postParam = new StringBuilder();
         postParam.append("topicId=" + topicId + "&");
@@ -389,13 +381,13 @@ public class icveApiW implements Serializable {
         postParam.append("courseId=" + "" + "");
 
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(microAddReply, postParams, null);
+        resp = icveHttpW.post(microAddReply, postParams);
         return resp;
     }
 
-    private String microSubPaper = "https://www.icve.com.cn/portal/microstudy/subPaper";
+    private static  String microSubPaper = "https://www.icve.com.cn/portal/microstudy/subPaper";
 
-    public String getMicroSubPaper(String studentWorksId, String data) {
+    public static  String getMicroSubPaper(String studentWorksId, String data) {
         //提交卷子
         String resp = "";
         StringBuilder postParam = new StringBuilder();
@@ -404,7 +396,7 @@ public class icveApiW implements Serializable {
         postParam.append("data=" + data);
         //data: [{"paperItemId":"zslyammu2ozioo9vcaqjig","answer":"2"}]
         String postParams = postParam.toString();
-        resp = mIcveHttpW.post(microSubPaper, postParams, null);
+        resp = icveHttpW.post(microSubPaper, postParams);
         return resp;
 
     }
