@@ -968,7 +968,7 @@ public class newZjyApi {
         return resp;
     }
 
-    // 考生信息
+    // 考生信息  stuSsoId 402883ab82fee62c018307a26e3e1f1d 试卷锁定
     static String examflow_getUserInfo = "https://spoc-exam.icve.com.cn/exam/examflow_getUserInfo.action";
 
     public static String getExamflow_getUserInfo() {
@@ -1125,7 +1125,6 @@ public class newZjyApi {
     }
 
     static String prepareExam_intoConfirmStudentInfo="https://spoc-exam.icve.com.cn/mobile/prepareExam_intoConfirmStudentInfo.action";
-
     //params.batchId=402883ab82fee62c0183204009171f77&params.prePage=result&params.isSkipResult=1&params.courseId=39e272199dab487ba6f8f76115cbfd2c&params.appIntoType=examInfoConfirm
     //get
 
@@ -1367,6 +1366,15 @@ public class newZjyApi {
     }
 
 
+
+
+
+
+
+
+
+
+
     //============================================== web 学生 api =====================================
 
 
@@ -1601,7 +1609,8 @@ public class newZjyApi {
     static String zhzjStudent_checkAssess = "https://user.icve.com.cn/zhzj/zhzjStudent_checkAssess.action";
 
     public static String getZhzjStudent_checkAssess() {
-        String data = "token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q%3D&classId=957639a938cc4e63b0953e132e0df096&loginId=venomms";
+        String data = "token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0Q%3D" +
+                "&classId=957639a938cc4e63b0953e132e0df096&loginId=venomms";
         String resp = newZjyHttp.post(studentExam_getPaperStructure, data);
         return resp;
     }
@@ -1623,6 +1632,7 @@ public class newZjyApi {
      * get 请求
      * https://course.icve.com.cn/learnspace/course/study/learnRecord_stuLearnRecord.action
      * courseId=39e272199dab487ba6f8f76115cbfd2c___&userId=2w7jafiswazbrev468vb5q&isShowHistory=1&templateType=8
+
      * <p>
      * <p>
      * 获取 Signature
@@ -1631,7 +1641,6 @@ public class newZjyApi {
      * <input type='hidden' name='_name' value='魏海旭' />
      * <input type='hidden' name='Signature' value='MCwCFFPxxgHGhly8mrUZEnP/Tm0kTqS4AhQZeJCKF394bKzePcKVgeybaBRu7Q==' />
      */
-
     //获取 Signature name
     static String courseExamAction = "https://course.icve.com.cn/learnspace/course/exam/courseExamAction_intoCourseExamList.action";
 
@@ -1782,25 +1791,25 @@ public class newZjyApi {
         return resp;
     }
 
-    //学生成绩 总学习时长得分 资源完成情况得分 视频有效时长得分 离线作业得分 在线作业得分...
+    //学生成绩  姓名//学号//总学习时长得分 //资源完成情况得分//视频有效时长得分//附件作业得分//题库作业得分//随堂测试得分//题库考试得分//提问得分//签到得分//讨论得分//小组PK//总分
     static String StudentAssessList = "https://user.icve.com.cn/patch/zhzj/teacherStatistics_getStudentAssessList.action";
 
     public static String getStudentAssessList(String date, String classId) {
-        String data = "date=2022-08-3+~+2022-9-3" +
+        String data = "date=2022-08-3+~+2023-9-3" +
                 "&keyName=&curPage=1&pageSize=100" +
-                "&classId=957639a938cc4e63b0953e132e0df096" +
+                "&classId=" +classId+
                 "&token=MWNFWmtHblhqJTJCbGI4M1UlMkJMN0p1T2clM0QlM0=";
         String resp = newZjyHttp.post(StudentAssessList, data);
         return resp;
     }
 
-    //学生统计 学习进度 在线时长 出勤率...
+    //学生统计 // 姓名// 行政班级//学号//题库考试平均分//学习进度//在线时长//出勤率//提问//讨论//练习//签到总数//参与签到数//迟到//事假//公假//早退//病假//缺勤
     static String StudentStatisticsList = "https://user.icve.com.cn/patch/zhzj/teacherStatistics_getStudentStatisticsList.action";
 
     public static String getStudentStatisticsList(String date, String classId) {
-        String data = "data=info&date=2022-08-6+~+2999-9-6" +
+        String data = "data=info&date=2022-08-6+~+2023-9-6" +
                 "&keyName=&curPage=1&pageSize=10" +
-                "&classId=957639a938cc4e63b0953e132e0df096" +
+                "&classId=" +classId+
                 "&token=aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA%3D%3D";
         String resp = newZjyHttp.post(StudentStatisticsList, data);
         return resp;
@@ -1923,17 +1932,16 @@ public class newZjyApi {
     }
 
 
-    //老师api 考试等
+    //老师api 题库作业  题库考试 随堂测验
     static String courseExamList = "https://user.icve.com.cn/zhzj/zhzjTeacher_courseExamList.action";
 
     public static String getCourseExamList(String token) {
         String data = "token=aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA%3D%3D" +
-                "&searchName=&pageNum=1&type=随堂测验" +
-                "&examConfigTypeId=3&pageSize=100";
-        //在线作业
-        //token=aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA%3D%3D&searchName=&pageNum=1&type=在线作业&examConfigTypeId=2&pageSize=5
-        //课程考试
-        //token=aUVxM3RvYWo1N1FTRHVMMkNGRDB4USUzRCUzRA%3D%3D&searchName=&pageNum=1&type=课程考试&examConfigTypeId=1&pageSize=5
+                "&searchName=" +
+                "&pageNum=1&type=题库考试" +   //题库作业 随堂测验
+                "&courseIdForChoose=" +
+                "&examConfigTypeId=1&pageSize=200";
+
         String resp = newZjyHttp.post(courseExamList, data);
         return resp;
     }
@@ -1980,6 +1988,7 @@ public class newZjyApi {
         String resp = newZjyHttp.post(ScorePaperList, data);
         return resp;
     }
+
 
     //已做题的id
     static String RecordPaper = "https://spoc-exam.icve.com.cn/student/exam/examrecord_getRecordPaperStructure.action";
@@ -2032,7 +2041,20 @@ public class newZjyApi {
         return resp;
     }
 
-    //试卷锁定
+    //试卷学生管理 锁定 解锁
+    static String examBatch_ExamStudentList="https://spoc-exam.icve.com.cn/college/exam/examBatch_getExamStudentList.action?pager.pageSize=200&pager.curPage=1&pager.searchTotalSize=true";
+    public static String getExamBatch_ExamStudentList(String batchId){
+        String data = "batchId="+batchId +
+                "&pager.condition.studentName=&pager.condition.loginId=" +
+                "&pager.condition.examStatus=&pager.condition.hasPhoto=&pager.sortType=" +
+                "&pager.sortColumn=&params.examConfigTypeId=";
+
+        String resp = newZjyHttp.post(examBatch_ExamStudentList, data);
+        return resp;
+    }
+
+
+    //试卷锁定 stuSsoId
     static String examBatch_toggleStudentStatus="https://spoc-exam.icve.com.cn/college/exam/examBatch_toggleStudentStatus.action";
 
     public static String getExamBatch_toggleStudentStatus(String operate,String ersId,String stuSsoId,String batchId){
@@ -2061,13 +2083,12 @@ public class newZjyApi {
 
 
 
+    //失效
     //考试 作业 测试 重批改分
     static String saveScore = "https://spoc-exam.icve.com.cn/teacher/exampaper/papercheck_saveScoreAndFinishCheck.action";
 
-    public static String getSaveScore(String recordId) {
-        String data = "recordId="+recordId +
-                "&score=4243f48390cf49b29981154fced1dd37%4050" +
-                "&score=644ace139b4e4f84b7690c6c7e5a3311%4050";
+    public static String getSaveScore(String recordId,String str) {
+        String data = "recordId="+recordId +str;
         String resp = newZjyHttp.post(saveScore, data);
         return resp;
     }

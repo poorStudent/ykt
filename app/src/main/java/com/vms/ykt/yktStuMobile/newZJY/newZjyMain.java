@@ -2,11 +2,9 @@ package com.vms.ykt.yktStuMobile.newZJY;
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.View;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.vms.ykt.Util.HttpTool;
 import com.vms.ykt.Util.Tool;
 import com.vms.ykt.yktDao.newZjy.newZjyUserDao;
 
@@ -16,8 +14,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -61,7 +57,7 @@ public class newZjyMain {
         JSONObject vJSONObject = js1.getJSONObject("user");
         if (vJSONObject == null) return;
         String id = vJSONObject.getString("id");
-        vUser.setId(id);
+        vUser.setUserId(id);
 
     }
 
@@ -519,12 +515,6 @@ public class newZjyMain {
     }
 
 
-    public static String getClassTraineeList(String classId, String token) {
-        String resp = newZjyApi.getClassTraineeList(classId, token);
-        return resp;
-    }
-
-
     //获取课件
     public static List<CellInfo> getLearnspace(String courseId) {
         String resp = newZjyApi.getLearnspace(courseId);
@@ -757,7 +747,7 @@ public class newZjyMain {
     }
 
     public static String getExamRecordId(String resp) {
-        if (resp == null || resp.isEmpty()) return "";
+        if (resp == null || resp.isEmpty()) return null;
         Document doc = Jsoup.parse(resp, "UTF-8");
         //examRecordId
         String examRecordId = doc.select("input#examRecordId").attr("value");
@@ -875,6 +865,7 @@ public class newZjyMain {
     //examRecordId
     public static String getExamflow_index(String batchId) {
         String resp = newZjyApi.getExamflow_index(batchId);
+        if (resp == null || resp.isEmpty()) return null;
         String pattern = "\\s*var examRecordId = \"(.+)\";\\s*var userId =";
         // 创建 Pattern 对象
         Pattern r = Pattern.compile(pattern);
@@ -888,6 +879,12 @@ public class newZjyMain {
         return examRecordId;
     }
 
+    // web + phone  examRecordId
+    public static String getExamRecordId(String batchId, String courseId) {
+        String examRecordId = getExamFlow_intoExam(batchId, courseId);
+        if (examRecordId == null) examRecordId = getExamflow_index(batchId);
+        return examRecordId;
+    }
 
     //web端解析 作业 考试 测验
     public static List<ExamWork> parseExamW(String resp) {
@@ -1296,6 +1293,7 @@ public class newZjyMain {
         return vHomeworkList;
     }
 
+    //改分
     public static String getSaveCheckHomework(newZjyUser user, String homeworkStuId, String homeworkScore, String comments, String isRecommend) {
         //402883e6837a403f01837dab80de28ee
         Map<String, Object> Header = newZjyHttp.getHeader();
@@ -1310,10 +1308,69 @@ public class newZjyMain {
 
     }
 
+    //互评
     public static List<Homework> getHwEvalList(String homeworkId) {
         String resp = newZjyApi.getHwEvalList(homeworkId);
         System.out.println(resp);
         return paresAllHomework(resp);
+    }
+
+
+    //web 学生管理详情
+    public static String getTeacher_ClassTrainee(String CourseId) {
+        String resp = newZjyApi.getTeacher_ClassTrainee(CourseId);
+        System.out.println(resp);
+        return resp;
+    }
+
+    public static String getStudentAssessList(String date, String classId) {
+        String resp = newZjyApi.getStudentAssessList("",classId);
+        System.out.println(resp);
+        System.out.println("\n");
+        resp = newZjyApi.getStudentStatisticsList("",classId);
+        System.out.println(resp);
+        return resp;
+    }
+
+    public static String getExamFlow_RecordInfoBeforeExam(String batchId) {
+        String resp = newZjyApi.getExamFlow_RecordInfoBeforeExam(batchId);
+        System.out.println(resp);
+        if (resp==null || !resp.contains("data"))return null;
+        JSONObject vJSONObject=Tool.parseJsonO(resp,"data");
+        String lastRecordId=vJSONObject.getString("lastRecordId");
+        return lastRecordId;
+    }
+
+    public static String getPaperId2str(String examRecordId) {
+        String resp =getExamRecord_RecordPaperStructure(examRecordId);
+        resp=PaperId2str(resp);
+        return resp;
+    }
+
+    public static String getExamRecord_RecordPaperStructure(String examRecordId) {
+        String resp = newZjyApi.getExamRecord_RecordPaperStructure(examRecordId);
+        return resp;
+    }
+
+    public static String PaperId2str(String resp) {
+     if (resp==null || !resp.contains("data"))return null;
+     StringBuilder vStringBuilder = new StringBuilder();
+     JSONObject vJSONObject=Tool.parseJsonO(resp,"data");
+     JSONArray allContentId= vJSONObject.getJSONArray("allContentId");
+     JSONObject contentListMap= vJSONObject.getJSONObject("contentListMap");
+
+     for (int i = 0; i <allContentId.size() ; i++) {
+         String id=allContentId.getString(i);
+         JSONObject vJSONObject1=contentListMap.getJSONObject(id);
+         String questionId=vJSONObject1.getString("questionId");
+         String qScore=vJSONObject1.getString("qScore");
+         vStringBuilder.append("&score=");
+         vStringBuilder.append(questionId);
+         vStringBuilder.append("@");
+         vStringBuilder.append(qScore);
+
+     }
+        return vStringBuilder.toString();
     }
 
 
@@ -1396,18 +1453,17 @@ public class newZjyMain {
                     CourseName + " * " + CourseId);
 
 
-            // if (!CourseName.contains("789")) continue;
+             //if (!CourseName.contains("789")) continue;
             //if (!CourseName.contains("中国传统文化与哲学")) continue;
             if (!CourseName.contains("人文数学")) continue;
-            newZjyHttp.addCookie(vUserT.getUNTYXLCOOKIE());
-            newZjyHttp.addCookie(vUserT.getUSERSESSIONID());
-            resp=newZjyApi.getTeacher_ClassTrainee(CourseId);
-            System.out.println(resp);
 
 
 
+            //getStudentAssessList("",ClassId);
+            //getTeacher_ClassTrainee(CourseId);
 
-            System.exit(0);
+
+
 
             if (!upAuthorization(vUser)) {
                 System.out.println("upAuthorization erro");
@@ -1425,7 +1481,18 @@ public class newZjyMain {
                 System.out.println("upUsersessionidm erro");
             }
 
+
+            newZjyApi.printHeader();
+
+            homeWork(null,CourseId);
+
             //doExamWork(CourseId);
+
+            System.exit(0);
+
+
+            newZjyHttp.addCookie(vUserT.getUNTYXLCOOKIE());
+            newZjyHttp.addCookie(vUserT.getUSERSESSIONID());
 
 
             System.exit(0);
@@ -1702,16 +1769,23 @@ public class newZjyMain {
 
             if (My_score.contains("100")) continue;
 
-            vExamWorkInfo = getExamConfirm(ExamId);
-            PaperId = vExamWorkInfo.getPaperId();
 
 
-            vExamAnsw = getPaperAnsw1(PaperId);
+           // resp=getExamFlow_RecordInfoBeforeExam(ExamId);
+            //System.out.println(resp);
+
+            System.exit(0);
+
+           // vExamWorkInfo = getExamConfirm(ExamId);
+            //PaperId = vExamWorkInfo.getPaperId();
+
+
+            //vExamAnsw = getPaperAnsw1(PaperId);
             //resp=vExamAnsw.getAnswHtml();
             //input = new File("E:\\start Menu\\456.html");
             // Tool.fw(input, resp);
-            resp = vExamAnsw.getAnswStr();
-            System.out.println(resp);
+            //resp = vExamAnsw.getAnswStr();
+            //System.out.println(resp);
 
 
             // vMap = vExamAnsw.getAnswMap();
@@ -1742,7 +1816,7 @@ public class newZjyMain {
 
 
   /*
-  ExamWorkQid vExamWorkQid =getExamFlow_getExamPaperInfo(examRecordId);
+    ExamWorkQid vExamWorkQid =getExamFlow_getExamPaperInfo(examRecordId);
                 vMap=vExamWorkQid.getQuestionIdAndContentIds();
                 for (String key : vMap.keySet()) {
                     System.out.println(key + " " + vMap.get(key));
@@ -1761,24 +1835,9 @@ public class newZjyMain {
     public static void homeWork(newZjyUser user, String CourseId) {
 
 
-        if (!upUNTYXLCOOKIET(user, "")) {
-            System.out.println("upUNTYXLCOOKIE erro");
-        }
 
 
         //newZjyHttp.addHeader("Host", "course.icve.com.cn");
-        newZjyHttp.removeHeader("Origin");
-        newZjyHttp.removeHeader("Content-Type");
-
-        if (!getAuthorizationHomework(user, "", 1)) {
-            System.out.println("upAuthorizationHomework erro");
-        }
-
-
-        String resp = getSaveCheckHomework(user, "06f0268b2490b2348ec2d5a028518d20", "10", "", "0");
-
-
-        System.exit(0);
 
 
         for (Homework vHomework : getAllHomework(CourseId)) {
@@ -1788,11 +1847,14 @@ public class newZjyMain {
             String ScorePaper = vHomework.getScorePaper();
             String HwStatus = vHomework.getHwStatus();
             System.out.println(Title + " " + hwid + " " + TotalScore + " " + ScorePaper + " " + HwStatus);
+            System.out.println( " " + vHomework.getItemId() + " " + vHomework.getSectionId() + " " + vHomework.getChapterId());
+
             //System.out.println();
+
 
             String hsid = newZjyApi.getHwStudent(hwid);
             System.out.println(hsid);
-
+            System.exit(0);
 
             break;
             /*for (Homework vHomework1 :getHwEvalList(hwid)){
